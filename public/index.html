@@ -192,28 +192,30 @@
             <span class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 -ml-1">🎯</span>
             Best Version
           </h3>
-          <div class="p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-2xl">
-            <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-lg"></p>
-          </div>
-
+          <div class="p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-2xl relative">
+  <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-lg pr-16"></p>
+  <button onclick="copyText('better-version', this)" class="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
+</div>
           <div class="grid md:grid-cols-2 gap-4">
             <div>
               <h4 class="font-bold text-lg mb-3 flex items-center">
                 <span class="w-4 h-4 bg-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">😌</span>
                 Softer Version
               </h4>
-              <div class="p-5 bg-rose-50 rounded-xl border border-rose-200">
-                <p id="softer-version" class="whitespace-pre-wrap leading-relaxed"></p>
-              </div>
+             <div class="p-5 bg-rose-50 rounded-xl border border-rose-200 relative">
+  <p id="softer-version" class="whitespace-pre-wrap leading-relaxed pr-16"></p>
+  <button onclick="copyText('softer-version', this)" class="absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
+</div>
             </div>
             <div>
               <h4 class="font-bold text-lg mb-3 flex items-center">
                 <span class="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">💪</span>
                 Stronger Version
               </h4>
-              <div class="p-5 bg-orange-50 rounded-xl border border-orange-200">
-                <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed"></p>
-              </div>
+             <div class="p-5 bg-orange-50 rounded-xl border border-orange-200 relative">
+  <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed pr-16"></p>
+  <button onclick="copyText('stronger-version', this)" class="absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
+</div>
             </div>
           </div>
         </div>
@@ -361,8 +363,9 @@ if (window.turnstile) {
       document.getElementById('coach-note').textContent = data.coach_note;
 
       // Show results
-      document.getElementById('results').classList.remove('hidden');
-      document.getElementById('empty-state').classList.add('hidden');
+document.getElementById('results').classList.remove('hidden');
+document.getElementById('empty-state').classList.add('hidden');
+document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // New analysis
@@ -401,6 +404,13 @@ if (window.turnstile) {
 
     // Show empty state initially
     document.getElementById('empty-state').classList.remove('hidden');
+    function copyText(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
   </script>
 </body>
 </html>
