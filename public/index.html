@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,438 +5,736 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BeforeYouSay - AI Communication Coach</title>
+  <meta name="description" content="AI communication coach for work, relationships, rizz, and negotiation. Analyze tone, rewrite messages, avoid emotional mistakes before you send.">
+  <meta property="og:title" content="BeforeYouSay - AI Communication Coach">
+  <meta property="og:description" content="Paste your message. AI analyzes tone, predicts impact, and rewrites it for work, relationships, rizz, and negotiation.">
+  <meta property="og:url" content="https://beforeyousay.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BeforeYouSay - AI Communication Coach">
+  <meta name="twitter:description" content="Think before you send. AI rewrites your messages for work, relationships, rizz, and negotiation.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📨</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📨</text></svg>">
-  <meta name="description" content="AI communication coach for work, relationships, rizz, negotiation. Analyze tone, rewrite messages, avoid emotional mistakes before you send.">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    .glass { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.1); }
+    .glass { backdrop-filter: blur(20px); background: rgba(255,255,255,0.1); }
+    .mode-btn.active { border-width: 3px; background: linear-gradient(135deg,#8b5cf6,#ec4899); color: white; box-shadow: 0 8px 25px rgba(139,92,246,0.35); transform: translateY(-1px); }
+    .tab-btn.active { background: linear-gradient(135deg,#8b5cf6,#ec4899); color: white; box-shadow: 0 4px 15px rgba(139,92,246,0.3); }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .fade-in { animation: fadeIn 0.35s ease forwards; }
+    .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .copy-btn { transition: all 0.2s; }
+    .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 text-slate-900">
-  
-  <!-- Header -->
-  <header class="glass backdrop-blur-xl sticky top-0 z-50 border-b border-white/20 shadow-2xl">
-    <div class="max-w-4xl mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
-            <span class="text-2xl">📨</span>
-          </div>
-          <div>
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent">BeforeYouSay</h1>
-            <p class="text-sm text-slate-500 font-medium">AI Communication Coach</p>
-          </div>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 text-slate-900">
+
+<!-- Header -->
+<header class="glass backdrop-blur-xl sticky top-0 z-50 border-b border-white/30 shadow-lg">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+          <span class="text-xl">📨</span>
         </div>
-        <div class="text-sm text-slate-500 hidden md:block">
-          <span id="request-count">0</span> analyses today
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">BeforeYouSay</h1>
+          <p class="text-xs text-slate-500 font-medium hidden sm:block">AI Communication Coach</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div class="text-sm text-slate-500">
+          <span id="request-count" class="font-bold text-purple-600">0</span>
+          <span class="hidden sm:inline"> analyses today</span>
         </div>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main class="max-w-4xl mx-auto px-6 py-12 space-y-12">
-    
-    <!-- Hero -->
-    <section class="text-center space-y-6">
-      <div class="max-w-2xl mx-auto">
-        <h2 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent leading-tight">
-          Think before you send
-        </h2>
-        <p class="text-xl text-slate-600 mt-6 max-w-lg mx-auto leading-relaxed">
-          AI analyzes tone, predicts emotional impact, and rewrites messages for work, relationships, 
-          rizz, and negotiation. Pause. Optimize. Send.
-        </p>
-      </div>
-    </section>
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
 
-    <!-- Main App -->
-    <section class="glass rounded-3xl p-8 md:p-12 shadow-2xl border border-white/20 max-w-3xl mx-auto">
-      
+  <!-- Hero -->
+  <section class="text-center space-y-4">
+    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-purple-800 to-slate-900 bg-clip-text text-transparent leading-tight">
+      Think before you send
+    </h2>
+    <p class="text-lg sm:text-xl text-slate-600 max-w-lg mx-auto leading-relaxed">
+      AI analyzes tone, predicts emotional impact, and rewrites your messages for work, relationships, rizz, and negotiation.
+    </p>
+  </section>
+
+  <!-- Mode Tabs -->
+  <div class="flex justify-center">
+    <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-lg border border-white/50 inline-flex gap-1">
+      <button data-tab="rewrite" class="tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
+        ✏️ <span class="hidden sm:inline">Rewrite </span>Mine
+      </button>
+      <button data-tab="reply" class="tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
+        💬 <span class="hidden sm:inline">Reply to </span>This
+      </button>
+    </div>
+  </div>
+
+  <!-- App Card -->
+  <section class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-xl border border-white/50 max-w-3xl mx-auto">
+
+    <!-- Rewrite Tab -->
+    <div id="tab-rewrite" class="tab-content">
       <!-- Mode Selector -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-        <button data-mode="workplace" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-400 hover:shadow-lg transition-all duration-200 font-medium">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button data-mode="workplace" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-300 transition-all duration-200 font-medium text-sm sm:text-base">
           💼 Workplace
         </button>
-        <button data-mode="relationship" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-400 hover:shadow-lg transition-all duration-200 font-medium">
+        <button data-mode="relationship" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-300 transition-all duration-200 font-medium text-sm sm:text-base">
           💕 Relationship
         </button>
-        <button data-mode="rizz" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 hover:shadow-lg transition-all duration-200 font-medium">
+        <button data-mode="rizz" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-300 transition-all duration-200 font-medium text-sm sm:text-base">
           🔥 Rizz
         </button>
-        <button data-mode="negotiation" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-400 hover:shadow-lg transition-all duration-200 font-medium">
+        <button data-mode="negotiation" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-300 transition-all duration-200 font-medium text-sm sm:text-base">
           💰 Negotiation
         </button>
       </div>
 
       <!-- Message Input -->
-      <div class="space-y-4 mb-8">
-               <textarea 
-  id="message" 
-  placeholder="Paste your message here... 'Why didn't you reply?'"
-  rows="4" 
-  class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-vertical font-medium text-lg transition-all duration-200"
-></textarea>
-<div class="text-right text-sm font-medium mt-1">
-  <span id="char-count">0</span><span class="text-slate-400"> / 1000</span>
-</div>
-<div id="error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 font-medium px-5 py-3 rounded-xl text-sm"></div>
-        <div class="cf-turnstile mt-4" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+      <div class="space-y-3 mb-6">
+        <textarea
+          id="message"
+          placeholder="Paste your message here... e.g. 'Why didn't you reply?'"
+          rows="4"
+          maxlength="1000"
+          class="w-full p-5 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-none font-medium text-base transition-all duration-200 bg-white/80"
+        ></textarea>
+        <div class="flex justify-between items-center px-1">
+          <span id="error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+          <div class="ml-auto text-sm font-medium">
+            <span id="char-count">0</span><span class="text-slate-400"> / 1000</span>
+          </div>
+        </div>
 
-        <button 
-          id="analyze-btn" 
-          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-5 px-8 rounded-2xl text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+
+        <button
+          id="analyze-btn"
+          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           disabled
         >
           <span id="btn-text">Choose a mode first</span>
-          <span id="loading-spinner" class="hidden">
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <span id="loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            Analyzing your message...
+            <span id="loading-text">Reading your message...</span>
           </span>
         </button>
       </div>
+    </div>
 
-      <!-- Results -->
-      <!-- Skeleton -->
-<div id="skeleton" class="hidden space-y-6">
-  <div class="h-24 bg-slate-200 rounded-2xl animate-pulse"></div>
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="h-40 bg-slate-200 rounded-2xl animate-pulse"></div>
-    <div class="h-40 bg-slate-200 rounded-2xl animate-pulse"></div>
-  </div>
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="h-24 bg-slate-200 rounded-2xl animate-pulse"></div>
-    <div class="h-24 bg-slate-200 rounded-2xl animate-pulse"></div>
-  </div>
-  <div class="h-32 bg-slate-200 rounded-2xl animate-pulse"></div>
-  <div class="h-24 bg-slate-200 rounded-2xl animate-pulse"></div>
-</div>
-      <div id="results" class="hidden space-y-6">
-        
-        <!-- Original Message -->
-        <div class="p-6 bg-slate-100 rounded-2xl border-l-8 border-amber-400">
-          <div class="flex items-start space-x-3">
-            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span class="text-amber-600 font-bold">📝</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-lg mb-1">Original Message</h3>
-              <p id="original-message" class="text-slate-900 leading-relaxed whitespace-pre-wrap"></p>
-            </div>
+    <!-- Reply Tab -->
+    <div id="tab-reply" class="tab-content hidden">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button data-mode="workplace" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-300 transition-all duration-200 font-medium text-sm sm:text-base">
+          💼 Workplace
+        </button>
+        <button data-mode="relationship" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-300 transition-all duration-200 font-medium text-sm sm:text-base">
+          💕 Relationship
+        </button>
+        <button data-mode="rizz" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-300 transition-all duration-200 font-medium text-sm sm:text-base">
+          🔥 Rizz
+        </button>
+        <button data-mode="negotiation" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-300 transition-all duration-200 font-medium text-sm sm:text-base">
+          💰 Negotiation
+        </button>
+      </div>
+
+      <div class="space-y-3 mb-6">
+        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Paste the message you received:</p>
+        <textarea
+          id="reply-message"
+          placeholder="e.g. 'I think we need to talk about your performance lately...'"
+          rows="4"
+          maxlength="1000"
+          class="w-full p-5 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-none font-medium text-base transition-all duration-200 bg-white/80"
+        ></textarea>
+        <div class="flex justify-between items-center px-1">
+          <span id="reply-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+          <div class="ml-auto text-sm font-medium">
+            <span id="reply-char-count">0</span><span class="text-slate-400"> / 1000</span>
           </div>
         </div>
 
-        <!-- Risk & Scores -->
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Risk -->
-          <div class="p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border border-red-200">
-            <div class="flex items-start space-x-3">
-              <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                <span id="risk-icon" class="text-white text-xl font-bold">⚠️</span>
-              </div>
-              <div>
-                <div class="flex items-center space-x-2 mb-2">
-                  <h3 class="font-bold text-xl">Risk Level</h3>
-                  <span id="risk-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">Medium</span>
-                </div>
-                <p id="risk-text" class="text-slate-700 leading-relaxed"></p>
-                <div class="mt-4">
-                  <span id="should-send" class="px-4 py-2 rounded-full font-bold text-sm">
-                    <span id="should-send-text">Edit first</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="cf-turnstile-reply cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
 
-          <!-- Scores -->
-          <div class="p-6 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-2xl border border-emerald-200">
-            <h3 class="font-bold text-xl mb-4 flex items-center">
-              <span class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>
-              Scores (1-10)
-            </h3>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span>Clarity</span>
-                <span id="score-clarity" class="font-bold text-lg text-emerald-700">7</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span>Confidence</span>
-                <span id="score-confidence" class="font-bold text-lg text-emerald-700">6</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span>Emotional Control</span>
-                <span id="score-emotional" class="font-bold text-lg text-emerald-700">5</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span>Effectiveness</span>
-                <span id="score-effectiveness" class="font-bold text-lg text-emerald-700">8</span>
-              </div>
+        <button
+          id="reply-btn"
+          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          disabled
+        >
+          <span id="reply-btn-text">Choose a mode first</span>
+          <span id="reply-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="reply-loading-text">Analyzing the message...</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div id="skeleton" class="hidden space-y-5">
+      <div class="h-20 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="h-36 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+        <div class="h-36 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+      </div>
+      <div class="h-28 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+      <div class="h-24 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+    </div>
+
+    <!-- Rewrite Results -->
+    <div id="results" class="hidden space-y-5 fade-in">
+
+      <!-- Original -->
+      <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">📝 Original Message</p>
+        <p id="original-message" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
+      </div>
+
+      <!-- Risk + Scores -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div id="risk-card" class="p-5 rounded-2xl border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span id="risk-icon" class="text-xl">⚠️</span>
+              <h3 class="font-bold text-lg">Risk Level</h3>
             </div>
+            <span id="risk-badge" class="px-3 py-1 rounded-full text-xs font-bold">Medium</span>
           </div>
+          <p id="risk-text" class="text-sm text-slate-700 leading-relaxed mb-3"></p>
+          <span id="should-send" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-white/60 border border-current"></span>
         </div>
 
-        <!-- Tone & Intent -->
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
-            <h3 class="font-bold text-xl mb-3 flex items-center">
-              <span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
-              Tone Detected
-            </h3>
-            <p id="tone-detected" class="text-slate-800 leading-relaxed text-lg"></p>
-          </div>
-          <div class="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border border-blue-200">
-            <h3 class="font-bold text-xl mb-3 flex items-center">
-              <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-              Your Intent
-            </h3>
-            <p id="intent-guess" class="text-slate-800 leading-relaxed text-lg"></p>
-          </div>
-        </div>
-
-        <!-- Rewrites -->
-        <div class="space-y-4">
-          <h3 class="font-bold text-2xl flex items-center">
-            <span class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 -ml-1">🎯</span>
-            Best Version
-          </h3>
-          <div class="p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-2xl relative">
-  <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-lg pr-16"></p>
-  <button onclick="copyText('better-version', this)" class="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
-</div>
-          <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
+          <h3 class="font-bold text-lg mb-4 text-emerald-800">📊 Scores</h3>
+          <div class="space-y-3">
             <div>
-              <h4 class="font-bold text-lg mb-3 flex items-center">
-                <span class="w-4 h-4 bg-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">😌</span>
-                Softer Version
-              </h4>
-             <div class="p-5 bg-rose-50 rounded-xl border border-rose-200 relative">
-  <p id="softer-version" class="whitespace-pre-wrap leading-relaxed pr-16"></p>
-  <button onclick="copyText('softer-version', this)" class="absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
-</div>
+              <div class="flex justify-between text-sm mb-1"><span>Clarity</span><span id="score-clarity" class="font-bold text-emerald-700">—</span></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-clarity" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
             <div>
-              <h4 class="font-bold text-lg mb-3 flex items-center">
-                <span class="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">💪</span>
-                Stronger Version
-              </h4>
-             <div class="p-5 bg-orange-50 rounded-xl border border-orange-200 relative">
-  <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed pr-16"></p>
-  <button onclick="copyText('stronger-version', this)" class="absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200">Copy</button>
-</div>
+              <div class="flex justify-between text-sm mb-1"><span>Confidence</span><span id="score-confidence" class="font-bold text-emerald-700">—</span></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-confidence" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>Emotional Control</span><span id="score-emotional" class="font-bold text-emerald-700">—</span></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-emotional" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>Effectiveness</span><span id="score-effectiveness" class="font-bold text-emerald-700">—</span></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-effectiveness" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
           </div>
-        </div>
-
-        <!-- Coach Note -->
-        <div class="p-6 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl text-white">
-          <h3 class="font-bold text-xl mb-3 flex items-center">
-            <span class="w-6 h-6 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-slate-900 text-sm font-bold mr-3 -ml-1">💡</span>
-            Coach Note
-          </h3>
-          <p id="coach-note" class="leading-relaxed text-lg"></p>
-        </div>
-
-        <!-- Share -->
-        <div class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row gap-4">
-          <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
-            New Analysis
-          </button>
-          <button id="share-result" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg">
-            Share Result
-          </button>
         </div>
       </div>
 
-      <!-- Empty State -->
-      <div id="empty-state" class="text-center py-20 space-y-6 hidden">
-        <div class="w-24 h-24 mx-auto bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl">
-          <span class="text-3xl">📱</span>
+      <!-- Tone + Intent -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-5 bg-purple-50 rounded-2xl border border-purple-200">
+          <p class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-2">🎭 Tone Detected</p>
+          <p id="tone-detected" class="text-slate-800 font-medium text-lg"></p>
         </div>
-        <h3 class="text-2xl font-bold text-slate-900">Ready to analyze</h3>
-        <p class="text-lg text-slate-600 max-w-md mx-auto">Paste a message, choose your communication mode, and get AI-powered coaching before you send.</p>
+        <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
+          <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">🎯 Your Intent</p>
+          <p id="intent-guess" class="text-slate-800 font-medium text-lg"></p>
+        </div>
       </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="text-center text-slate-500 text-sm pt-20 pb-12">
-      <p>Made with ❤️ for better communication | <a href="https://beforeyousay.com" class="text-slate-700 hover:text-purple-600 font-medium">beforeyousay.com</a></p>
-    </footer>
-  </main>
+      <!-- Best Version -->
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">✨ Best Version</p>
+        <div class="relative p-5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-lg">
+          <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
+          <button onclick="copyText('better-version', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+        </div>
+      </div>
 
-  <script>
-    let currentData = null;
-    let requestCount = 0;
+      <!-- Softer + Stronger -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">😌 Softer Version</p>
+          <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
+            <p id="softer-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+            <button onclick="copyText('softer-version', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">💪 Stronger Version</p>
+          <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
+            <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+            <button onclick="copyText('stronger-version', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+          </div>
+        </div>
+      </div>
 
-    // Mode buttons
-       document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
-        btn.classList.add('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl');
-        document.getElementById('analyze-btn').disabled = false;
-        document.getElementById('btn-text').textContent = 'Analyze Message';
-      });
+      <!-- Coach Note -->
+      <div class="p-5 bg-slate-900 rounded-2xl text-white">
+        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">💡 Coach Note</p>
+        <p id="coach-note" class="leading-relaxed"></p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
+          ↩ New Analysis
+        </button>
+        <button id="copy-all" class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
+          📋 Copy All
+        </button>
+        <button id="share-result" class="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
+          🔗 Share
+        </button>
+      </div>
+    </div>
+
+    <!-- Reply Results -->
+    <div id="reply-results" class="hidden space-y-5 fade-in">
+      <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
+        <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">💬 Their Message</p>
+        <p id="reply-original" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
+      </div>
+
+      <div class="p-5 bg-purple-50 rounded-2xl border border-purple-200">
+        <p class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-2">🎭 Their Tone</p>
+        <p id="reply-tone" class="text-slate-800 font-medium text-lg"></p>
+      </div>
+
+      <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">⚠️ What to Watch Out For</p>
+        <p id="reply-watch" class="text-slate-800 leading-relaxed"></p>
+      </div>
+
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">💬 Suggested Replies</p>
+        <div class="space-y-3">
+          <div>
+            <p class="text-xs font-semibold text-emerald-600 mb-1.5">✅ Calm & Clear</p>
+            <div class="relative p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+              <p id="reply-calm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-calm', this)" class="copy-btn absolute top-3 right-3 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-orange-600 mb-1.5">💪 Assertive</p>
+            <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
+              <p id="reply-assertive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-assertive', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-rose-600 mb-1.5">💕 Warm & Open</p>
+            <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
+              <p id="reply-warm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-warm', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-5 bg-slate-900 rounded-2xl text-white">
+        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">💡 Coach Note</p>
+        <p id="reply-coach-note" class="leading-relaxed"></p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
+          ↩ New Analysis
+        </button>
+        <button id="share-reply" class="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
+          🔗 Share
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="text-center py-16 space-y-4">
+      <div class="w-20 h-20 mx-auto bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center shadow-xl">
+        <span class="text-3xl">📱</span>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900">Ready to analyze</h3>
+      <p class="text-slate-500 max-w-sm mx-auto">Paste a message, choose a mode, and get AI coaching before you hit send.</p>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="max-w-3xl mx-auto">
+    <h3 class="text-center text-lg font-bold text-slate-700 mb-6">How it works</h3>
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
+        <div class="text-3xl mb-3">📋</div>
+        <h4 class="font-bold mb-1">Paste your message</h4>
+        <p class="text-sm text-slate-500">Type or paste the message you want to send or received</p>
+      </div>
+      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
+        <div class="text-3xl mb-3">🎯</div>
+        <h4 class="font-bold mb-1">Choose a mode</h4>
+        <p class="text-sm text-slate-500">Workplace, relationship, rizz, or negotiation</p>
+      </div>
+      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
+        <div class="text-3xl mb-3">✨</div>
+        <h4 class="font-bold mb-1">Get coached</h4>
+        <p class="text-sm text-slate-500">AI rewrites, scores, and explains your message instantly</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="text-center text-slate-400 text-sm py-10 mt-4">
+  <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-purple-600 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
+</footer>
+
+<script>
+  let currentData = null;
+  let requestCount = 0;
+  let loadingInterval = null;
+  let activeTab = 'rewrite';
+
+  const loadingMessages = [
+    'Reading your message...',
+    'Detecting tone...',
+    'Checking emotional risk...',
+    'Crafting better versions...',
+    'Coaching in progress...',
+    'Almost ready...'
+  ];
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-rewrite').classList.toggle('hidden', activeTab !== 'rewrite');
+      document.getElementById('tab-reply').classList.toggle('hidden', activeTab !== 'reply');
+      document.getElementById('results').classList.add('hidden');
+      document.getElementById('reply-results').classList.add('hidden');
+      document.getElementById('empty-state').classList.remove('hidden');
     });
+  });
 
-    // Analyze button
-       document.getElementById('analyze-btn').addEventListener('click', async () => {
-      const message = document.getElementById('message').value.trim();
-      const mode = document.querySelector('.mode-btn.border-4')?.dataset.mode;
-      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
-
-      if (!message || !mode) return;
-
-      if (!turnstileToken) {
-  showError('Please complete the verification first.');
-  return;
-}
-
-      const btn = document.getElementById('analyze-btn');
-      const btnText = document.getElementById('btn-text');
-      const spinner = document.getElementById('loading-spinner');
-
-      btn.disabled = true;
-btnText.classList.add('hidden');
-spinner.classList.remove('hidden');
-document.getElementById('skeleton').classList.remove('hidden');
-document.getElementById('results').classList.add('hidden');
-document.getElementById('skeleton').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      try {
-        const response = await fetch('https://beforeyousay-backend.onrender.com/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message, mode, turnstileToken })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-        
-          currentData = data;
-          displayResults(data);
-          requestCount++;
-          document.getElementById('request-count').textContent = requestCount;
-       } else {
-  showError(data.error || 'Something went wrong.');
-}
-     } catch (error) {
-  showError('Network error. Please try again.');
-} finally {
-        btn.disabled = false;
-btnText.classList.remove('hidden');
-spinner.classList.add('hidden');
-btnText.textContent = 'Analyze Again';
-document.getElementById('skeleton').classList.add('hidden');
-if (window.turnstile) {
-  window.turnstile.reset();
-}
-      }
+  // Rewrite mode buttons
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const analyzeBtn = document.getElementById('analyze-btn');
+      analyzeBtn.disabled = false;
+      document.getElementById('btn-text').textContent = 'Analyze Message';
     });
+  });
 
-    function displayResults(data) {
-      // Original message
-      document.getElementById('original-message').textContent = data.original_message;
+  // Reply mode buttons
+  document.querySelectorAll('.reply-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('reply-btn').disabled = false;
+      document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
+    });
+  });
 
-      // Risk
-      const riskLevels = {
-        low: { icon: '✅', color: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
-        medium: { icon: '⚠️', color: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
-        high: { icon: '🚨', color: 'bg-red-100 text-red-800', text: 'High Risk' }
-      };
+  // Char counters
+  document.getElementById('message').addEventListener('input', () => {
+    const len = document.getElementById('message').value.length;
+    const el = document.getElementById('char-count');
+    el.textContent = len;
+    el.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
+    if (document.querySelector('.mode-btn.active')) {
+      document.getElementById('analyze-btn').disabled = len === 0;
+    }
+  });
 
-      const risk = riskLevels[data.risk_level] || riskLevels.medium;
-      document.getElementById('risk-icon').textContent = risk.icon;
-      document.getElementById('risk-badge').textContent = risk.text;
-      document.getElementById('risk-badge').className = `px-3 py-1 rounded-full text-xs font-bold ${risk.color}`;
-      document.getElementById('risk-text').textContent = data.why_it_might_land_badly;
-      
-      const shouldSendTexts = {
-        yes: '✅ Send As Is',
-        edit_first: '✏️ Edit First',
-        no: '⏸️ Don\'t Send'
-      };
-      document.getElementById('should-send-text').textContent = shouldSendTexts[data.should_send] || 'Edit First';
+  document.getElementById('reply-message').addEventListener('input', () => {
+    const len = document.getElementById('reply-message').value.length;
+    const el = document.getElementById('reply-char-count');
+    el.textContent = len;
+    el.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
+    if (document.querySelector('.reply-mode-btn.active')) {
+      document.getElementById('reply-btn').disabled = len === 0;
+    }
+  });
 
-      // Scores
-      document.getElementById('score-clarity').textContent = data.scores.clarity;
-      document.getElementById('score-confidence').textContent = data.scores.confidence;
-      document.getElementById('score-emotional').textContent = data.scores.emotional_control;
-      document.getElementById('score-effectiveness').textContent = data.scores.effectiveness;
+  function startLoadingMessages(textId) {
+    let i = 0;
+    document.getElementById(textId).textContent = loadingMessages[0];
+    loadingInterval = setInterval(() => {
+      i = (i + 1) % loadingMessages.length;
+      document.getElementById(textId).textContent = loadingMessages[i];
+    }, 1800);
+  }
 
-      // Tone & Intent
-      document.getElementById('tone-detected').textContent = data.tone_detected;
-      document.getElementById('intent-guess').textContent = data.intent_guess;
+  function stopLoadingMessages() {
+    clearInterval(loadingInterval);
+  }
 
-      // Rewrites
-      document.getElementById('better-version').textContent = data.better_version;
-      document.getElementById('softer-version').textContent = data.softer_version;
-      document.getElementById('stronger-version').textContent = data.stronger_version;
-      document.getElementById('coach-note').textContent = data.coach_note;
+  function showError(msg, id = 'error-msg') {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 6000);
+  }
 
-      // Show results
-document.getElementById('results').classList.remove('hidden');
-document.getElementById('empty-state').classList.add('hidden');
-document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function setScoreBar(id, barId, val) {
+    document.getElementById(id).textContent = val;
+    setTimeout(() => {
+      document.getElementById(barId).style.width = (val * 10) + '%';
+    }, 200);
+  }
+
+  // Analyze (Rewrite) 
+  document.getElementById('analyze-btn').addEventListener('click', async () => {
+    const message = document.getElementById('message').value.trim();
+    const mode = document.querySelector('.mode-btn.active')?.dataset.mode;
+    const turnstileToken = document.querySelector('#tab-rewrite [name="cf-turnstile-response"]')?.value;
+
+    if (!message || !mode) return;
+
+    if (!turnstileToken) {
+      showError('Please complete the verification first.');
+      return;
     }
 
-    // New analysis
-    document.getElementById('new-analysis').addEventListener('click', () => {
-  document.getElementById('message').value = '';
-  document.getElementById('results').classList.add('hidden');
-  document.getElementById('empty-state').classList.remove('hidden');
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
-  document.getElementById('analyze-btn').disabled = true;
-  document.getElementById('btn-text').textContent = 'Choose a mode first';
-  if (window.turnstile) window.turnstile.reset();
-});
+    const btn = document.getElementById('analyze-btn');
+    const btnText = document.getElementById('btn-text');
+    const spinner = document.getElementById('loading-spinner');
 
-    // Message input change
-    document.getElementById('message').addEventListener('input', () => {
-  const len = document.getElementById('message').value.length;
-  const counter = document.getElementById('char-count');
-  counter.textContent = len;
-  counter.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
-  document.getElementById('analyze-btn').disabled = !document.querySelector('.mode-btn.border-4')?.dataset.mode;
-});
+    btn.disabled = true;
+    btnText.classList.add('hidden');
+    spinner.classList.remove('hidden');
+    spinner.classList.add('inline-flex');
+    document.getElementById('skeleton').classList.remove('hidden');
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('skeleton').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    startLoadingMessages('loading-text');
 
-    // Share (basic)
-    document.getElementById('share-result').addEventListener('click', () => {
-      if (navigator.share) {
-        navigator.share({
-          title: 'BeforeYouSay AI Analysis',
-          text: 'Check out this AI communication analysis!',
-          url: window.location.href
-        });
+    try {
+      const response = await fetch('https://beforeyousay-backend.onrender.com/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, mode, turnstileToken })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        currentData = data;
+        displayResults(data);
+        requestCount++;
+        document.getElementById('request-count').textContent = requestCount;
       } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Link copied! Share anywhere.');
+        showError(data.error || 'Something went wrong.');
+        document.getElementById('empty-state').classList.remove('hidden');
       }
-    });
-
-    // Show empty state initially
-    document.getElementById('empty-state').classList.remove('hidden');
-    function copyText(id, btn) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
+    } catch (error) {
+      showError('Network error. Please try again.');
+      document.getElementById('empty-state').classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btnText.classList.remove('hidden');
+      spinner.classList.add('hidden');
+      spinner.classList.remove('inline-flex');
+      btnText.textContent = 'Analyze Again';
+      document.getElementById('skeleton').classList.add('hidden');
+      stopLoadingMessages();
+      if (window.turnstile) window.turnstile.reset();
+    }
   });
-}
-    function showError(msg) {
-  const el = document.getElementById('error-msg');
-  el.textContent = msg;
-  el.classList.remove('hidden');
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => el.classList.add('hidden'), 5000);
-}
-  </script>
+
+  function displayResults(data) {
+    document.getElementById('original-message').textContent = data.original_message;
+
+    const riskMap = {
+      low: { icon: '✅', color: 'bg-emerald-50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
+      medium: { icon: '⚠️', color: 'bg-amber-50 border-amber-200', badge: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
+      high: { icon: '🚨', color: 'bg-red-50 border-red-200', badge: 'bg-red-100 text-red-800', text: 'High Risk' }
+    };
+    const risk = riskMap[data.risk_level] || riskMap.medium;
+    const card = document.getElementById('risk-card');
+    card.className = `p-5 rounded-2xl border ${risk.color}`;
+    document.getElementById('risk-icon').textContent = risk.icon;
+    document.getElementById('risk-badge').textContent = risk.text;
+    document.getElementById('risk-badge').className = `px-3 py-1 rounded-full text-xs font-bold ${risk.badge}`;
+    document.getElementById('risk-text').textContent = data.why_it_might_land_badly;
+
+    const sendMap = { yes: '✅ Send As Is', edit_first: '✏️ Edit First', no: '⏸️ Don\'t Send' };
+    document.getElementById('should-send').textContent = sendMap[data.should_send] || '✏️ Edit First';
+
+    setScoreBar('score-clarity', 'bar-clarity', data.scores.clarity);
+    setScoreBar('score-confidence', 'bar-confidence', data.scores.confidence);
+    setScoreBar('score-emotional', 'bar-emotional', data.scores.emotional_control);
+    setScoreBar('score-effectiveness', 'bar-effectiveness', data.scores.effectiveness);
+
+    document.getElementById('tone-detected').textContent = data.tone_detected;
+    document.getElementById('intent-guess').textContent = data.intent_guess;
+    document.getElementById('better-version').textContent = data.better_version;
+    document.getElementById('softer-version').textContent = data.softer_version;
+    document.getElementById('stronger-version').textContent = data.stronger_version;
+    document.getElementById('coach-note').textContent = data.coach_note;
+
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Reply to This
+  document.getElementById('reply-btn').addEventListener('click', async () => {
+    const message = document.getElementById('reply-message').value.trim();
+    const mode = document.querySelector('.reply-mode-btn.active')?.dataset.mode;
+    const turnstileToken = document.querySelector('#tab-reply [name="cf-turnstile-response"]')?.value;
+
+    if (!message || !mode) return;
+
+    if (!turnstileToken) {
+      showError('Please complete the verification first.', 'reply-error-msg');
+      return;
+    }
+
+    const btn = document.getElementById('reply-btn');
+    const btnText = document.getElementById('reply-btn-text');
+    const spinner = document.getElementById('reply-loading-spinner');
+
+    btn.disabled = true;
+    btnText.classList.add('hidden');
+    spinner.classList.remove('hidden');
+    spinner.classList.add('inline-flex');
+    document.getElementById('skeleton').classList.remove('hidden');
+    document.getElementById('reply-results').classList.add('hidden');
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('skeleton').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    startLoadingMessages('reply-loading-text');
+
+    try {
+      const response = await fetch('https://beforeyousay-backend.onrender.com/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        displayReplyResults(data, message);
+        requestCount++;
+        document.getElementById('request-count').textContent = requestCount;
+      } else {
+        showError(data.error || 'Something went wrong.', 'reply-error-msg');
+        document.getElementById('empty-state').classList.remove('hidden');
+      }
+    } catch (error) {
+      showError('Network error. Please try again.', 'reply-error-msg');
+      document.getElementById('empty-state').classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btnText.classList.remove('hidden');
+      spinner.classList.add('hidden');
+      spinner.classList.remove('inline-flex');
+      btnText.textContent = 'Suggest Replies';
+      document.getElementById('skeleton').classList.add('hidden');
+      stopLoadingMessages();
+      if (window.turnstile) window.turnstile.reset();
+    }
+  });
+
+  function displayReplyResults(data, originalMsg) {
+    document.getElementById('reply-original').textContent = originalMsg;
+    document.getElementById('reply-tone').textContent = data.tone_detected || '—';
+    document.getElementById('reply-watch').textContent = data.why_it_might_land_badly || '—';
+    document.getElementById('reply-calm').textContent = data.softer_version || data.better_version || '—';
+    document.getElementById('reply-assertive').textContent = data.stronger_version || '—';
+    document.getElementById('reply-warm').textContent = data.better_version || '—';
+    document.getElementById('reply-coach-note').textContent = data.coach_note || '—';
+
+    document.getElementById('reply-results').classList.remove('hidden');
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('reply-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // New Analysis
+  document.getElementById('new-analysis').addEventListener('click', () => {
+    document.getElementById('message').value = '';
+    document.getElementById('char-count').textContent = '0';
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('empty-state').classList.remove('hidden');
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('analyze-btn').disabled = true;
+    document.getElementById('btn-text').textContent = 'Choose a mode first';
+    if (window.turnstile) window.turnstile.reset();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('new-reply').addEventListener('click', () => {
+    document.getElementById('reply-message').value = '';
+    document.getElementById('reply-char-count').textContent = '0';
+    document.getElementById('reply-results').classList.add('hidden');
+    document.getElementById('empty-state').classList.remove('hidden');
+    document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('reply-btn').disabled = true;
+    document.getElementById('reply-btn-text').textContent = 'Choose a mode first';
+    if (window.turnstile) window.turnstile.reset();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Copy text
+  function copyText(id, btn) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // Copy all
+  document.getElementById('copy-all').addEventListener('click', () => {
+    if (!currentData) return;
+    const text = `BeforeYouSay Analysis\n\nOriginal: ${currentData.original_message}\nTone: ${currentData.tone_detected}\nRisk: ${currentData.risk_level}\n\nBest Version:\n${currentData.better_version}\n\nSofter Version:\n${currentData.softer_version}\n\nStronger Version:\n${currentData.stronger_version}\n\nCoach Note:\n${currentData.coach_note}`;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-all');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+    });
+  });
+
+  // Share
+  document.getElementById('share-result').addEventListener('click', () => {
+    if (navigator.share) {
+      navigator.share({ title: 'BeforeYouSay AI Analysis', text: 'Check this out!', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('share-result');
+      btn.textContent = '✓ Link Copied!';
+      setTimeout(() => btn.textContent = '🔗 Share', 2000);
+    }
+  });
+
+  document.getElementById('share-reply').addEventListener('click', () => {
+    if (navigator.share) {
+      navigator.share({ title: 'BeforeYouSay AI Analysis', text: 'Check this out!', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('share-reply');
+      btn.textContent = '✓ Link Copied!';
+      setTimeout(() => btn.textContent = '🔗 Share', 2000);
+    }
+  });
+
+  document.getElementById('empty-state').classList.remove('hidden');
+</script>
 </body>
 </html>
-
-
