@@ -74,12 +74,15 @@
 
       <!-- Message Input -->
       <div class="space-y-4 mb-8">
-        <textarea 
+                <textarea 
           id="message" 
           placeholder="Paste your message here... 'Why didn't you reply?'"
           rows="4" 
           class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-vertical font-medium text-lg transition-all duration-200"
         ></textarea>
+
+        <div class="cf-turnstile mt-4" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+
         <button 
           id="analyze-btn" 
           class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-5 px-8 rounded-2xl text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
@@ -253,7 +256,7 @@
     let requestCount = 0;
 
     // Mode buttons
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+       document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
         btn.classList.add('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl');
@@ -261,7 +264,7 @@
         document.getElementById('btn-text').textContent = 'Analyze Message';
       });
     });
-<div class="cf-turnstile mt-4" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+
     // Analyze button
     document.getElementById('analyze-btn').addEventListener('click', async () => {
       const message = document.getElementById('message').value.trim();
