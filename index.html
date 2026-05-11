@@ -1,171 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BeforeYouSay</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeforeYouSay - AI Communication Coach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📨</text></svg>">
+  <meta name="description" content="AI communication coach for work, relationships, rizz, negotiation. Analyze tone, rewrite messages, avoid emotional mistakes before you send.">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f8;
-      margin: 0;
-      padding: 40px 20px;
-      color: #111827;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 36px;
-    }
-
-    p {
-      color: #4b5563;
-      margin-bottom: 20px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 140px;
-      padding: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 16px;
-      box-sizing: border-box;
-      resize: vertical;
-      margin-bottom: 20px;
-    }
-
-    .modes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .mode-btn {
-      padding: 10px 16px;
-      border: 1px solid #d1d5db;
-      background: #f3f4f6;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .mode-btn.active {
-      background: #111827;
-      color: white;
-      border-color: #111827;
-    }
-
-    .analyze-btn {
-      background: #111827;
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .analyze-btn:hover {
-      opacity: 0.92;
-    }
-
-    .output {
-      margin-top: 24px;
-      padding: 18px;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      background: #f9fafb;
-      white-space: pre-wrap;
-      min-height: 90px;
-    }
-
-    .small {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #6b7280;
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-    }
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .glass { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.1); }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h1>BeforeYouSay</h1>
-    <p>Before you send it, run it through AI.</p>
-
-    <textarea id="message" placeholder="Paste your message here..."></textarea>
-
-    <div class="modes">
-      <button class="mode-btn active" onclick="setMode('workplace', this)">Workplace</button>
-      <button class="mode-btn" onclick="setMode('relationship', this)">Relationship</button>
-      <button class="mode-btn" onclick="setMode('rizz', this)">Rizz</button>
-      <button class="mode-btn" onclick="setMode('negotiation', this)">Negotiation</button>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 text-slate-900">
+  
+  <!-- Header -->
+  <header class="glass backdrop-blur-xl sticky top-0 z-50 border-b border-white/20 shadow-2xl">
+    <div class="max-w-4xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
+            <span class="text-2xl">📨</span>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent">BeforeYouSay</h1>
+            <p class="text-sm text-slate-500 font-medium">AI Communication Coach</p>
+          </div>
+        </div>
+        <div class="text-sm text-slate-500 hidden md:block">
+          <span id="request-count">0</span> analyses today
+        </div>
+      </div>
     </div>
+  </header>
 
-    <button class="analyze-btn" onclick="analyze()">Analyze Message</button>
+  <main class="max-w-4xl mx-auto px-6 py-12 space-y-12">
+    
+    <!-- Hero -->
+    <section class="text-center space-y-6">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent leading-tight">
+          Think before you send
+        </h2>
+        <p class="text-xl text-slate-600 mt-6 max-w-lg mx-auto leading-relaxed">
+          AI analyzes tone, predicts emotional impact, and rewrites messages for work, relationships, 
+          rizz, and negotiation. Pause. Optimize. Send.
+        </p>
+      </div>
+    </section>
 
-    <div class="output" id="output">Your AI result will appear here...</div>
-    <div class="small">Mode-based communication coach for work, dating, relationships, and negotiation.</div>
-  </div>
+    <!-- Main App -->
+    <section class="glass rounded-3xl p-8 md:p-12 shadow-2xl border border-white/20 max-w-3xl mx-auto">
+      
+      <!-- Mode Selector -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+        <button data-mode="workplace" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-400 hover:shadow-lg transition-all duration-200 font-medium">
+          💼 Workplace
+        </button>
+        <button data-mode="relationship" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-400 hover:shadow-lg transition-all duration-200 font-medium">
+          💕 Relationship
+        </button>
+        <button data-mode="rizz" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 hover:shadow-lg transition-all duration-200 font-medium">
+          🔥 Rizz
+        </button>
+        <button data-mode="negotiation" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-400 hover:shadow-lg transition-all duration-200 font-medium">
+          💰 Negotiation
+        </button>
+      </div>
+
+      <!-- Message Input -->
+      <div class="space-y-4 mb-8">
+        <textarea 
+          id="message" 
+          placeholder="Paste your message here... 'Why didn't you reply?'"
+          rows="4" 
+          class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-vertical font-medium text-lg transition-all duration-200"
+        ></textarea>
+        <button 
+          id="analyze-btn" 
+          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-5 px-8 rounded-2xl text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          disabled
+        >
+          <span id="btn-text">Choose a mode first</span>
+          <span id="loading-spinner" class="hidden">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Analyzing your message...
+          </span>
+        </button>
+      </div>
+
+      <!-- Results -->
+      <div id="results" class="hidden space-y-6">
+        
+        <!-- Original Message -->
+        <div class="p-6 bg-slate-100 rounded-2xl border-l-8 border-amber-400">
+          <div class="flex items-start space-x-3">
+            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-600 font-bold">📝</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-bold text-lg mb-1">Original Message</h3>
+              <p id="original-message" class="text-slate-900 leading-relaxed whitespace-pre-wrap"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk & Scores -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Risk -->
+          <div class="p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border border-red-200">
+            <div class="flex items-start space-x-3">
+              <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <span id="risk-icon" class="text-white text-xl font-bold">⚠️</span>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2 mb-2">
+                  <h3 class="font-bold text-xl">Risk Level</h3>
+                  <span id="risk-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">Medium</span>
+                </div>
+                <p id="risk-text" class="text-slate-700 leading-relaxed"></p>
+                <div class="mt-4">
+                  <span id="should-send" class="px-4 py-2 rounded-full font-bold text-sm">
+                    <span id="should-send-text">Edit first</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scores -->
+          <div class="p-6 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-2xl border border-emerald-200">
+            <h3 class="font-bold text-xl mb-4 flex items-center">
+              <span class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>
+              Scores (1-10)
+            </h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span>Clarity</span>
+                <span id="score-clarity" class="font-bold text-lg text-emerald-700">7</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Confidence</span>
+                <span id="score-confidence" class="font-bold text-lg text-emerald-700">6</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Emotional Control</span>
+                <span id="score-emotional" class="font-bold text-lg text-emerald-700">5</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Effectiveness</span>
+                <span id="score-effectiveness" class="font-bold text-lg text-emerald-700">8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tone & Intent -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
+            <h3 class="font-bold text-xl mb-3 flex items-center">
+              <span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+              Tone Detected
+            </h3>
+            <p id="tone-detected" class="text-slate-800 leading-relaxed text-lg"></p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border border-blue-200">
+            <h3 class="font-bold text-xl mb-3 flex items-center">
+              <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+              Your Intent
+            </h3>
+            <p id="intent-guess" class="text-slate-800 leading-relaxed text-lg"></p>
+          </div>
+        </div>
+
+        <!-- Rewrites -->
+        <div class="space-y-4">
+          <h3 class="font-bold text-2xl flex items-center">
+            <span class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 -ml-1">🎯</span>
+            Best Version
+          </h3>
+          <div class="p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-2xl">
+            <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-lg"></p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <h4 class="font-bold text-lg mb-3 flex items-center">
+                <span class="w-4 h-4 bg-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">😌</span>
+                Softer Version
+              </h4>
+              <div class="p-5 bg-rose-50 rounded-xl border border-rose-200">
+                <p id="softer-version" class="whitespace-pre-wrap leading-relaxed"></p>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-bold text-lg mb-3 flex items-center">
+                <span class="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">💪</span>
+                Stronger Version
+              </h4>
+              <div class="p-5 bg-orange-50 rounded-xl border border-orange-200">
+                <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coach Note -->
+        <div class="p-6 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl text-white">
+          <h3 class="font-bold text-xl mb-3 flex items-center">
+            <span class="w-6 h-6 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-slate-900 text-sm font-bold mr-3 -ml-1">💡</span>
+            Coach Note
+          </h3>
+          <p id="coach-note" class="leading-relaxed text-lg"></p>
+        </div>
+
+        <!-- Share -->
+        <div class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row gap-4">
+          <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+            New Analysis
+          </button>
+          <button id="share-result" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg">
+            Share Result
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="text-center py-20 space-y-6 hidden">
+        <div class="w-24 h-24 mx-auto bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl">
+          <span class="text-3xl">📱</span>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900">Ready to analyze</h3>
+        <p class="text-lg text-slate-600 max-w-md mx-auto">Paste a message, choose your communication mode, and get AI-powered coaching before you send.</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-slate-500 text-sm pt-20 pb-12">
+      <p>Made with ❤️ for better communication | <a href="https://beforeyousay.com" class="text-slate-700 hover:text-purple-600 font-medium">beforeyousay.com</a></p>
+    </footer>
+  </main>
 
   <script>
-    let mode = "workplace";
+    let currentData = null;
+    let requestCount = 0;
 
-    function setMode(selectedMode, button) {
-      mode = selectedMode;
-
-      document.querySelectorAll(".mode-btn").forEach(btn => {
-        btn.classList.remove("active");
+    // Mode buttons
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
+        btn.classList.add('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl');
+        document.getElementById('analyze-btn').disabled = false;
+        document.getElementById('btn-text').textContent = 'Analyze Message';
       });
+    });
 
-      button.classList.add("active");
-    }
+    // Analyze button
+    document.getElementById('analyze-btn').addEventListener('click', async () => {
+      const message = document.getElementById('message').value.trim();
+      const mode = document.querySelector('.mode-btn.border-4')?.dataset.mode;
 
-    async function analyze() {
-      const message = document.getElementById("message").value.trim();
-      const output = document.getElementById("output");
+      if (!message || !mode) return;
 
-      if (!message) {
-        output.innerText = "Please paste a message first.";
-        return;
-      }
+      const btn = document.getElementById('analyze-btn');
+      const btnText = document.getElementById('btn-text');
+      const spinner = document.getElementById('loading-spinner');
 
-      output.innerText = "Analyzing...";
+      btn.disabled = true;
+      btnText.classList.add('hidden');
+      spinner.classList.remove('hidden');
 
       try {
-        const res = await fetch("https://beforeyousay-backend.onrender.com/analyze", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+        const response = await fetch('https://your-render-url.onrender.com/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message, mode })
         });
 
-        const data = await res.json();
-        output.innerText = data.result || "No result returned.";
+        const data = await response.json();
+
+        if (response.ok) {
+          currentData = data;
+          displayResults(data);
+          requestCount++;
+          document.getElementById('request-count').textContent = requestCount;
+        } else {
+          alert(`Error: ${data.error || 'Something went wrong'}`);
+        }
       } catch (error) {
-        output.innerText = "Something went wrong. Please try again.";
+        alert('Network error. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btnText.classList.remove('hidden');
+        spinner.classList.add('hidden');
+        btnText.textContent = 'Analyze Again';
       }
+    });
+
+    function displayResults(data) {
+      // Original message
+      document.getElementById('original-message').textContent = data.original_message;
+
+      // Risk
+      const riskLevels = {
+        low: { icon: '✅', color: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
+        medium: { icon: '⚠️', color: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
+        high: { icon: '🚨', color: 'bg-red-100 text-red-800', text: 'High Risk' }
+      };
+
+      const risk = riskLevels[data.risk_level] || riskLevels.medium;
+      document.getElementById('risk-icon').textContent = risk.icon;
+      document.getElementById('risk-badge').textContent = risk.text;
+      document.getElementById('risk-badge').className = `px-3 py-1 rounded-full text-xs font-bold ${risk.color}`;
+      document.getElementById('risk-text').textContent = data.why_it_might_land_badly;
+      
+      const shouldSendTexts = {
+        yes: '✅ Send As Is',
+        edit_first: '✏️ Edit First',
+        no: '⏸️ Don\'t Send'
+      };
+      document.getElementById('should-send-text').textContent = shouldSendTexts[data.should_send] || 'Edit First';
+
+      // Scores
+      document.getElementById('score-clarity').textContent = data.scores.clarity;
+      document.getElementById('score-confidence').textContent = data.scores.confidence;
+      document.getElementById('score-emotional').textContent = data.scores.emotional_control;
+      document.getElementById('score-effectiveness').textContent = data.scores.effectiveness;
+
+      // Tone & Intent
+      document.getElementById('tone-detected').textContent = data.tone_detected;
+      document.getElementById('intent-guess').textContent = data.intent_guess;
+
+      // Rewrites
+      document.getElementById('better-version').textContent = data.better_version;
+      document.getElementById('softer-version').textContent = data.softer_version;
+      document.getElementById('stronger-version').textContent = data.stronger_version;
+      document.getElementById('coach-note').textContent = data.coach_note;
+
+      // Show results
+      document.getElementById('results').classList.remove('hidden');
+      document.getElementById('empty-state').classList.add('hidden');
     }
+
+    // New analysis
+    document.getElementById('new-analysis').addEventListener('click', () => {
+      document.getElementById('message').value = '';
+      document.getElementById('results').classList.add('hidden');
+      document.getElementById('empty-state').classList.remove('hidden');
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
+      document.getElementById('analyze-btn').disabled = true;
+    });
+
+    // Message input change
+    document.getElementById('message').addEventListener('input', () => {
+      document.getElementById('analyze-btn').disabled = !document.querySelector('.mode-btn.border-4')?.dataset.mode;
+    });
+
+    // Share (basic)
+    document.getElementById('share-result').addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'BeforeYouSay AI Analysis',
+          text: 'Check out this AI communication analysis!',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied! Share anywhere.');
+      }
+    });
+
+    // Show empty state initially
+    document.getElementById('empty-state').classList.remove('hidden');
   </script>
 </body>
 </html>
