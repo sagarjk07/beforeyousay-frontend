@@ -74,12 +74,15 @@
 
       <!-- Message Input -->
       <div class="space-y-4 mb-8">
-                <textarea 
-          id="message" 
-          placeholder="Paste your message here... 'Why didn't you reply?'"
-          rows="4" 
-          class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-vertical font-medium text-lg transition-all duration-200"
-        ></textarea>
+               <textarea 
+  id="message" 
+  placeholder="Paste your message here... 'Why didn't you reply?'"
+  rows="4" 
+  class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-vertical font-medium text-lg transition-all duration-200"
+></textarea>
+<div class="text-right text-sm font-medium mt-1">
+  <span id="char-count">0</span><span class="text-slate-400"> / 1000</span>
+</div>
 
         <div class="cf-turnstile mt-4" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
 
