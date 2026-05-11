@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BeforeYouSay - AI Communication Coach</title>
@@ -260,7 +261,7 @@
         document.getElementById('btn-text').textContent = 'Analyze Message';
       });
     });
-
+<div class="cf-turnstile mt-4" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
     // Analyze button
     document.getElementById('analyze-btn').addEventListener('click', async () => {
       const message = document.getElementById('message').value.trim();
