@@ -378,8 +378,12 @@ if (window.turnstile) {
 
     // Message input change
     document.getElementById('message').addEventListener('input', () => {
-      document.getElementById('analyze-btn').disabled = !document.querySelector('.mode-btn.border-4')?.dataset.mode;
-    });
+  const len = document.getElementById('message').value.length;
+  const counter = document.getElementById('char-count');
+  counter.textContent = len;
+  counter.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
+  document.getElementById('analyze-btn').disabled = !document.querySelector('.mode-btn.border-4')?.dataset.mode;
+});
 
     // Share (basic)
     document.getElementById('share-result').addEventListener('click', () => {
