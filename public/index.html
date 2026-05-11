@@ -308,9 +308,12 @@
         alert('Network error. Please try again.');
       } finally {
         btn.disabled = false;
-        btnText.classList.remove('hidden');
-        spinner.classList.add('hidden');
-        btnText.textContent = 'Analyze Again';
+btnText.classList.remove('hidden');
+spinner.classList.add('hidden');
+btnText.textContent = 'Analyze Again';
+if (window.turnstile) {
+  window.turnstile.reset();
+}
       }
     });
 
