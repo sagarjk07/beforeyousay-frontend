@@ -266,11 +266,17 @@
     });
 
     // Analyze button
-    document.getElementById('analyze-btn').addEventListener('click', async () => {
+       document.getElementById('analyze-btn').addEventListener('click', async () => {
       const message = document.getElementById('message').value.trim();
       const mode = document.querySelector('.mode-btn.border-4')?.dataset.mode;
+      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
       if (!message || !mode) return;
+
+      if (!turnstileToken) {
+        alert('Please complete the verification first.');
+        return;
+      }
 
       const btn = document.getElementById('analyze-btn');
       const btnText = document.getElementById('btn-text');
