@@ -414,7 +414,34 @@
 <footer class="text-center text-slate-400 text-sm py-10 mt-4">
   <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-purple-600 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
-
+<!-- Email Capture -->
+<div class="flex flex-col items-center gap-3 py-8 px-4">
+  <p class="text-white/60 text-sm">Get notified when Pro features drop ✨</p>
+  <form
+    action="https://beforeyousay.us7.list-manage.com/subscribe/post?u=e055c297a8cc1fa582ba02c5e&id=e2aca1b6bf&f_id=0034a0e0f0"
+    method="POST"
+    target="_blank"
+    class="flex gap-2 w-full max-w-sm"
+  >
+    <input
+      type="email"
+      name="EMAIL"
+      placeholder="your@email.com"
+      required
+      class="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-purple-400"
+    />
+    <!-- Mailchimp bot protection — do not remove -->
+    <div style="position:absolute;left:-5000px" aria-hidden="true">
+      <input type="text" name="b_e055c297a8cc1fa582ba02c5e_e2aca1b6bf" tabindex="-1" value="">
+    </div>
+    <button
+      type="submit"
+      class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition"
+    >
+      Notify me
+    </button>
+  </form>
+</div>
 <script>
   let currentData = null;
   let requestCount = 0;
@@ -758,5 +785,6 @@
     navigator.serviceWorker.register('/sw.js');
   }
 </script>
+  
 </body>
 </html>
