@@ -1,72 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BeforeYouSay</title>
   <style>
     body {
-      font-family: Arial;
-      max-width: 700px;
-      margin: auto;
-      padding: 40px;
+      font-family: Arial, sans-serif;
+      background: #f7f7f8;
+      margin: 0;
+      padding: 40px 20px;
+      color: #111827;
     }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 36px;
+    }
+
+    p {
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
     textarea {
       width: 100%;
-      height: 120px;
-      margin-bottom: 10px;
+      height: 140px;
+      padding: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+      resize: vertical;
+      margin-bottom: 20px;
     }
-    button {
-      margin: 5px;
-      padding: 10px;
+
+    .modes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .mode-btn {
+      padding: 10px 16px;
+      border: 1px solid #d1d5db;
+      background: #f3f4f6;
+      border-radius: 999px;
       cursor: pointer;
+      font-size: 14px;
     }
+
+    .mode-btn.active {
+      background: #111827;
+      color: white;
+      border-color: #111827;
+    }
+
+    .analyze-btn {
+      background: #111827;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .analyze-btn:hover {
+      opacity: 0.92;
+    }
+
     .output {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
+      margin-top: 24px;
+      padding: 18px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #f9fafb;
       white-space: pre-wrap;
+      min-height: 90px;
+    }
+
+    .small {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1>BeforeYouSay</h1>
+    <p>Before you send it, run it through AI.</p>
 
-  <h1>BeforeYouSay</h1>
-  <p>Paste your message and choose a mode.</p>
+    <textarea id="message" placeholder="Paste your message here..."></textarea>
 
-  <textarea id="message" placeholder="Type your message..."></textarea>
+    <div class="modes">
+      <button class="mode-btn active" onclick="setMode('workplace', this)">Workplace</button>
+      <button class="mode-btn" onclick="setMode('relationship', this)">Relationship</button>
+      <button class="mode-btn" onclick="setMode('rizz', this)">Rizz</button>
+      <button class="mode-btn" onclick="setMode('negotiation', this)">Negotiation</button>
+    </div>
 
-  <div>
-    <button onclick="setMode('workplace')">Workplace</button>
-    <button onclick="setMode('relationship')">Relationship</button>
-    <button onclick="setMode('rizz')">Rizz</button>
-    <button onclick="setMode('negotiation')">Negotiation</button>
+    <button class="analyze-btn" onclick="analyze()">Analyze Message</button>
+
+    <div class="output" id="output">Your AI result will appear here...</div>
+    <div class="small">Mode-based communication coach for work, dating, relationships, and negotiation.</div>
   </div>
-
-  <br>
-  <button onclick="analyze()">Analyze</button>
-
-  <div class="output" id="output">Result will appear here...</div>
 
   <script>
     let mode = "workplace";
 
-    function setMode(m) {
-      mode = m;
+    function setMode(selectedMode, button) {
+      mode = selectedMode;
+
+      document.querySelectorAll(".mode-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
     }
 
     async function analyze() {
-      const message = document.getElementById("message").value;
+      const message = document.getElementById("message").value.trim();
+      const output = document.getElementById("output");
 
-      const res = await fetch("http://localhost:3000/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, mode })
-      });
+      if (!message) {
+        output.innerText = "Please paste a message first.";
+        return;
+      }
 
-      const data = await res.json();
-      document.getElementById("output").innerText = data.result;
+      output.innerText = "Analyzing...";
+
+      try {
+        const res = await fetch("https://beforeyousay-backend.onrender.com/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message, mode })
+        });
+
+        const data = await res.json();
+        output.innerText = data.result || "No result returned.";
+      } catch (error) {
+        output.innerText = "Something went wrong. Please try again.";
+      }
     }
   </script>
-
 </body>
 </html>
