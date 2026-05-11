@@ -364,12 +364,14 @@ if (window.turnstile) {
 
     // New analysis
     document.getElementById('new-analysis').addEventListener('click', () => {
-      document.getElementById('message').value = '';
-      document.getElementById('results').classList.add('hidden');
-      document.getElementById('empty-state').classList.remove('hidden');
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
-      document.getElementById('analyze-btn').disabled = true;
-    });
+  document.getElementById('message').value = '';
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('empty-state').classList.remove('hidden');
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('border-4', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'text-white', 'shadow-xl'));
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('btn-text').textContent = 'Choose a mode first';
+  if (window.turnstile) window.turnstile.reset();
+});
 
     // Message input change
     document.getElementById('message').addEventListener('input', () => {
