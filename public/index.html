@@ -43,6 +43,7 @@
     .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
     .copy-btn { transition: all 0.2s; }
     .style-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .rating-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
@@ -113,6 +114,20 @@
         <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-purple-700 hover:border-purple-300">Manage people</button>
       </div>
       <p id="context-note-line" class="text-xs text-slate-500 mt-2"></p>
+    </div>
+
+    <!-- Phase 1 ratings+moments: daily moments — tap one to load it into the message box -->
+    <div class="mb-6">
+      <p class="text-sm font-bold text-slate-700 mb-2">Try one today</p>
+      <p class="text-xs text-slate-400 mb-3">Tap one to load it into the message box — edit it however you like before you analyse.</p>
+      <div id="daily-moments" class="flex flex-wrap gap-2">
+        <button type="button" data-moment="0" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🙏 Apologise to a friend</button>
+        <button type="button" data-moment="1" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💼 Follow up on a job application</button>
+        <button type="button" data-moment="2" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💰 Ask for a pay rise</button>
+        <button type="button" data-moment="3" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🚫 Say no politely</button>
+        <button type="button" data-moment="4" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💬 Check in after an argument</button>
+        <button type="button" data-moment="5" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🧾 Ask a client for payment</button>
+      </div>
     </div>
 
     <!-- Rewrite Tab -->
@@ -336,6 +351,22 @@
         <p id="style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
+      <!-- Phase 1 ratings+moments: rate this rewrite -->
+      <div id="rating-box">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+        </div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+        </div>
+        <p id="rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      </div>
+
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
         <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
@@ -411,6 +442,22 @@
           <button type="button" data-style="funnier" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
         </div>
         <p id="reply-style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      </div>
+
+      <!-- Phase 1 ratings+moments: rate these replies -->
+      <div id="reply-rating-box">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+        </div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+        </div>
+        <p id="reply-rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
@@ -941,8 +988,10 @@
     if (!lastAnalysis) return;
     const items = loadHistory();
     const found = items.find(function (x) { return x.tab === lastAnalysis.tab && x.mode === lastAnalysis.mode && x.input === lastAnalysis.message; });
-    if (!found) { addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "" }); return; }
-    found.result = result; found.style = style || ""; saveHistory(items); renderHistory();
+    if (!found) { const created = addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "" }); currentHistoryId = created.id; return; }
+    currentHistoryId = found.id;
+    const keepRating = getRating(found.result);
+    found.result = result; if (keepRating) found.result.rating = keepRating; found.style = style || ""; saveHistory(items); renderHistory();
     if (found.cloudId && isSignedIn() && supabaseClient) {
       supabaseClient.from("history").update({ result: result, tone_profile: found.toneProfile || null }).eq("id", found.cloudId).eq("user_id", supabaseSession.user.id).catch(function () { setSyncStatus("Saved on this device — cloud sync will retry."); });
     }
@@ -980,6 +1029,117 @@
   }
   document.querySelectorAll("#style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "rewrite"); }); });
   document.querySelectorAll("#reply-style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "reply"); }); });
+
+  /* ---------- Phase 1 ratings+moments: rate a rewrite + daily moments ---------- */
+  /* A rating is { helpful: "up" | "down" | null, sent: "yes" | "not-yet" |
+     "no" | null }. It is stored inside the history item's result object
+     (result.rating), NOT as a new history item and NOT in a new table:
+     the existing history row already stores result as jsonb, so the
+     rating rides along in historyItemToCloudRow / mergeCloudHistory and
+     syncs to the cloud exactly like the rest of the result — no
+     migration, no new table, no backend change. Guests: the rating lives
+     in localStorage with the history item, exactly like the result.
+     A style re-run replaces the result but keeps the rating (see
+     updateLatestHistory). Tapping a rating again changes it. */
+  const VALID_HELPFUL = ["up", "down"];
+  const VALID_SENT = ["yes", "not-yet", "no"];
+  let currentHistoryId = null; /* id of the history item on screen, if any */
+  function sanitiseRating(r) {
+    if (!r || typeof r !== "object") return null;
+    const helpful = VALID_HELPFUL.includes(r.helpful) ? r.helpful : null;
+    const sent = VALID_SENT.includes(r.sent) ? r.sent : null;
+    if (!helpful && !sent) return null;
+    return { helpful: helpful, sent: sent };
+  }
+  function getRating(result) { return sanitiseRating(result && result.rating); }
+  function getCurrentHistoryItem() {
+    const items = loadHistory();
+    if (currentHistoryId) { const byId = items.find(function (x) { return x.id === currentHistoryId; }); if (byId) return byId; }
+    if (lastAnalysis) return items.find(function (x) { return x.tab === lastAnalysis.tab && x.mode === lastAnalysis.mode && x.input === lastAnalysis.message; }) || null;
+    return null;
+  }
+  function ratingSummary(r) {
+    if (!r) return "";
+    const parts = [];
+    if (r.helpful === "up") parts.push("👍 Helped");
+    if (r.helpful === "down") parts.push("👎 Didn't help");
+    if (r.sent === "yes") parts.push("Sent ✓");
+    if (r.sent === "not-yet") parts.push("Not sent yet");
+    if (r.sent === "no") parts.push("Didn't send");
+    return parts.join(" · ");
+  }
+  function setRatingStatus(tab, msg) { const el = document.getElementById(tab === "reply" ? "reply-rating-status" : "rating-status"); if (el) el.textContent = msg || ""; }
+  function renderRating(tab) {
+    const item = getCurrentHistoryItem();
+    const r = item ? getRating(item.result) : null;
+    const box = document.getElementById(tab === "reply" ? "reply-rating-box" : "rating-box");
+    if (!box) return;
+    box.querySelectorAll("[data-rating-helpful]").forEach(function (b) { b.classList.toggle("active", Boolean(r && r.helpful === b.getAttribute("data-rating-helpful"))); });
+    box.querySelectorAll("[data-rating-sent]").forEach(function (b) { b.classList.toggle("active", Boolean(r && r.sent === b.getAttribute("data-rating-sent"))); });
+    setRatingStatus(tab, r ? "Saved — thanks for the feedback." : "");
+  }
+  async function saveRating(tab, patch) {
+    const item = getCurrentHistoryItem();
+    if (!item) { setRatingStatus(tab, "Run an analysis first, then rate it."); return; }
+    const current = getRating(item.result) || { helpful: null, sent: null };
+    const next = sanitiseRating(Object.assign({}, current, patch));
+    if (!next) return;
+    if (!item.result || typeof item.result !== "object") item.result = {};
+    item.result.rating = next;
+    const items = loadHistory();
+    const found = items.find(function (x) { return x.id === item.id; });
+    if (found) { found.result = item.result; saveHistory(items); }
+    renderHistory(); renderRating(tab);
+    setRatingStatus(tab, "Saved — thanks for the feedback.");
+    if (isSignedIn() && supabaseClient) {
+      try {
+        if (item.cloudId) {
+          const res = await supabaseClient.from("history").update({ result: item.result, tone_profile: item.toneProfile || null }).eq("id", item.cloudId).eq("user_id", supabaseSession.user.id);
+          if (res.error) throw res.error;
+        } else {
+          /* Not uploaded yet (the first cloud insert may still be in
+             flight): upload the item now, rating included. */
+          const ok = await syncHistoryItemToCloud(item);
+          if (!ok) throw new Error("sync failed");
+        }
+      } catch (e) { setRatingStatus(tab, "Saved on this device — cloud sync will retry."); }
+    }
+  }
+  function wireRatingButtons(boxId, tab) {
+    const box = document.getElementById(boxId);
+    if (!box) return;
+    box.querySelectorAll("[data-rating-helpful]").forEach(function (b) { b.addEventListener("click", function () { saveRating(tab, { helpful: b.getAttribute("data-rating-helpful") }); }); });
+    box.querySelectorAll("[data-rating-sent]").forEach(function (b) { b.addEventListener("click", function () { saveRating(tab, { sent: b.getAttribute("data-rating-sent") }); }); });
+  }
+  wireRatingButtons("rating-box", "rewrite");
+  wireRatingButtons("reply-rating-box", "reply");
+
+  /* Daily moments: six short, useful starting messages. Tapping one
+     loads it into the Rewrite box, pre-selects its mode, and leaves the
+     text editable — nothing is analysed until the user taps Analyse. */
+  const DAILY_MOMENTS = [
+    { mode: "relationship", text: "Hey, I'm really sorry about what I said yesterday. I didn't mean to upset you — can we talk it through?" },
+    { mode: "workplace", text: "Hi, I applied for the role last week and just wanted to check in — I'm still really keen and happy to share anything else you need." },
+    { mode: "negotiation", text: "Hi, I'd love to chat about my pay when you have a moment. My role has grown a lot this year, and I'd like to talk about bringing it in line with that." },
+    { mode: "workplace", text: "Thanks so much for thinking of me — I won't be able to take this on right now, but I really appreciate you asking." },
+    { mode: "relationship", text: "Hey, I know things were tense between us earlier. I don't want that hanging over us — are you okay to talk?" },
+    { mode: "negotiation", text: "Hi, just a friendly follow-up on the invoice from last month — it's now overdue, so could you let me know when payment will be made?" }
+  ];
+  document.querySelectorAll("[data-moment]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      const m = DAILY_MOMENTS[Number(b.getAttribute("data-moment"))];
+      if (!m) return;
+      document.querySelector('[data-tab="rewrite"]').click();
+      document.querySelectorAll(".mode-btn").forEach(function (x) { x.classList.toggle("active", x.dataset.mode === m.mode); });
+      const box = document.getElementById("message");
+      box.value = m.text;
+      document.getElementById("char-count").textContent = m.text.length;
+      document.getElementById("analyze-btn").disabled = false;
+      document.getElementById("btn-text").textContent = "Analyze Message";
+      box.focus();
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
 
   function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
   function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
@@ -1063,6 +1223,7 @@
         + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-purple-600">' + escapeHtml(it.mode || "") + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-400">' + escapeHtml(when) + '</span></div>'
         + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml((it.input || "").slice(0, 140)) + ((it.input || "").length > 140 ? "…" : "") + '</p>'
         + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
+        + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
         + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Open</button>'
         + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
         + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
@@ -1109,6 +1270,7 @@
   function openHistoryItem(id) {
     const it = loadHistory().find(function (x) { return x.id === id; });
     if (!it || !it.result) return;
+    currentHistoryId = id;
     if (it.context && it.context.id) {
       const ctx = loadContexts().find(function (x) { return x.id === it.context.id; });
       selectedContextId = ctx ? ctx.id : "";
@@ -1315,7 +1477,8 @@
       if (response.ok) {
         currentData = data;
         lastAnalysis = { tab: 'rewrite', mode: mode, message: message };
-        addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        const savedHistory = addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        currentHistoryId = savedHistory.id;
         displayResults(data);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
@@ -1371,6 +1534,7 @@
 
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('empty-state').classList.add('hidden');
+    renderRating('rewrite');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1412,7 +1576,8 @@
 
       if (response.ok) {
         lastAnalysis = { tab: 'reply', mode: mode, message: message };
-        addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        const savedHistory = addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        currentHistoryId = savedHistory.id;
         displayReplyResults(data, message);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
@@ -1446,6 +1611,7 @@
 
     document.getElementById('reply-results').classList.remove('hidden');
     document.getElementById('empty-state').classList.add('hidden');
+    renderRating('reply');
     document.getElementById('reply-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
