@@ -44,6 +44,7 @@
     .copy-btn { transition: all 0.2s; }
     .style-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
     .rating-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .week-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
@@ -103,6 +104,9 @@
 
   <!-- App Card -->
   <section class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-xl border border-white/50 max-w-3xl mx-auto">
+
+    <!-- Phase 1 your-week: gentle welcome back — one short line, never a popup -->
+    <p id="welcome-back" class="hidden mb-6 p-4 bg-amber-50/80 rounded-2xl border border-amber-100 text-sm text-slate-700" role="status"></p>
 
     <!-- Phase 1 contexts+styles: Who is this for? Shared by both tabs. -->
     <div class="mb-6 p-4 bg-purple-50/70 rounded-2xl border border-purple-100">
@@ -539,6 +543,26 @@
       <p id="context-status" class="text-sm text-slate-500" role="status"></p>
       <p id="context-empty" class="text-sm text-slate-500">No saved people yet. Add your first one above — for example, your manager or your partner.</p>
       <div id="context-list" class="space-y-3"></div>
+    </div>
+  </section>
+
+  <!-- Phase 1 your-week: computed only from the history already on this device / in the cloud -->
+  <section id="week-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-lg font-bold text-slate-900">Your week</h3>
+      <div class="flex gap-2">
+        <button id="week-this-btn" type="button" data-week-offset="0" class="week-btn active px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">This week</button>
+        <button id="week-last-btn" type="button" data-week-offset="1" class="week-btn px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">Last week</button>
+      </div>
+    </div>
+    <p id="week-empty" class="text-sm text-slate-500 mb-4">Nothing yet this week — run your first analysis.</p>
+    <div id="week-stats" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Helped</p><p id="week-helped" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Day streak</p><p class="text-2xl font-bold text-slate-900"><span id="week-streak">0</span> <span class="text-sm font-semibold text-slate-500">days</span></p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Most used mode</p><p id="week-mode" class="text-lg font-bold text-slate-900">—</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Most used person</p><p id="week-person" class="text-lg font-bold text-slate-900">—</p></div>
     </div>
   </section>
 
@@ -1141,6 +1165,95 @@
     });
   });
 
+
+  /* ---------- Phase 1 your-week: your week + gentle welcome back ---------- */
+  /* No new data collection and no new table: every number comes from the
+     history already on this device / in the cloud (loadHistory), and the
+     ratings already stored inside each history item's result (result.rating).
+     A week is Monday–Sunday in local time. The streak counts days in a row
+     with at least one analysis, counting back from today — or from
+     yesterday if you have not analysed anything yet today, so a quiet
+     morning does not wipe the streak. The welcome-back line is per device
+     only: the last-visit date lives in localStorage, never in the cloud,
+     and it only shows when the last visit was more than 1 day ago. */
+  const LAST_VISIT_KEY = "beforeyousay.lastVisit.v1";
+  const WEEK_MODE_LABELS = { workplace: "Workplace", relationship: "Relationship", rizz: "Rizz", negotiation: "Negotiation" };
+  let weekOffset = 0; /* 0 = this week, 1 = last week */
+  function localDayKey(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function dayKeyToDate(key) { const parts = String(key || "").split("-"); if (parts.length !== 3) return null; const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); return isNaN(d.getTime()) ? null : d; }
+  function daysBetweenKeys(aKey, bKey) { const a = dayKeyToDate(aKey); const b = dayKeyToDate(bKey); if (!a || !b) return null; return Math.round((b.getTime() - a.getTime()) / 86400000); }
+  function weekRange(offset, now) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const backToMonday = (d.getDay() + 6) % 7; /* Sunday=0 -> 6, Monday=1 -> 0 */
+    const start = new Date(d); start.setDate(d.getDate() - backToMonday - offset * 7);
+    const end = new Date(start); end.setDate(start.getDate() + 6); end.setHours(23, 59, 59, 999);
+    return { start: start, end: end };
+  }
+  function validHistoryDate(it) { const d = new Date(it && it.createdAt); return isNaN(d.getTime()) ? null : d; }
+  function itemsInWeek(items, start, end) { return (items || []).filter(function (it) { const d = validHistoryDate(it); return d && d >= start && d <= end; }); }
+  function mostUsed(items, keyFn) {
+    const counts = {}; const latest = {};
+    items.forEach(function (it) { const k = keyFn(it); if (!k) return; counts[k] = (counts[k] || 0) + 1; const d = validHistoryDate(it); if (d && (!latest[k] || d > latest[k])) latest[k] = d; });
+    let best = null;
+    Object.keys(counts).forEach(function (k) { if (!best || counts[k] > counts[best] || (counts[k] === counts[best] && latest[k] > latest[best])) best = k; });
+    return best ? { value: best, count: counts[best] } : null;
+  }
+  function computeStreak(items, now) {
+    const days = {};
+    (items || []).forEach(function (it) { const d = validHistoryDate(it); if (d) days[localDayKey(d)] = true; });
+    let cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (!days[localDayKey(cursor)]) cursor.setDate(cursor.getDate() - 1); /* no analysis yet today: start from yesterday */
+    let streak = 0;
+    while (days[localDayKey(cursor)]) { streak++; cursor.setDate(cursor.getDate() - 1); }
+    return streak;
+  }
+  function computeWeekStats(items, now, offset) {
+    const range = weekRange(offset, now || new Date());
+    const weekItems = itemsInWeek(items, range.start, range.end);
+    let sent = 0; let helped = 0;
+    weekItems.forEach(function (it) { const r = getRating(it.result); if (r && r.sent === "yes") sent++; if (r && r.helpful === "up") helped++; });
+    const mode = mostUsed(weekItems, function (it) { return WEEK_MODE_LABELS[it.mode] || null; });
+    const person = mostUsed(weekItems, function (it) { return it.context && it.context.name ? String(it.context.name) : null; });
+    return { total: weekItems.length, sent: sent, helped: helped, streak: computeStreak(items, now || new Date()), mode: mode ? mode.value : null, modeCount: mode ? mode.count : 0, person: person ? person.value : null, personCount: person ? person.count : 0, hasHistory: (items || []).length > 0, start: range.start, end: range.end };
+  }
+  function welcomeBackMessage(lastVisitKey, todayKey) {
+    const diff = daysBetweenKeys(lastVisitKey, todayKey);
+    if (diff === null || diff < 2) return "";
+    const d = dayKeyToDate(lastVisitKey);
+    const when = d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+    return "Welcome back — your last check was on " + when + ". Fancy trying today's moment?";
+  }
+  function renderWeek() {
+    const stats = computeWeekStats(loadHistory(), new Date(), weekOffset);
+    const setText = function (id, v) { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setText("week-total", String(stats.total));
+    setText("week-sent", String(stats.sent));
+    setText("week-helped", String(stats.helped));
+    setText("week-streak", String(stats.streak));
+    setText("week-mode", stats.mode ? stats.mode + (stats.modeCount > 1 ? " (" + stats.modeCount + ")" : "") : "—");
+    setText("week-person", stats.person ? stats.person + (stats.personCount > 1 ? " (" + stats.personCount + ")" : "") : "—");
+    const empty = document.getElementById("week-empty");
+    if (empty) {
+      empty.textContent = stats.total === 0
+        ? (weekOffset === 1 ? "Nothing last week — this week is a fresh start." : (stats.hasHistory ? "Nothing yet this week — run your first analysis." : "Nothing yet this week — run your first analysis."))
+        : (weekOffset === 1 ? "Last week at a glance." : "This week at a glance.");
+    }
+    document.querySelectorAll(".week-btn").forEach(function (b) { b.classList.toggle("active", Number(b.getAttribute("data-week-offset")) === weekOffset); });
+  }
+  document.querySelectorAll(".week-btn").forEach(function (b) {
+    b.addEventListener("click", function () { weekOffset = Number(b.getAttribute("data-week-offset")) || 0; renderWeek(); });
+  });
+  function showWelcomeBack() {
+    try {
+      const todayKey = localDayKey(new Date());
+      const last = localStorage.getItem(LAST_VISIT_KEY);
+      const msg = welcomeBackMessage(last, todayKey);
+      const el = document.getElementById("welcome-back");
+      if (msg && el) { el.textContent = msg; el.classList.remove("hidden"); }
+      localStorage.setItem(LAST_VISIT_KEY, todayKey);
+    } catch (e) { /* storage unavailable — welcome back is optional, site still works */ }
+  }
+
   function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
   function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
   function loadProfile() { try { const raw = localStorage.getItem(PROFILE_KEY); if (!raw) return defaultProfile(); return Object.assign(defaultProfile(), JSON.parse(raw)); } catch (e) { return defaultProfile(); } }
@@ -1228,6 +1341,7 @@
         + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
         + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
     }).join("");
+    renderWeek(); /* Phase 1 your-week: history changed, so the week numbers change too */
   }
   document.getElementById("history-list").addEventListener("click", function (e) {
     const viewBtn = e.target.closest("[data-history-view]");
@@ -1353,7 +1467,7 @@
     if (supabaseClient) await supabaseClient.auth.signOut();
     supabaseSession = null; updateAuthUI(); restoreGuestData(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
-  applyProfile(); renderHistory(); renderContexts(); initAuth();
+  applyProfile(); renderHistory(); renderContexts(); showWelcomeBack(); initAuth();
 
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
