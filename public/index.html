@@ -407,7 +407,7 @@
 
   <section id="tone-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
     <h3 class="text-lg font-bold text-slate-900 mb-2">Your tone</h3>
-    <p class="text-sm text-slate-600 mb-4">Tell BeforeYouSay how you like to sound. We&apos;ll use this for every rewrite, and save it on this device.</p>
+    <p class="text-sm text-slate-600 mb-4">Tell BeforeYouSay how you like to sound. We&apos;ll use this for every rewrite, and save it on this device — and in the cloud when you&apos;re signed in.</p>
     <div class="space-y-4">
       <div>
         <label for="profile-name" class="block text-sm font-semibold text-slate-700 mb-1">Your name <span class="font-normal text-slate-400">(optional)</span></label>
@@ -436,7 +436,8 @@
       <h3 class="text-lg font-bold text-slate-900">Your history</h3>
       <button id="clear-history-btn" class="px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
     </div>
-    <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved on this device. Tap one to open it again.</p>
+    <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved <span id="history-location">on this device</span>. Tap one to open it again.</p>
+    <p id="sync-status" class="text-sm text-slate-500 mb-4" role="status"></p>
     <p id="history-empty" class="text-sm text-slate-500">No history yet. Your next analysis will appear here.</p>
     <div id="history-list" class="space-y-3"></div>
   </section>
@@ -527,6 +528,147 @@
   let supabaseClient = null;
   let supabaseSession = null;
 
+  /* ---------- Phase 1: Cloud sync (signed-in users only) ---------- */
+  /* Sync is frontend-direct to Supabase, guarded by the existing RLS
+     policies ("Users can manage their own profile/history"). The backend
+     is not involved: /analyze is unchanged, and no new endpoint exists.
+     Guests are never touched by any of this — see the merge rule in
+     README.md. Every cloud call is wrapped so a failure can never break
+     an analysis or hide a result; local history always saves first. */
+  const GUEST_HISTORY_KEY = "beforeyousay.history.guest.v1";
+  const GUEST_PROFILE_KEY = "beforeyousay.profile.guest.v1";
+  const DELETED_CLOUD_IDS_KEY = "beforeyousay.history.deletedCloudIds.v1";
+  const VALID_TABS = ["rewrite", "reply"];
+  const VALID_MODES = ["workplace", "relationship", "rizz", "negotiation"];
+  let cloudSyncInProgress = false;
+  let cloudSyncedUserId = null;
+  function isSignedIn() { return Boolean(supabaseClient && supabaseSession && supabaseSession.user); }
+  function setSyncStatus(msg) { const el = document.getElementById("sync-status"); if (el) el.textContent = msg || ""; }
+  function setHistoryLocation(cloud) { const el = document.getElementById("history-location"); if (el) el.textContent = cloud ? "in the cloud" : "on this device"; }
+  function getDeletedCloudIds() { try { const a = JSON.parse(localStorage.getItem(DELETED_CLOUD_IDS_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function saveDeletedCloudIds(ids) { try { localStorage.setItem(DELETED_CLOUD_IDS_KEY, JSON.stringify(ids.slice(0, 100))); } catch (e) { /* storage unavailable */ } }
+  function rememberDeletedCloudId(cloudId) { if (!cloudId) return; const ids = getDeletedCloudIds(); if (ids.indexOf(cloudId) === -1) { ids.push(cloudId); saveDeletedCloudIds(ids); } }
+  /* Pure merge: cloud rows + local items -> { merged, toUpload }.
+     Dedupe key is input + createdAt (second precision). A local item is
+     "already in the cloud" if it has a cloudId, or a cloud row matches
+     its input + createdAt. Cloud wins for what is shown; local items
+     that are not in the cloud are uploaded once, then keep their cloudId
+     so a later reload never uploads them again. No DOM, no network. */
+  function mergeCloudHistory(localItems, cloudRows) {
+    const rows = Array.isArray(cloudRows) ? cloudRows : [];
+    const byKey = {};
+    rows.forEach(function (r) { byKey[(r.input || "") + "\u0000" + (r.created_at || "").slice(0, 19)] = r; });
+    const merged = rows.map(function (r) {
+      return { id: "cloud_" + r.id, cloudId: r.id, createdAt: r.created_at, tab: r.tab, mode: r.mode, input: r.input, result: r.result || null, toneProfile: r.tone_profile || null };
+    });
+    const toUpload = [];
+    (Array.isArray(localItems) ? localItems : []).forEach(function (it) {
+      if (it.cloudId) return; /* already synced — never upload twice */
+      const key = (it.input || "") + "\u0000" + (it.createdAt || "").slice(0, 19);
+      if (byKey[key]) { it.cloudId = byKey[key].id; return; } /* same row, already in cloud */
+      toUpload.push(it);
+    });
+    toUpload.forEach(function (it) { merged.push(it); });
+    merged.sort(function (a, b) { return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); });
+    return { merged: merged.slice(0, HISTORY_MAX), toUpload: toUpload };
+  }
+  function historyItemToCloudRow(item, userId) {
+    if (!VALID_TABS.includes(item.tab) || !VALID_MODES.includes(item.mode)) return null;
+    return { user_id: userId, tab: item.tab, mode: item.mode, input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
+  }
+  function profileToCloudRow(p, user) {
+    return { id: user.id, email: user.email || p.email || null, display_name: (p.name || "").slice(0, 80) || null, directness: clampScore(p.directness), warmth: clampScore(p.warmth), formality: clampScore(p.formality), playfulness: clampScore(p.playfulness), default_mode: VALID_MODES.includes(p.defaultMode) ? p.defaultMode : "workplace", default_reply_style: ["balanced", "calm", "assertive", "warm"].includes(p.defaultReplyStyle) ? p.defaultReplyStyle : "balanced", updated_at: new Date().toISOString() };
+  }
+  function cloudRowToProfile(row) {
+    const p = defaultProfile();
+    p.name = row.display_name || ""; p.directness = clampScore(row.directness); p.warmth = clampScore(row.warmth);
+    p.formality = clampScore(row.formality); p.playfulness = clampScore(row.playfulness);
+    p.defaultMode = VALID_MODES.includes(row.default_mode) ? row.default_mode : "workplace";
+    p.defaultReplyStyle = ["balanced", "calm", "assertive", "warm"].includes(row.default_reply_style) ? row.default_reply_style : "balanced";
+    return p;
+  }
+  async function syncHistoryItemToCloud(item) {
+    if (!isSignedIn() || item.cloudId) return true;
+    const row = historyItemToCloudRow(item, supabaseSession.user.id);
+    if (!row) return true;
+    try {
+      const res = await supabaseClient.from("history").insert(row).select("id").single();
+      if (res.error) throw res.error;
+      item.cloudId = res.data.id;
+      const items = loadHistory();
+      const found = items.find(function (x) { return x.id === item.id; });
+      if (found) { found.cloudId = item.cloudId; saveHistory(items); }
+      return true;
+    } catch (e) { setSyncStatus("Saved on this device — cloud sync will retry."); return false; }
+  }
+  async function syncProfileToCloud(p) {
+    if (!isSignedIn()) return false;
+    try {
+      const res = await supabaseClient.from("profiles").upsert(profileToCloudRow(p, supabaseSession.user));
+      if (res.error) throw res.error;
+      return true;
+    } catch (e) { return false; }
+  }
+  async function syncCloudData() {
+    if (!isSignedIn() || cloudSyncInProgress) return;
+    const userId = supabaseSession.user.id;
+    cloudSyncInProgress = true;
+    setSyncStatus("Syncing your cloud history…");
+    try {
+      const profileRes = await supabaseClient.from("profiles").select("*").eq("id", userId).maybeSingle();
+      if (profileRes.error) throw profileRes.error;
+      const historyRes = await supabaseClient.from("history").select("id,user_id,created_at,tab,mode,input,result,tone_profile").eq("user_id", userId).order("created_at", { ascending: false }).limit(HISTORY_MAX);
+      if (historyRes.error) throw historyRes.error;
+      /* Guest backup, taken only now that we know what the cloud holds:
+         keep only pre-sign-in guest data — items with no cloudId, and the
+         local profile only when the cloud has no profile yet. That way a
+         reload while signed in can never back up cloud data and leak it
+         to the next person on this device on sign-out. */
+      const localBefore = loadHistory();
+      const guestItems = localBefore.filter(function (it) { return !it.cloudId; });
+      if (guestItems.length && !localStorage.getItem(GUEST_HISTORY_KEY)) {
+        try { localStorage.setItem(GUEST_HISTORY_KEY, JSON.stringify(guestItems)); } catch (e) { /* storage unavailable */ }
+      }
+      if (!profileRes.data && !localStorage.getItem(GUEST_PROFILE_KEY)) {
+        try { localStorage.setItem(GUEST_PROFILE_KEY, JSON.stringify(loadProfile())); } catch (e) { /* storage unavailable */ }
+      }
+      /* Tone: cloud profile wins when it exists; otherwise the local
+         profile is uploaded once so the cloud learns it. */
+      if (profileRes.data) { const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
+      else { const localProfile = loadProfile(); if (JSON.stringify(localProfile) !== JSON.stringify(defaultProfile())) await syncProfileToCloud(localProfile); }
+      /* History: merge (cloud wins for display), upload local-only items
+         once, then show the merged list. Tombstoned cloud rows — deleted
+         on this device while a cloud delete failed — are filtered out
+         and the delete is retried in the background. */
+      const deletedIds = getDeletedCloudIds();
+      const cloudRows = (historyRes.data || []).filter(function (r) { return deletedIds.indexOf(r.id) === -1; });
+      const merged = mergeCloudHistory(localBefore, cloudRows);
+      saveHistory(merged.merged); renderHistory(); setHistoryLocation(true);
+      cloudSyncedUserId = userId;
+      setSyncStatus(merged.toUpload.length ? "Uploading " + merged.toUpload.length + " saved item" + (merged.toUpload.length === 1 ? "" : "s") + " to the cloud…" : "Showing your cloud history.");
+      let uploadFailed = false;
+      for (const it of merged.toUpload) { if (!(await syncHistoryItemToCloud(it))) uploadFailed = true; }
+      if (deletedIds.length) {
+        try { await supabaseClient.from("history").delete().in("id", deletedIds).eq("user_id", userId); saveDeletedCloudIds([]); } catch (e) { /* keep tombstones; retry next sync */ }
+      }
+      setSyncStatus(uploadFailed ? "Saved on this device — cloud sync will retry." : "Showing your cloud history.");
+    } catch (e) {
+      /* Cloud load failed: keep the local history exactly as it is. */
+      setSyncStatus("Cloud history couldn't load — showing history saved on this device.");
+      setHistoryLocation(false);
+    } finally { cloudSyncInProgress = false; }
+  }
+  function restoreGuestData() {
+    try {
+      const rawH = localStorage.getItem(GUEST_HISTORY_KEY);
+      if (rawH) { const items = JSON.parse(rawH); if (Array.isArray(items)) saveHistory(items); localStorage.removeItem(GUEST_HISTORY_KEY); }
+      const rawP = localStorage.getItem(GUEST_PROFILE_KEY);
+      if (rawP) { const p = JSON.parse(rawP); saveProfile(Object.assign(defaultProfile(), p)); localStorage.removeItem(GUEST_PROFILE_KEY); }
+    } catch (e) { /* keep whatever is on this device */ }
+    renderHistory(); applyProfile(); setHistoryLocation(false); setSyncStatus("");
+    cloudSyncedUserId = null;
+  }
+
   function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
   function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
   function loadProfile() { try { const raw = localStorage.getItem(PROFILE_KEY); if (!raw) return defaultProfile(); return Object.assign(defaultProfile(), JSON.parse(raw)); } catch (e) { return defaultProfile(); } }
@@ -567,12 +709,18 @@
       document.getElementById("profile-" + k + "-value").textContent = e.target.value;
     });
   });
-  document.getElementById("save-profile-btn").addEventListener("click", function () {
+  document.getElementById("save-profile-btn").addEventListener("click", async function () {
     const p = readProfileFromForm(); saveProfile(p);
-    document.getElementById("profile-status").textContent = "Saved. Your next rewrite will use this tone.";
+    if (isSignedIn()) {
+      const ok = await syncProfileToCloud(p);
+      document.getElementById("profile-status").textContent = ok ? "Saved — in the cloud too, so it follows you to your other devices." : "Saved on this device — cloud sync will retry.";
+    } else {
+      document.getElementById("profile-status").textContent = "Saved. Your next rewrite will use this tone.";
+    }
   });
-  document.getElementById("reset-profile-btn").addEventListener("click", function () {
+  document.getElementById("reset-profile-btn").addEventListener("click", async function () {
     const p = defaultProfile(); saveProfile(p); fillProfileForm(p); applyProfile();
+    if (isSignedIn()) { await syncProfileToCloud(p); }
     document.getElementById("profile-status").textContent = "Reset to the standard tone.";
   });
 
@@ -582,8 +730,14 @@
   function saveHistory(items) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, HISTORY_MAX))); } catch (e) { /* storage unavailable — site still works */ } }
   function addHistory(item) {
     const items = loadHistory();
-    items.unshift(Object.assign({ id: "h_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), createdAt: new Date().toISOString() }, item));
+    const saved = Object.assign({ id: "h_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), createdAt: new Date().toISOString(), toneProfile: getToneProfileForApi() }, item);
+    if (!saved.toneProfile) saved.toneProfile = getToneProfileForApi();
+    items.unshift(saved);
     saveHistory(items); renderHistory();
+    /* Phase 1: local save already happened above, so a cloud failure can
+       never lose the result. The cloud insert runs in the background. */
+    syncHistoryItemToCloud(saved);
+    return saved;
   }
   function renderHistory() {
     const items = loadHistory();
@@ -613,11 +767,32 @@
       if (text) navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000); });
       return;
     }
-    if (delBtn) { saveHistory(loadHistory().filter(function (x) { return x.id !== delBtn.getAttribute("data-history-delete"); })); renderHistory(); }
+    if (delBtn) {
+      const id = delBtn.getAttribute("data-history-delete");
+      const removed = loadHistory().find(function (x) { return x.id === id; });
+      saveHistory(loadHistory().filter(function (x) { return x.id !== id; })); renderHistory();
+      if (removed && removed.cloudId) {
+        rememberDeletedCloudId(removed.cloudId);
+        if (isSignedIn()) {
+          supabaseClient.from("history").delete().eq("id", removed.cloudId).eq("user_id", supabaseSession.user.id).then(function (res) {
+            if (!res.error) { const ids = getDeletedCloudIds().filter(function (x) { return x !== removed.cloudId; }); saveDeletedCloudIds(ids); }
+            else setSyncStatus("Deleted on this device — cloud delete will retry.");
+          }).catch(function () { setSyncStatus("Deleted on this device — cloud delete will retry."); });
+        }
+      }
+    }
   });
   document.getElementById("clear-history-btn").addEventListener("click", function () {
     if (!confirm("Delete all history on this device?")) return;
+    const removed = loadHistory();
+    removed.forEach(function (it) { if (it.cloudId) rememberDeletedCloudId(it.cloudId); });
     saveHistory([]); renderHistory();
+    if (isSignedIn()) {
+      supabaseClient.from("history").delete().eq("user_id", supabaseSession.user.id).then(function (res) {
+        if (!res.error) saveDeletedCloudIds([]);
+        else setSyncStatus("Cleared on this device — cloud delete will retry.");
+      }).catch(function () { setSyncStatus("Cleared on this device — cloud delete will retry."); });
+    }
   });
   function openHistoryItem(id) {
     const it = loadHistory().find(function (x) { return x.id === id; });
@@ -664,7 +839,13 @@
       supabaseClient = window.supabase.createClient(BYS_CONFIG.supabaseUrl, BYS_CONFIG.supabaseAnonKey);
       const sessionRes = await supabaseClient.auth.getSession();
       supabaseSession = sessionRes.data ? sessionRes.data.session : null;
-      supabaseClient.auth.onAuthStateChange(function (_event, session) { supabaseSession = session; updateAuthUI(); });
+      if (supabaseSession) { syncCloudData(); }
+      supabaseClient.auth.onAuthStateChange(function (event, session) {
+        const wasSignedIn = Boolean(supabaseSession && supabaseSession.user);
+        supabaseSession = session; updateAuthUI();
+        if (session && session.user && !wasSignedIn) { syncCloudData(); }
+        if (!session && wasSignedIn) { restoreGuestData(); }
+      });
       updateAuthUI();
       setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your history across devices.");
     } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); }
@@ -689,7 +870,7 @@
   });
   document.getElementById("auth-signout-btn").addEventListener("click", async function () {
     if (supabaseClient) await supabaseClient.auth.signOut();
-    supabaseSession = null; updateAuthUI(); setAuthStatus("Signed out. Your history on this device is unchanged.");
+    supabaseSession = null; updateAuthUI(); restoreGuestData(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
   applyProfile(); renderHistory(); initAuth();
 
