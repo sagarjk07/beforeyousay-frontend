@@ -834,6 +834,7 @@
          profile is uploaded once so the cloud learns it. */
       if (profileRes.data) { userPlan = planFromProfileRow(profileRes.data); const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
       else { const localProfile = loadProfile(); if (JSON.stringify(localProfile) !== JSON.stringify(defaultProfile())) await syncProfileToCloud(localProfile); }
+      renderPlan(); /* Batch 9: the plan was just loaded from the cloud row - re-render the plan line now, so a Pro plan shows immediately even if anything later in this sync fails before renderHistory runs. */
       /* History: merge (cloud wins for display), upload local-only items
          once, then show the merged list. Tombstoned cloud rows — deleted
          on this device while a cloud delete failed — are filtered out
