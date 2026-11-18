@@ -526,6 +526,10 @@
       <p id="plan-line" class="text-sm text-slate-600 mb-1" role="status">Free plan — loading your checks for today…</p>
       <p id="plan-price-line" class="text-sm text-slate-600 mb-3"></p>
       <button id="upgrade-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">See Pro</button>
+      <div id="upgrade-choices" class="hidden mt-2 flex flex-col gap-2">
+        <button id="upgrade-monthly-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Pro monthly — $5/month</button>
+        <button id="upgrade-yearly-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Pro yearly — $50/year (save $10)</button>
+      </div>
       <p id="upgrade-status" class="text-sm text-slate-500 mt-2" role="status"></p>
     </div>
     <!-- Batch 1 trust+control: export your data -->
@@ -1555,13 +1559,14 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  /* ---------- Batch 3 money: Free/Pro plans (no payments yet) ----------
+  /* ---------- Batch 3 money: Free/Pro plans (Batch 8: payments exist) ----------
      Free: guests 5 checks a day, signed-in free users 10 checks a day.
-     Pro: unlimited. Nobody can become Pro in this batch — there is no
-     payment, no Stripe, and no plan column in Supabase yet, so everyone
-     is Free. The plan is read from the profiles row only if it has a
-     "plan" field (a future migration adds that column); until then
-     planFromProfileRow always says "free".
+     Pro: unlimited, bought through Stripe Checkout (test mode for now)
+     via POST /create-checkout-session on the backend. The plan is read
+     from the profiles row only if it has a "plan" field (the Batch 8
+     migration adds that column); until the migration is run,
+     planFromProfileRow always says "free". The webhook sets the plan —
+     never trust a plan value from anywhere else.
      Counting: today's checks are counted from the history already on
      this device / in the cloud (loadHistory) — no new table, no new
      data. A style re-run updates the latest history item instead of
@@ -1572,7 +1577,7 @@
      warning before a check is run, so a user at the limit never burns
      a Turnstile token or an AI call. The price lives in exactly one
      place: BYS_PLAN_PRICING below. */
-  const BYS_PLAN_PRICING = { monthly: "$5", yearly: "$50", note: "test price — not final, not charging yet" };
+  const BYS_PLAN_PRICING = { monthly: "$5", yearly: "$50", note: "AUD, no GST" };
   const FREE_GUEST_DAILY_LIMIT = 5;
   const FREE_SIGNED_IN_DAILY_LIMIT = 10;
   const LIMIT_HIT_CODE = "daily_limit";
@@ -1590,8 +1595,8 @@
   }
   function limitMessageFor(signedIn) {
     return signedIn
-      ? "You've used all 10 of your free checks for today. Pro removes the limit — it's coming soon, and we're not taking payments yet. Your checks start again tomorrow."
-      : "You've used all 5 of your free checks for today as a guest. Sign in and you get 10 a day — or wait until tomorrow, when your checks start again. Pro (coming soon) removes the limit.";
+      ? "You've used all 10 of your free checks for today. Pro removes the limit — upgrade in Your account below. Your checks start again tomorrow."
+      : "You've used all 5 of your free checks for today as a guest. Sign in and you get 10 a day — or wait until tomorrow, when your checks start again. Pro removes the limit.";
   }
   function planLineText(plan, signedIn, items, now) {
     if (plan === "pro") return "Pro plan — unlimited checks today.";
@@ -1608,7 +1613,7 @@
     const priceEl = document.getElementById("plan-price-line");
     if (priceEl) priceEl.textContent = userPlan === "pro"
       ? "You're on Pro — thanks for supporting BeforeYouSay."
-      : "Pro is coming soon — " + BYS_PLAN_PRICING.monthly + "/month or " + BYS_PLAN_PRICING.yearly + "/year (" + BYS_PLAN_PRICING.note + "). Pro removes the daily limit and unlocks full searchable history.";
+      : "Pro is " + BYS_PLAN_PRICING.monthly + "/month or " + BYS_PLAN_PRICING.yearly + "/year (" + BYS_PLAN_PRICING.note + "). Pro removes the daily limit and unlocks full searchable history.";
   }
   function canCheckToday() { return checksLeftToday(userPlan, isSignedIn(), loadHistory(), new Date()) > 0; }
   /* Counter fix (Batch 3): the prefill below sets the message box value
@@ -1619,12 +1624,29 @@
     const box = document.getElementById(boxId); const el = document.getElementById(countId);
     if (box && el) el.textContent = box.value.length;
   }
+  /* ---------- Batch 8 Pro checkout ---------- */
+  function checkoutUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/create-checkout-session"; }
   document.getElementById("upgrade-btn").addEventListener("click", function () {
     const el = document.getElementById("upgrade-status");
-    if (el) el.textContent = "Pro is coming soon — we're not taking payments or card details yet. Pop your email in the \u201cGet notified when Pro features drop\u201d box at the bottom of this page and we'll let you know when it's ready.";
-    const notify = document.querySelector('form[action*="list-manage"]');
-    if (notify) notify.scrollIntoView({ behavior: "smooth", block: "center" });
+    const choices = document.getElementById("upgrade-choices");
+    if (userPlan === "pro") { if (el) el.textContent = "You're already on Pro — thanks for supporting BeforeYouSay."; return; }
+    if (!isSignedIn()) { if (el) el.textContent = "Sign in first — Pro is tied to your account, so sign in with email or Google above, then come back here to choose Monthly or Yearly."; return; }
+    if (choices) choices.classList.remove("hidden");
+    if (el) el.textContent = "Choose Monthly ($5/month) or Yearly ($50/year, save $10) — secure checkout by Stripe, cancel anytime.";
   });
+  async function startCheckout(billing) {
+    const el = document.getElementById("upgrade-status");
+    if (!isSignedIn()) { if (el) el.textContent = "Sign in first — Pro is tied to your account."; return; }
+    if (el) el.textContent = "Opening secure checkout…";
+    try {
+      const res = await fetch(checkoutUrl(), { method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ billing: billing }) });
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.url) { if (el) el.textContent = "Checkout couldn't be started" + (data && data.error ? ": " + data.error : ". Please try again."); return; }
+      window.location.href = data.url;
+    } catch (e) { if (el) el.textContent = "Checkout couldn't be started — please check your connection and try again."; }
+  }
+  document.getElementById("upgrade-monthly-btn").addEventListener("click", function () { startCheckout("monthly"); });
+  document.getElementById("upgrade-yearly-btn").addEventListener("click", function () { startCheckout("yearly"); });
   renderPlan();
 
   /* ---------- Batch 1 trust+control: export my data + delete my account ---------- */
@@ -1770,6 +1792,38 @@
       history.replaceState(null, "", window.location.pathname + (q ? "?" + q : "") + window.location.hash);
     } catch (e) { /* never break sign-in over a status line */ }
   }
+  /* Batch 8 Pro checkout: Stripe sends the user back here after paying
+     (?checkout=success) or cancelling (?checkout=cancelled). The webhook
+     sets the plan in the cloud, but it can take a few seconds — so on a
+     successful return we say so plainly and re-check the plan a few times
+     instead of pretending it is instant. */
+  async function handleCheckoutReturn() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const result = params.get("checkout");
+      if (!result) return;
+      params.delete("checkout");
+      const q = params.toString();
+      history.replaceState(null, "", window.location.pathname + (q ? "?" + q : "") + window.location.hash);
+      const el = document.getElementById("upgrade-status");
+      if (result === "cancelled") { if (el) el.textContent = "Checkout was cancelled — no charge, you're still on the Free plan."; return; }
+      if (result !== "success") return;
+      if (!isSignedIn()) { if (el) el.textContent = "Your payment went through — sign in to finish setting up your Pro."; return; }
+      if (el) el.textContent = "Setting up your Pro… this takes a few seconds.";
+      for (let i = 0; i < 6; i++) {
+        await new Promise(function (r) { setTimeout(r, 3000); });
+        try {
+          const res = await supabaseClient.from("profiles").select("plan").eq("id", supabaseSession.user.id).maybeSingle();
+          if (res && res.data && res.data.plan === "pro") {
+            userPlan = "pro"; renderPlan();
+            if (el) el.textContent = "You're on Pro — thanks for supporting BeforeYouSay.";
+            return;
+          }
+        } catch (e) { /* keep waiting — a failed re-check is not a failed payment */ }
+      }
+      if (el) el.textContent = "Your payment went through but your Pro isn't showing yet — reload this page in a few seconds, or sign out and back in.";
+    } catch (e) { /* never break sign-in over a status line */ }
+  }
   function loadSupabaseScript() {
     return new Promise(function (resolve, reject) {
       if (window.supabase) return resolve();
@@ -1796,7 +1850,8 @@
       updateAuthUI();
       setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your history across devices.");
       showAuthCallbackError();
-    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); showAuthCallbackError(); }
+      handleCheckoutReturn();
+    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); showAuthCallbackError(); handleCheckoutReturn(); }
   }
   function getAuthHeaders() {
     const h = { "Content-Type": "application/json" };
