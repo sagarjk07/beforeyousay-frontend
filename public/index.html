@@ -24,7 +24,7 @@
   <meta name="twitter:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📨</text></svg>">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#8b5cf6">
   <!-- Cloudflare Turnstile -->
@@ -61,9 +61,7 @@
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-          <span class="text-xl">📨</span>
-        </div>
+        <img src="/icon.svg" alt="BeforeYouSay logo" class="w-10 h-10 rounded-xl shadow-lg">
         <div>
           <h1 class="text-xl font-bold text-slate-900">BeforeYouSay</h1>
           <p class="text-xs text-slate-500 font-medium hidden sm:block">AI Communication Coach</p>
@@ -76,8 +74,8 @@
         </div>
         <div id="auth-area" class="flex items-center gap-2">
           <span id="auth-state" class="hidden sm:inline text-sm text-slate-500">Not signed in</span>
-          <button id="auth-open-btn" class="px-3 py-1.5 rounded-xl bg-white/70 border border-purple-200 text-sm font-semibold text-purple-700 hover:bg-white transition">Sign in</button>
-          <button id="auth-signout-btn" class="hidden px-3 py-1.5 rounded-xl bg-white/70 border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
+          <button id="auth-open-btn" class="px-3 py-2.5 rounded-xl bg-white/70 border border-purple-200 text-sm font-semibold text-purple-700 hover:bg-white transition">Sign in</button>
+          <button id="auth-signout-btn" class="hidden px-3 py-2.5 rounded-xl bg-white/70 border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
         </div>
       </div>
     </div>
@@ -116,7 +114,7 @@
 
     <!-- Phase 1 contexts+styles: Who is this for? Shared by both tabs. -->
     <div class="mb-6 p-4 bg-purple-50/70 rounded-2xl border border-purple-100">
-      <label for="context-select" class="block text-sm font-bold text-slate-700 mb-2">Who is this for? <span class="font-normal text-slate-400">(optional)</span></label>
+      <label for="context-select" class="block text-sm font-bold text-slate-700 mb-2">Who is this for? <span class="font-normal text-slate-500">(optional)</span></label>
       <div class="flex flex-col sm:flex-row gap-2">
         <select id="context-select" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
           <option value="">No one in particular</option>
@@ -145,14 +143,14 @@
     <!-- Phase 1 ratings+moments: daily moments — tap one to load it into the message box -->
     <div class="mb-6">
       <p class="text-sm font-bold text-slate-700 mb-2">Try one today</p>
-      <p class="text-xs text-slate-400 mb-3">Tap one to load it into the message box — edit it however you like before you analyse.</p>
+      <p class="text-xs text-slate-500 mb-3">Tap one to load it into the message box — edit it however you like before you analyse.</p>
       <div id="daily-moments" class="flex flex-wrap gap-2">
-        <button type="button" data-moment="0" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🙏 Apologise to a friend</button>
-        <button type="button" data-moment="1" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💼 Follow up on a job application</button>
-        <button type="button" data-moment="2" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💰 Ask for a pay rise</button>
-        <button type="button" data-moment="3" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🚫 Say no politely</button>
-        <button type="button" data-moment="4" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💬 Check in after an argument</button>
-        <button type="button" data-moment="5" class="px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🧾 Ask a client for payment</button>
+        <button type="button" data-moment="0" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🙏 Apologise to a friend</button>
+        <button type="button" data-moment="1" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💼 Follow up on a job application</button>
+        <button type="button" data-moment="2" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💰 Ask for a pay rise</button>
+        <button type="button" data-moment="3" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🚫 Say no politely</button>
+        <button type="button" data-moment="4" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💬 Check in after an argument</button>
+        <button type="button" data-moment="5" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🧾 Ask a client for payment</button>
       </div>
     </div>
 
@@ -186,7 +184,7 @@
         <div class="flex justify-between items-center px-1">
           <span id="error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
           <div class="ml-auto text-sm font-medium">
-            <span id="char-count">0</span><span class="text-slate-400"> / 1000</span>
+            <span id="char-count">0</span><span class="text-slate-500"> / 1000</span>
           </div>
         </div>
 
@@ -238,7 +236,7 @@
         <div class="flex justify-between items-center px-1">
           <span id="reply-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
           <div class="ml-auto text-sm font-medium">
-            <span id="reply-char-count">0</span><span class="text-slate-400"> / 1000</span>
+            <span id="reply-char-count">0</span><span class="text-slate-500"> / 1000</span>
           </div>
         </div>
 
@@ -335,7 +333,7 @@
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">✨ Best Version</p>
         <div class="relative p-5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-lg">
           <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
-          <button onclick="copyText('better-version', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+          <button onclick="copyText('better-version', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
         </div>
       </div>
 
@@ -345,14 +343,14 @@
           <p class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">😌 Softer Version</p>
           <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
             <p id="softer-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-            <button onclick="copyText('softer-version', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+            <button onclick="copyText('softer-version', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
         <div>
           <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">💪 Stronger Version</p>
           <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
             <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-            <button onclick="copyText('stronger-version', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+            <button onclick="copyText('stronger-version', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
       </div>
@@ -366,13 +364,13 @@
       <!-- Phase 1 contexts+styles: try another style (same message, new rewrite) -->
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
-        <p class="text-xs text-slate-400 mb-2">Same message, new rewrite — no retyping. If it asks, tick the human check above first, then tap a style.</p>
+        <p class="text-xs text-slate-500 mb-2">Same message, new rewrite — no retyping. If it asks, tick the human check above first, then tap a style.</p>
         <div id="style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
         </div>
         <p id="style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
@@ -381,14 +379,14 @@
       <div id="rating-box">
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
         </div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
         </div>
         <p id="rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
@@ -431,21 +429,21 @@
             <p class="text-xs font-semibold text-emerald-600 mb-1.5">✅ Calm & Clear</p>
             <div class="relative p-4 bg-emerald-50 rounded-xl border border-emerald-200">
               <p id="reply-calm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-calm', this)" class="copy-btn absolute top-3 right-3 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+              <button onclick="copyText('reply-calm', this)" class="copy-btn absolute top-3 right-3 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
             </div>
           </div>
           <div>
             <p class="text-xs font-semibold text-orange-600 mb-1.5">💪 Assertive</p>
             <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
               <p id="reply-assertive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-assertive', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+              <button onclick="copyText('reply-assertive', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
             </div>
           </div>
           <div>
             <p class="text-xs font-semibold text-rose-600 mb-1.5">💕 Warm & Open</p>
             <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
               <p id="reply-warm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-warm', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-lg">Copy</button>
+              <button onclick="copyText('reply-warm', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
             </div>
           </div>
         </div>
@@ -459,13 +457,13 @@
       <!-- Phase 1 contexts+styles: try another style (same message, new replies) -->
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
-        <p class="text-xs text-slate-400 mb-2">Same message, new replies — no retyping. If it asks, tick the human check above first, then tap a style.</p>
+        <p class="text-xs text-slate-500 mb-2">Same message, new replies — no retyping. If it asks, tick the human check above first, then tap a style.</p>
         <div id="reply-style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
         </div>
         <p id="reply-style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
@@ -474,14 +472,14 @@
       <div id="reply-rating-box">
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
         </div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
         </div>
         <p id="reply-rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
@@ -501,9 +499,7 @@
 
     <!-- Empty State -->
     <div id="empty-state" class="text-center py-16 space-y-4">
-      <div class="w-20 h-20 mx-auto bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center shadow-xl">
-        <span class="text-3xl">📱</span>
-      </div>
+      <img src="/icon.svg" alt="BeforeYouSay logo" class="w-20 h-20 mx-auto rounded-3xl shadow-xl">
       <h3 class="text-xl font-bold text-slate-900">Ready to analyze</h3>
       <p class="text-slate-500 max-w-sm mx-auto">Paste a message, choose a mode, and get AI coaching before you hit send.</p>
     </div>
@@ -519,7 +515,7 @@
       <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Email me a sign-in link</button>
       <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Sign in with Google</button>
     </div>
-    <p class="text-xs text-slate-400 mt-3">We only use your email to sign you in. No password is stored here.</p>
+    <p class="text-xs text-slate-500 mt-3">We only use your email to sign you in. No password is stored here.</p>
     <!-- Batch 3 money: your plan + checks left today -->
     <div class="mt-5 pt-4 border-t border-slate-200">
       <h4 class="text-sm font-bold text-slate-900 mb-1">Your plan</h4>
@@ -562,7 +558,7 @@
     <p class="text-sm text-slate-600 mb-4">Tell BeforeYouSay how you like to sound. We&apos;ll use this for every rewrite, and save it on this device — and in the cloud when you&apos;re signed in.</p>
     <div class="space-y-4">
       <div>
-        <label for="profile-name" class="block text-sm font-semibold text-slate-700 mb-1">Your name <span class="font-normal text-slate-400">(optional)</span></label>
+        <label for="profile-name" class="block text-sm font-semibold text-slate-700 mb-1">Your name <span class="font-normal text-slate-500">(optional)</span></label>
         <input id="profile-name" type="text" maxlength="80" placeholder="e.g. Sagar" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
@@ -593,7 +589,7 @@
         <input id="context-name" type="text" maxlength="50" placeholder="e.g. My manager" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
       </div>
       <div>
-        <label for="context-note" class="block text-sm font-semibold text-slate-700 mb-1">How do you want to sound with them? <span class="font-normal text-slate-400">(optional, max 200 characters)</span></label>
+        <label for="context-note" class="block text-sm font-semibold text-slate-700 mb-1">How do you want to sound with them? <span class="font-normal text-slate-500">(optional, max 200 characters)</span></label>
         <input id="context-note" type="text" maxlength="200" placeholder="e.g. Polite and to the point, no slang" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
@@ -611,26 +607,26 @@
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-bold text-slate-900">Your week</h3>
       <div class="flex gap-2">
-        <button id="week-this-btn" type="button" data-week-offset="0" class="week-btn active px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">This week</button>
-        <button id="week-last-btn" type="button" data-week-offset="1" class="week-btn px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">Last week</button>
+        <button id="week-this-btn" type="button" data-week-offset="0" class="week-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">This week</button>
+        <button id="week-last-btn" type="button" data-week-offset="1" class="week-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">Last week</button>
       </div>
     </div>
     <p id="week-empty" class="text-sm text-slate-500 mb-4">Nothing yet this week — run your first analysis.</p>
     <p id="week-plan-line" class="text-sm text-slate-600 mb-4" role="status"></p>
     <div id="week-stats" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Helped</p><p id="week-helped" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Day streak</p><p class="text-2xl font-bold text-slate-900"><span id="week-streak">0</span> <span class="text-sm font-semibold text-slate-500">days</span></p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Most used mode</p><p id="week-mode" class="text-lg font-bold text-slate-900">—</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Most used person</p><p id="week-person" class="text-lg font-bold text-slate-900">—</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Helped</p><p id="week-helped" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Day streak</p><p class="text-2xl font-bold text-slate-900"><span id="week-streak">0</span> <span class="text-sm font-semibold text-slate-500">days</span></p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used mode</p><p id="week-mode" class="text-lg font-bold text-slate-900">—</p></div>
+      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used person</p><p id="week-person" class="text-lg font-bold text-slate-900">—</p></div>
     </div>
   </section>
 
   <section id="history-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-bold text-slate-900">Your history</h3>
-      <button id="clear-history-btn" class="px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
+      <button id="clear-history-btn" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
     </div>
     <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved <span id="history-location">on this device</span>. Tap one to open it again.</p>
     <p id="sync-status" class="text-sm text-slate-500 mb-4" role="status"></p>
@@ -662,7 +658,7 @@
 
 </main>
 
-<footer class="text-center text-slate-400 text-sm py-10 mt-4">
+<footer class="text-center text-slate-500 text-sm py-10 mt-4">
   <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-purple-600 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
 <!-- Email Capture -->
@@ -932,8 +928,8 @@
         return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
           + '<p class="font-bold text-slate-800">' + escapeHtml(c.name) + '</p>'
           + (c.note ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">' + escapeHtml(c.note) + '</p>' : '')
-          + '<div class="flex gap-2"><button data-context-edit="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
-          + '<button data-context-delete="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
+          + '<div class="flex gap-2"><button data-context-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+          + '<button data-context-delete="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
       }).join("");
     }
   }
@@ -1074,8 +1070,8 @@
       return '<div class="flex items-center justify-between gap-2 p-3 bg-white/80 rounded-xl border border-slate-200">'
         + '<div><p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.name) + '</p>'
         + (c.note ? '<p class="text-xs text-slate-500">' + escapeHtml(c.note) + '</p>' : '') + '</div>'
-        + '<div class="flex gap-2"><button type="button" data-context-inline-edit="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
-        + '<button type="button" data-context-inline-delete="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></div>';
+        + '<div class="flex gap-2"><button type="button" data-context-inline-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+        + '<button type="button" data-context-inline-delete="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></div>';
     }).join("");
   }
   document.getElementById("context-select").addEventListener("change", function (e) {
@@ -1484,13 +1480,13 @@
       const when = new Date(it.createdAt).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
       const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
       return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
-        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-purple-600">' + escapeHtml(it.mode || "") + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-400">' + escapeHtml(when) + '</span></div>'
+        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-purple-600">' + escapeHtml(it.mode || "") + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
         + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml((it.input || "").slice(0, 140)) + ((it.input || "").length > 140 ? "…" : "") + '</p>'
         + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
         + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
-        + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Open</button>'
-        + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
-        + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
+        + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Open</button>'
+        + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
+        + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
     }).join("");
     renderWeek(); /* Phase 1 your-week: history changed, so the week numbers change too */
     renderPlan(); /* Batch 3 money: a check was added, cleared or deleted, so today's remaining checks changed too */
