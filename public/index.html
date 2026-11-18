@@ -1615,6 +1615,42 @@
   });
   applyProfile(); renderHistory(); renderContexts(); showWelcomeBack(); initAuth();
 
+  /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
+     The extension's "Open on the site" button links here with
+     ?message=...&mode=workplace&reply=1 (and &from=extension). Only the
+     message box, the mode and the tab are filled in — nothing is analysed
+     until the user taps Analyse, and the text stays editable. Values are
+     capped at 1000 characters and the mode must be one of the four real
+     modes; anything else is ignored. */
+  (function prefillFromExtensionLink() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var prefill = (params.get("message") || "").trim().slice(0, 1000);
+      var mode = params.get("mode") || "";
+      var reply = params.get("reply") === "1";
+      if (!prefill && !mode && !reply) return;
+      if (reply) {
+        var replyTab = document.querySelector('.tab-btn[data-tab="reply"]');
+        if (replyTab) replyTab.click();
+        var replyBox = document.getElementById("reply-message");
+        if (replyBox && prefill) {
+          replyBox.value = prefill;
+          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      } else if (prefill) {
+        var box = document.getElementById("message");
+        box.value = prefill;
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      if (mode && ["workplace", "relationship", "rizz", "negotiation"].indexOf(mode) !== -1) {
+        var btn = document.querySelector((reply ? ".reply-mode-btn" : ".mode-btn") + '[data-mode="' + mode + '"]');
+        if (btn) btn.click();
+      }
+      var appCard = document.querySelector(".tab-btn");
+      if (appCard) appCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) { /* a bad link must never break the page */ }
+  })();
+
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verification — BeforeYouSay</title>
+  <!-- Batch 2 extension: this page exists so the Chrome extension can get a
+       Turnstile token. Manifest V3 does not allow remotely hosted code inside
+       extension pages, so the widget cannot live in the extension popup
+       itself. This page lives on beforeyousay.com, renders the same widget
+       with the same sitekey as the main site, and sends the token to its
+       parent frame (the extension popup) with window.postMessage. It does
+       nothing else: no analysis, no sign-in, no tracking. If you open this
+       page directly in a browser it just shows the check. -->
+  <style>
+    body { margin: 0; padding: 0; background: transparent; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    #box { display: flex; align-items: center; justify-content: center; min-height: 64px; }
+    #note { font-size: 12px; color: #64748b; text-align: center; margin: 4px 0 0; }
+  </style>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+<body>
+  <div id="box"><div id="widget"></div></div>
+  <p id="note">Checking you are human — the same check as on the site.</p>
+  <script>
+    var SITEKEY = "0x4AAAAAADM82alADrxujKpE";
+    var widgetId = null;
+
+    function post(msg) {
+      // The only parent that should be listening is the extension popup.
+      // The token is single-use and bound to this sitekey; it is useless
+      // anywhere except the BeforeYouSay backend's siteverify call.
+      window.parent.postMessage(msg, "*");
+    }
+
+    function renderWidget() {
+      if (!window.turnstile) return;
+      try {
+        widgetId = window.turnstile.render("#widget", {
+          sitekey: SITEKEY,
+          callback: function (token) { post({ type: "bys-turnstile-token", token: token }); },
+          "error-callback": function () { post({ type: "bys-turnstile-error" }); },
+          "expired-callback": function () { post({ type: "bys-turnstile-error" }); }
+        });
+      } catch (e) {
+        post({ type: "bys-turnstile-error" });
+      }
+    }
+
+    window.addEventListener("message", function (event) {
+      // Only the extension popup may ask for a fresh token. It runs on a
+      // chrome-extension:// origin; the main site never sends this message.
+      if (typeof event.origin !== "string" || event.origin.indexOf("chrome-extension://") !== 0) return;
+      if (event.data && event.data.type === "bys-turnstile-reset" && window.turnstile && widgetId !== null) {
+        try { window.turnstile.reset(widgetId); } catch (e) { /* widget will re-render below */ }
+      }
+    });
+
+    // The Turnstile script loads async; render as soon as it is ready.
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries++;
+      if (window.turnstile) { clearInterval(timer); renderWidget(); }
+      else if (tries > 50) { clearInterval(timer); post({ type: "bys-turnstile-error" }); }
+    }, 100);
+  </script>
+</body>
+</html>
