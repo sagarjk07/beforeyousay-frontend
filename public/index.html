@@ -689,7 +689,9 @@
     </button>
   </form>
 </div>
-<!-- Phase 0 config — TODO for Sagar: paste your Supabase values here only after you create the free project (see SETUP-SUPABASE-PLAIN-ENGLISH.md). Leave both blank until then; the site works without them. -->
+<!-- BeforeYouSay config — Supabase (Sydney project beforeyousay-au) and the
+     backend URL. The anon key below is safe to be public; the service-role
+     key must never appear here. -->
 <script>
   const BYS_CONFIG = {
     supabaseUrl: "https://vtupfkaaixqucymiggux.supabase.co",
@@ -1570,7 +1572,7 @@
      warning before a check is run, so a user at the limit never burns
      a Turnstile token or an AI call. The price lives in exactly one
      place: BYS_PLAN_PRICING below. */
-  const BYS_PLAN_PRICING = { monthly: "$9", yearly: "$90", note: "test price — not final, not charging yet" };
+  const BYS_PLAN_PRICING = { monthly: "$5", yearly: "$50", note: "test price — not final, not charging yet" };
   const FREE_GUEST_DAILY_LIMIT = 5;
   const FREE_SIGNED_IN_DAILY_LIMIT = 10;
   const LIMIT_HIT_CODE = "daily_limit";
@@ -2264,11 +2266,6 @@
 
   document.getElementById('empty-state').classList.remove('hidden');
 </script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
-  
+
 </body>
 </html>
