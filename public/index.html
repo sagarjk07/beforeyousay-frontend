@@ -42,6 +42,7 @@
     .fade-in { animation: fadeIn 0.35s ease forwards; }
     .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
     .copy-btn { transition: all 0.2s; }
+    .style-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
@@ -101,6 +102,18 @@
 
   <!-- App Card -->
   <section class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-xl border border-white/50 max-w-3xl mx-auto">
+
+    <!-- Phase 1 contexts+styles: Who is this for? Shared by both tabs. -->
+    <div class="mb-6 p-4 bg-purple-50/70 rounded-2xl border border-purple-100">
+      <label for="context-select" class="block text-sm font-bold text-slate-700 mb-2">Who is this for? <span class="font-normal text-slate-400">(optional)</span></label>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <select id="context-select" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+          <option value="">No one in particular</option>
+        </select>
+        <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-purple-700 hover:border-purple-300">Manage people</button>
+      </div>
+      <p id="context-note-line" class="text-xs text-slate-500 mt-2"></p>
+    </div>
 
     <!-- Rewrite Tab -->
     <div id="tab-rewrite" class="tab-content">
@@ -309,6 +322,20 @@
         <p id="coach-note" class="leading-relaxed"></p>
       </div>
 
+      <!-- Phase 1 contexts+styles: try another style (same message, new rewrite) -->
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
+        <p class="text-xs text-slate-400 mb-2">Same message, new rewrite — no retyping. If it asks, tick the human check above first, then tap a style.</p>
+        <div id="style-buttons" class="flex flex-wrap gap-2">
+          <button type="button" data-style="" class="style-btn active px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+        </div>
+        <p id="style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      </div>
+
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
         <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
@@ -372,6 +399,20 @@
         <p id="reply-coach-note" class="leading-relaxed"></p>
       </div>
 
+      <!-- Phase 1 contexts+styles: try another style (same message, new replies) -->
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
+        <p class="text-xs text-slate-400 mb-2">Same message, new replies — no retyping. If it asks, tick the human check above first, then tap a style.</p>
+        <div id="reply-style-buttons" class="flex flex-wrap gap-2">
+          <button type="button" data-style="" class="style-btn active px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+        </div>
+        <p id="reply-style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      </div>
+
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
         <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
           ↩ New Analysis
@@ -428,6 +469,29 @@
         <button id="reset-profile-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Reset</button>
       </div>
       <p id="profile-status" class="text-sm text-slate-500" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Phase 1 contexts+styles: saved people -->
+  <section id="contexts-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Your people</h3>
+    <p class="text-sm text-slate-600 mb-4">Save the people you write to most, and how you want to sound with each of them. Pick one above before you analyse, and the rewrite adapts to that person. Saved on this device — and in the cloud when you&apos;re signed in.</p>
+    <div class="space-y-3">
+      <div>
+        <label for="context-name" class="block text-sm font-semibold text-slate-700 mb-1">Name</label>
+        <input id="context-name" type="text" maxlength="50" placeholder="e.g. My manager" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+      </div>
+      <div>
+        <label for="context-note" class="block text-sm font-semibold text-slate-700 mb-1">How do you want to sound with them? <span class="font-normal text-slate-400">(optional, max 200 characters)</span></label>
+        <input id="context-note" type="text" maxlength="200" placeholder="e.g. Polite and to the point, no slang" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button id="context-add-btn" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Add person</button>
+        <button id="context-cancel-btn" class="hidden px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
+      </div>
+      <p id="context-status" class="text-sm text-slate-500" role="status"></p>
+      <p id="context-empty" class="text-sm text-slate-500">No saved people yet. Add your first one above — for example, your manager or your partner.</p>
+      <div id="context-list" class="space-y-3"></div>
     </div>
   </section>
 
@@ -651,6 +715,7 @@
       if (deletedIds.length) {
         try { await supabaseClient.from("history").delete().in("id", deletedIds).eq("user_id", userId); saveDeletedCloudIds([]); } catch (e) { /* keep tombstones; retry next sync */ }
       }
+      await syncContextsFromCloud();
       setSyncStatus(uploadFailed ? "Saved on this device — cloud sync will retry." : "Showing your cloud history.");
     } catch (e) {
       /* Cloud load failed: keep the local history exactly as it is. */
@@ -664,10 +729,257 @@
       if (rawH) { const items = JSON.parse(rawH); if (Array.isArray(items)) saveHistory(items); localStorage.removeItem(GUEST_HISTORY_KEY); }
       const rawP = localStorage.getItem(GUEST_PROFILE_KEY);
       if (rawP) { const p = JSON.parse(rawP); saveProfile(Object.assign(defaultProfile(), p)); localStorage.removeItem(GUEST_PROFILE_KEY); }
+      const rawC = localStorage.getItem(GUEST_CONTEXTS_KEY);
+      if (rawC) { const items = JSON.parse(rawC); if (Array.isArray(items)) saveContexts(items); localStorage.removeItem(GUEST_CONTEXTS_KEY); }
     } catch (e) { /* keep whatever is on this device */ }
-    renderHistory(); applyProfile(); setHistoryLocation(false); setSyncStatus("");
+    renderHistory(); renderContexts(); applyProfile(); setHistoryLocation(false); setSyncStatus("");
     cloudSyncedUserId = null;
   }
+
+
+  /* ---------- Phase 1 contexts+styles: saved people + rewrite styles ---------- */
+  /* A "context" is one saved person: { id, name, note, createdAt, cloudId? }.
+     Guests: contexts live in localStorage only, exactly like Phase 0/1
+     history and tone. Signed in: contexts sync to the Supabase `contexts`
+     table (see supabase/migration.sql — that table does NOT exist yet in
+     Sydney; until the migration runs, cloud sync for contexts is skipped
+     and the local copy is used, with a plain note in the status line).
+     Cloud is the source of truth when signed in, with the same merge rule
+     as history: local contexts not already in the cloud are uploaded once
+     (dedupe by name + note, or by cloudId), and sign-out restores the
+     guest contexts taken before sign-in, so cloud contexts never leak to
+     the next person on this device. Every cloud call is wrapped so a
+     failure can never break an analysis. */
+  const CONTEXTS_KEY = "beforeyousay.contexts.v1";
+  const GUEST_CONTEXTS_KEY = "beforeyousay.contexts.guest.v1";
+  const DELETED_CONTEXT_IDS_KEY = "beforeyousay.contexts.deletedCloudIds.v1";
+  const CONTEXTS_MAX = 20;
+  const VALID_STYLES = ["shorter", "warmer", "firmer", "funnier"];
+  let selectedContextId = "";
+  let selectedStyle = "";
+  let lastAnalysis = null; /* { tab, mode, message } of the result on screen */
+  let editingContextId = null;
+  function sanitiseContextInput(name, note) {
+    const n = String(name == null ? "" : name).trim().slice(0, 50);
+    if (!n) return null;
+    return { name: n, note: String(note == null ? "" : note).trim().slice(0, 200) };
+  }
+  function loadContexts() { try { const raw = localStorage.getItem(CONTEXTS_KEY); const arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; } catch (e) { return []; } }
+  function saveContexts(items) { try { localStorage.setItem(CONTEXTS_KEY, JSON.stringify(items.slice(0, CONTEXTS_MAX))); } catch (e) { /* storage unavailable */ } }
+  function getSelectedContext() { if (!selectedContextId) return null; return loadContexts().find(function (c) { return c.id === selectedContextId; }) || null; }
+  function getSelectedContextForApi() { const c = getSelectedContext(); return c ? { name: c.name, note: c.note || "" } : null; }
+  function renderContextNoteLine() {
+    const el = document.getElementById("context-note-line");
+    const c = getSelectedContext();
+    if (el) el.textContent = c ? ("Writing for " + c.name + (c.note ? " — " + c.note : "") + ".") : "";
+  }
+  function renderContexts() {
+    const items = loadContexts();
+    const sel = document.getElementById("context-select");
+    if (sel) {
+      const keep = selectedContextId;
+      sel.innerHTML = '<option value="">No one in particular</option>' + items.map(function (c) {
+        return '<option value="' + escapeHtml(c.id) + '"' + (c.id === keep ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+      }).join("");
+      if (keep && !items.some(function (c) { return c.id === keep; })) selectedContextId = "";
+    }
+    renderContextNoteLine();
+    const empty = document.getElementById("context-empty");
+    if (empty) empty.classList.toggle("hidden", items.length > 0);
+    const list = document.getElementById("context-list");
+    if (list) {
+      list.innerHTML = items.map(function (c) {
+        return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
+          + '<p class="font-bold text-slate-800">' + escapeHtml(c.name) + '</p>'
+          + (c.note ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">' + escapeHtml(c.note) + '</p>' : '')
+          + '<div class="flex gap-2"><button data-context-edit="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+          + '<button data-context-delete="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
+      }).join("");
+    }
+  }
+  function setContextStatus(msg) { const el = document.getElementById("context-status"); if (el) el.textContent = msg || ""; }
+  function getDeletedContextIds() { try { const a = JSON.parse(localStorage.getItem(DELETED_CONTEXT_IDS_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function saveDeletedContextIds(ids) { try { localStorage.setItem(DELETED_CONTEXT_IDS_KEY, JSON.stringify(ids.slice(0, 100))); } catch (e) { /* storage unavailable */ } }
+  function rememberDeletedContextId(cloudId) { if (!cloudId) return; const ids = getDeletedContextIds(); if (ids.indexOf(cloudId) === -1) { ids.push(cloudId); saveDeletedContextIds(ids); } }
+  /* Pure merge: cloud rows + local contexts -> { merged, toUpload }.
+     Dedupe key is name + note. A local context is "already in the cloud"
+     if it has a cloudId, or a cloud row matches its name + note. */
+  function mergeCloudContexts(localItems, cloudRows) {
+    const rows = Array.isArray(cloudRows) ? cloudRows : [];
+    const byKey = {};
+    rows.forEach(function (r) { byKey[(r.name || "") + "\u0000" + (r.note || "")] = r; });
+    const merged = rows.map(function (r) {
+      return { id: "ctx_" + r.id, cloudId: r.id, name: r.name, note: r.note || "", createdAt: r.created_at };
+    });
+    const toUpload = [];
+    (Array.isArray(localItems) ? localItems : []).forEach(function (it) {
+      if (it.cloudId) return;
+      const key = (it.name || "") + "\u0000" + (it.note || "");
+      if (byKey[key]) { it.cloudId = byKey[key].id; return; }
+      toUpload.push(it);
+    });
+    toUpload.forEach(function (it) { merged.push(it); });
+    merged.sort(function (a, b) { return new Date(a.createdAt || 0) - new Date(b.createdAt || 0); });
+    return { merged: merged.slice(0, CONTEXTS_MAX), toUpload: toUpload };
+  }
+  async function syncContextToCloud(item) {
+    if (!isSignedIn() || !supabaseClient) return true;
+    try {
+      if (item.cloudId) {
+        const res = await supabaseClient.from("contexts").update({ name: item.name, note: item.note || "", updated_at: new Date().toISOString() }).eq("id", item.cloudId).eq("user_id", supabaseSession.user.id);
+        if (res.error) throw res.error;
+      } else {
+        const res = await supabaseClient.from("contexts").insert({ user_id: supabaseSession.user.id, name: item.name, note: item.note || "" }).select("id").single();
+        if (res.error) throw res.error;
+        item.cloudId = res.data.id;
+        const items = loadContexts();
+        const found = items.find(function (x) { return x.id === item.id; });
+        if (found) { found.cloudId = item.cloudId; saveContexts(items); }
+      }
+      return true;
+    } catch (e) {
+      /* Most likely cause before the migration runs: the contexts table
+         does not exist yet. Never break the page over it. */
+      return false;
+    }
+  }
+  async function syncContextsFromCloud() {
+    if (!isSignedIn() || !supabaseClient) return;
+    try {
+      const res = await supabaseClient.from("contexts").select("id,user_id,name,note,created_at").eq("user_id", supabaseSession.user.id).order("created_at", { ascending: true }).limit(CONTEXTS_MAX);
+      if (res.error) throw res.error;
+      const localBefore = loadContexts();
+      const guestItems = localBefore.filter(function (it) { return !it.cloudId; });
+      if (guestItems.length && !localStorage.getItem(GUEST_CONTEXTS_KEY)) {
+        try { localStorage.setItem(GUEST_CONTEXTS_KEY, JSON.stringify(guestItems)); } catch (e) { /* storage unavailable */ }
+      }
+      const deletedIds = getDeletedContextIds();
+      const cloudRows = (res.data || []).filter(function (r) { return deletedIds.indexOf(r.id) === -1; });
+      const merged = mergeCloudContexts(localBefore, cloudRows);
+      saveContexts(merged.merged); renderContexts();
+      let uploadFailed = false;
+      for (const it of merged.toUpload) { if (!(await syncContextToCloud(it))) uploadFailed = true; }
+      if (deletedIds.length) {
+        try { await supabaseClient.from("contexts").delete().in("id", deletedIds).eq("user_id", supabaseSession.user.id); saveDeletedContextIds([]); } catch (e) { /* keep tombstones; retry next sync */ }
+      }
+      if (uploadFailed) setContextStatus("Saved on this device — cloud sync will retry.");
+    } catch (e) {
+      /* Cloud contexts could not load (including the table not existing
+         yet, before the migration). Local contexts stay as they are. */
+      setContextStatus("Saved on this device — cloud sync isn't available yet.");
+    }
+  }
+  function deleteContext(id) {
+    const removed = loadContexts().find(function (x) { return x.id === id; });
+    saveContexts(loadContexts().filter(function (x) { return x.id !== id; }));
+    if (selectedContextId === id) { selectedContextId = ""; }
+    if (editingContextId === id) { editingContextId = null; document.getElementById("context-name").value = ""; document.getElementById("context-note").value = ""; document.getElementById("context-add-btn").textContent = "Add person"; document.getElementById("context-cancel-btn").classList.add("hidden"); }
+    renderContexts();
+    if (removed && removed.cloudId) {
+      rememberDeletedContextId(removed.cloudId);
+      if (isSignedIn() && supabaseClient) {
+        supabaseClient.from("contexts").delete().eq("id", removed.cloudId).eq("user_id", supabaseSession.user.id).then(function (res) {
+          if (!res.error) { const ids = getDeletedContextIds().filter(function (x) { return x !== removed.cloudId; }); saveDeletedContextIds(ids); }
+          else setContextStatus("Deleted on this device — cloud delete will retry.");
+        }).catch(function () { setContextStatus("Deleted on this device — cloud delete will retry."); });
+      }
+    }
+    setContextStatus("Deleted.");
+  }
+  document.getElementById("context-select").addEventListener("change", function (e) { selectedContextId = e.target.value || ""; renderContextNoteLine(); });
+  document.getElementById("context-manage-btn").addEventListener("click", function () { document.getElementById("contexts-section").scrollIntoView({ behavior: "smooth" }); document.getElementById("context-name").focus(); });
+  document.getElementById("context-add-btn").addEventListener("click", async function () {
+    const clean = sanitiseContextInput(document.getElementById("context-name").value, document.getElementById("context-note").value);
+    if (!clean) { setContextStatus("Please give the person a name first."); return; }
+    const items = loadContexts();
+    if (editingContextId) {
+      const found = items.find(function (x) { return x.id === editingContextId; });
+      if (found) { found.name = clean.name; found.note = clean.note; saveContexts(items); renderContexts(); setContextStatus("Saved."); if (isSignedIn()) { const ok = await syncContextToCloud(found); if (!ok) setContextStatus("Saved on this device — cloud sync will retry."); } }
+      editingContextId = null; document.getElementById("context-add-btn").textContent = "Add person"; document.getElementById("context-cancel-btn").classList.add("hidden");
+    } else {
+      if (items.length >= CONTEXTS_MAX) { setContextStatus("You can save up to " + CONTEXTS_MAX + " people. Delete one to add another."); return; }
+      const item = { id: "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name: clean.name, note: clean.note, createdAt: new Date().toISOString() };
+      items.push(item); saveContexts(items); renderContexts(); setContextStatus("Saved.");
+      if (isSignedIn()) { const ok = await syncContextToCloud(item); if (!ok) setContextStatus("Saved on this device — cloud sync will retry."); }
+    }
+    document.getElementById("context-name").value = ""; document.getElementById("context-note").value = "";
+  });
+  document.getElementById("context-cancel-btn").addEventListener("click", function () {
+    editingContextId = null; document.getElementById("context-name").value = ""; document.getElementById("context-note").value = "";
+    document.getElementById("context-add-btn").textContent = "Add person"; this.classList.add("hidden"); setContextStatus("");
+  });
+  document.getElementById("context-list").addEventListener("click", function (e) {
+    const editBtn = e.target.closest("[data-context-edit]");
+    const delBtn = e.target.closest("[data-context-delete]");
+    if (editBtn) {
+      const it = loadContexts().find(function (x) { return x.id === editBtn.getAttribute("data-context-edit"); });
+      if (!it) return;
+      editingContextId = it.id;
+      document.getElementById("context-name").value = it.name;
+      document.getElementById("context-note").value = it.note || "";
+      document.getElementById("context-add-btn").textContent = "Save changes";
+      document.getElementById("context-cancel-btn").classList.remove("hidden");
+      document.getElementById("context-name").focus();
+      return;
+    }
+    if (delBtn) deleteContext(delBtn.getAttribute("data-context-delete"));
+  });
+
+  /* ---------- Phase 1 contexts+styles: rewrite styles ---------- */
+  /* A style re-run sends the SAME message, mode and context to /analyze
+     again, with a style field the backend actually uses in its prompt.
+     It updates the result on screen in place and updates the latest
+     matching history item instead of adding a new one, so tapping four
+     styles does not fill history with four copies. Turnstile is checked
+     once per /analyze call by the backend, so a style re-run needs a
+     fresh human check — the button says so if there is no token yet. */
+  function markStyleButtons() {
+    document.querySelectorAll(".style-btn").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-style") === selectedStyle); });
+  }
+  function setStyleStatus(tab, msg) { const el = document.getElementById(tab === "reply" ? "reply-style-status" : "style-status"); if (el) el.textContent = msg || ""; }
+  function updateLatestHistory(result, style) {
+    if (!lastAnalysis) return;
+    const items = loadHistory();
+    const found = items.find(function (x) { return x.tab === lastAnalysis.tab && x.mode === lastAnalysis.mode && x.input === lastAnalysis.message; });
+    if (!found) { addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "" }); return; }
+    found.result = result; found.style = style || ""; saveHistory(items); renderHistory();
+    if (found.cloudId && isSignedIn() && supabaseClient) {
+      supabaseClient.from("history").update({ result: result, tone_profile: found.toneProfile || null }).eq("id", found.cloudId).eq("user_id", supabaseSession.user.id).catch(function () { setSyncStatus("Saved on this device — cloud sync will retry."); });
+    }
+  }
+  async function runStyleAnalysis(style, tab) {
+    selectedStyle = style || "";
+    markStyleButtons();
+    if (!lastAnalysis || lastAnalysis.tab !== tab) { setStyleStatus(tab, "Run an analysis first, then pick a style."); return; }
+    const token = document.querySelector(tab === "reply" ? '#tab-reply [name="cf-turnstile-response"]' : '#tab-rewrite [name="cf-turnstile-response"]')?.value;
+    if (!token) {
+      setStyleStatus(tab, "Please complete the verification first — tick the human check above, then tap a style again.");
+      document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setStyleStatus(tab, style ? ("Rewriting in " + style + " style…") : "Rewriting in the original style…");
+    try {
+      const response = await fetch(BYS_API_URL, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
+      });
+      const data = await response.json();
+      if (!response.ok) { setStyleStatus(tab, "That style didn't work — showing your original result."); return; }
+      currentData = data;
+      if (tab === "reply") displayReplyResults(data, lastAnalysis.message); else displayResults(data);
+      updateLatestHistory(data, selectedStyle);
+      requestCount++;
+      document.getElementById("request-count").textContent = requestCount;
+      setStyleStatus(tab, style ? ("Showing the " + style + " version.") : "Showing the original version.");
+    } catch (e) {
+      setStyleStatus(tab, "That style didn't work — showing your original result.");
+    } finally {
+      if (window.turnstile) window.turnstile.reset();
+    }
+  }
+  document.querySelectorAll("#style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "rewrite"); }); });
+  document.querySelectorAll("#reply-style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "reply"); }); });
 
   function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
   function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
@@ -797,6 +1109,13 @@
   function openHistoryItem(id) {
     const it = loadHistory().find(function (x) { return x.id === id; });
     if (!it || !it.result) return;
+    if (it.context && it.context.id) {
+      const ctx = loadContexts().find(function (x) { return x.id === it.context.id; });
+      selectedContextId = ctx ? ctx.id : "";
+      const sel = document.getElementById("context-select");
+      if (sel) sel.value = selectedContextId;
+      renderContextNoteLine();
+    }
     if (it.tab === "reply") {
       document.getElementById("reply-message").value = it.input || "";
       document.querySelectorAll(".reply-mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === it.mode); });
@@ -872,7 +1191,7 @@
     if (supabaseClient) await supabaseClient.auth.signOut();
     supabaseSession = null; updateAuthUI(); restoreGuestData(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
-  applyProfile(); renderHistory(); initAuth();
+  applyProfile(); renderHistory(); renderContexts(); initAuth();
 
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -988,14 +1307,15 @@
       const response = await fetch(BYS_API_URL, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ message, mode, turnstileToken, toneProfile: getToneProfileForApi() })
+        body: JSON.stringify({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
       });
 
       const data = await response.json();
 
       if (response.ok) {
         currentData = data;
-        addHistory({ tab: 'rewrite', mode: mode, input: message, result: data });
+        lastAnalysis = { tab: 'rewrite', mode: mode, message: message };
+        addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
         displayResults(data);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
@@ -1085,13 +1405,14 @@
       const response = await fetch(BYS_API_URL, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi() })
+        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        addHistory({ tab: 'reply', mode: mode, input: message, result: data });
+        lastAnalysis = { tab: 'reply', mode: mode, message: message };
+        addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
         displayReplyResults(data, message);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
