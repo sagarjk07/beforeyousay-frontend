@@ -65,6 +65,11 @@
           <span id="request-count" class="font-bold text-purple-600">0</span>
           <span class="hidden sm:inline"> analyses today</span>
         </div>
+        <div id="auth-area" class="flex items-center gap-2">
+          <span id="auth-state" class="hidden sm:inline text-sm text-slate-500">Not signed in</span>
+          <button id="auth-open-btn" class="px-3 py-1.5 rounded-xl bg-white/70 border border-purple-200 text-sm font-semibold text-purple-700 hover:bg-white transition">Sign in</button>
+          <button id="auth-signout-btn" class="hidden px-3 py-1.5 rounded-xl bg-white/70 border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
+        </div>
       </div>
     </div>
   </div>
@@ -387,6 +392,55 @@
     </div>
   </section>
 
+  <!-- Phase 0: Account, Tone Profile and History -->
+  <section id="account-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Your account</h3>
+    <p class="text-sm text-slate-600 mb-4">Sign-in is optional. Your history and tone still work on this device without an account.</p>
+    <p id="auth-status" class="text-sm text-slate-500 mb-4">Sign-in isn&apos;t set up yet. Your history still works on this device.</p>
+    <div id="auth-form" class="flex flex-col sm:flex-row gap-2">
+      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+      <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Email me a sign-in link</button>
+      <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Sign in with Google</button>
+    </div>
+    <p class="text-xs text-slate-400 mt-3">We only use your email to sign you in. No password is stored here.</p>
+  </section>
+
+  <section id="tone-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Your tone</h3>
+    <p class="text-sm text-slate-600 mb-4">Tell BeforeYouSay how you like to sound. We&apos;ll use this for every rewrite, and save it on this device.</p>
+    <div class="space-y-4">
+      <div>
+        <label for="profile-name" class="block text-sm font-semibold text-slate-700 mb-1">Your name <span class="font-normal text-slate-400">(optional)</span></label>
+        <input id="profile-name" type="text" maxlength="80" placeholder="e.g. Sagar" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label for="profile-directness" class="block text-sm font-semibold text-slate-700 mb-1">Directness: <span id="profile-directness-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-directness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
+        <div><label for="profile-warmth" class="block text-sm font-semibold text-slate-700 mb-1">Warmth: <span id="profile-warmth-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-warmth" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
+        <div><label for="profile-formality" class="block text-sm font-semibold text-slate-700 mb-1">Formality: <span id="profile-formality-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-formality" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
+        <div><label for="profile-playfulness" class="block text-sm font-semibold text-slate-700 mb-1">Playfulness: <span id="profile-playfulness-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-playfulness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label for="profile-default-mode" class="block text-sm font-semibold text-slate-700 mb-1">Usual mode</label><select id="profile-default-mode" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80"><option value="workplace">Workplace</option><option value="relationship">Relationship</option><option value="rizz">Rizz</option><option value="negotiation">Negotiation</option></select></div>
+        <div><label for="profile-default-reply" class="block text-sm font-semibold text-slate-700 mb-1">Usual reply style</label><select id="profile-default-reply" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80"><option value="balanced">Balanced</option><option value="calm">Calm &amp; clear</option><option value="assertive">Assertive</option><option value="warm">Warm &amp; open</option></select></div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button id="save-profile-btn" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Save my tone</button>
+        <button id="reset-profile-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Reset</button>
+      </div>
+      <p id="profile-status" class="text-sm text-slate-500" role="status"></p>
+    </div>
+  </section>
+
+  <section id="history-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-lg font-bold text-slate-900">Your history</h3>
+      <button id="clear-history-btn" class="px-3 py-1.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
+    </div>
+    <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved on this device. Tap one to open it again.</p>
+    <p id="history-empty" class="text-sm text-slate-500">No history yet. Your next analysis will appear here.</p>
+    <div id="history-list" class="space-y-3"></div>
+  </section>
+
   <!-- How it works -->
   <section class="max-w-3xl mx-auto">
     <h3 class="text-center text-lg font-bold text-slate-700 mb-6">How it works</h3>
@@ -442,6 +496,14 @@
     </button>
   </form>
 </div>
+<!-- Phase 0 config — TODO for Sagar: paste your Supabase values here only after you create the free project (see SETUP-SUPABASE-PLAIN-ENGLISH.md). Leave both blank until then; the site works without them. -->
+<script>
+  const BYS_CONFIG = {
+    supabaseUrl: "",
+    supabaseAnonKey: ""
+  };
+  const BYS_API_URL = "https://beforeyousay-backend.onrender.com/analyze";
+</script>
 <script>
   let currentData = null;
   let requestCount = 0;
@@ -456,6 +518,180 @@
     'Coaching in progress...',
     'Almost ready...'
   ];
+
+
+  /* ---------- Phase 0: Tone profile (saved on this device) ---------- */
+  const PROFILE_KEY = "beforeyousay.profile.v1";
+  const HISTORY_KEY = "beforeyousay.history.v1";
+  const HISTORY_MAX = 50;
+  let supabaseClient = null;
+  let supabaseSession = null;
+
+  function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
+  function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
+  function loadProfile() { try { const raw = localStorage.getItem(PROFILE_KEY); if (!raw) return defaultProfile(); return Object.assign(defaultProfile(), JSON.parse(raw)); } catch (e) { return defaultProfile(); } }
+  function saveProfile(p) { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) { /* storage unavailable — site still works */ } }
+  function readProfileFromForm() {
+    return {
+      name: (document.getElementById("profile-name").value || "").trim().slice(0, 80),
+      directness: clampScore(document.getElementById("profile-directness").value),
+      warmth: clampScore(document.getElementById("profile-warmth").value),
+      formality: clampScore(document.getElementById("profile-formality").value),
+      playfulness: clampScore(document.getElementById("profile-playfulness").value),
+      defaultMode: document.getElementById("profile-default-mode").value,
+      defaultReplyStyle: document.getElementById("profile-default-reply").value
+    };
+  }
+  function fillProfileForm(p) {
+    document.getElementById("profile-name").value = p.name || "";
+    ["directness", "warmth", "formality", "playfulness"].forEach(function (k) {
+      document.getElementById("profile-" + k).value = p[k];
+      document.getElementById("profile-" + k + "-value").textContent = p[k];
+    });
+    document.getElementById("profile-default-mode").value = p.defaultMode;
+    document.getElementById("profile-default-reply").value = p.defaultReplyStyle;
+  }
+  function applyProfile() {
+    const p = loadProfile();
+    fillProfileForm(p);
+    // Pre-select the usual mode, so the Analyse button is ready.
+    document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === p.defaultMode); });
+    if (document.querySelector(".mode-btn.active")) {
+      document.getElementById("analyze-btn").disabled = false;
+      document.getElementById("btn-text").textContent = "Analyze Message";
+    }
+  }
+  function getToneProfileForApi() { return loadProfile(); }
+  ["directness", "warmth", "formality", "playfulness"].forEach(function (k) {
+    document.getElementById("profile-" + k).addEventListener("input", function (e) {
+      document.getElementById("profile-" + k + "-value").textContent = e.target.value;
+    });
+  });
+  document.getElementById("save-profile-btn").addEventListener("click", function () {
+    const p = readProfileFromForm(); saveProfile(p);
+    document.getElementById("profile-status").textContent = "Saved. Your next rewrite will use this tone.";
+  });
+  document.getElementById("reset-profile-btn").addEventListener("click", function () {
+    const p = defaultProfile(); saveProfile(p); fillProfileForm(p); applyProfile();
+    document.getElementById("profile-status").textContent = "Reset to the standard tone.";
+  });
+
+  /* ---------- Phase 0: History (saved on this device) ---------- */
+  function escapeHtml(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function loadHistory() { try { const raw = localStorage.getItem(HISTORY_KEY); const arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; } catch (e) { return []; } }
+  function saveHistory(items) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, HISTORY_MAX))); } catch (e) { /* storage unavailable — site still works */ } }
+  function addHistory(item) {
+    const items = loadHistory();
+    items.unshift(Object.assign({ id: "h_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), createdAt: new Date().toISOString() }, item));
+    saveHistory(items); renderHistory();
+  }
+  function renderHistory() {
+    const items = loadHistory();
+    document.getElementById("history-count").textContent = items.length;
+    document.getElementById("history-empty").classList.toggle("hidden", items.length > 0);
+    const list = document.getElementById("history-list");
+    list.innerHTML = items.map(function (it) {
+      const when = new Date(it.createdAt).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+      const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
+      return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
+        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-purple-600">' + escapeHtml(it.mode || "") + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-400">' + escapeHtml(when) + '</span></div>'
+        + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml((it.input || "").slice(0, 140)) + ((it.input || "").length > 140 ? "…" : "") + '</p>'
+        + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
+        + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Open</button>'
+        + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
+        + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
+    }).join("");
+  }
+  document.getElementById("history-list").addEventListener("click", function (e) {
+    const viewBtn = e.target.closest("[data-history-view]");
+    const copyBtn = e.target.closest("[data-history-copy]");
+    const delBtn = e.target.closest("[data-history-delete]");
+    if (viewBtn) { openHistoryItem(viewBtn.getAttribute("data-history-view")); return; }
+    if (copyBtn) {
+      const it = loadHistory().find(function (x) { return x.id === copyBtn.getAttribute("data-history-copy"); });
+      const text = it && it.result ? (it.result.better_version || it.result.softer_version || "") : "";
+      if (text) navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000); });
+      return;
+    }
+    if (delBtn) { saveHistory(loadHistory().filter(function (x) { return x.id !== delBtn.getAttribute("data-history-delete"); })); renderHistory(); }
+  });
+  document.getElementById("clear-history-btn").addEventListener("click", function () {
+    if (!confirm("Delete all history on this device?")) return;
+    saveHistory([]); renderHistory();
+  });
+  function openHistoryItem(id) {
+    const it = loadHistory().find(function (x) { return x.id === id; });
+    if (!it || !it.result) return;
+    if (it.tab === "reply") {
+      document.getElementById("reply-message").value = it.input || "";
+      document.querySelectorAll(".reply-mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === it.mode); });
+      document.querySelector('[data-tab="reply"]').click();
+      displayReplyResults(it.result, it.input || "");
+    } else {
+      document.getElementById("message").value = it.input || "";
+      document.getElementById("char-count").textContent = (it.input || "").length;
+      document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === it.mode); });
+      document.querySelector('[data-tab="rewrite"]').click();
+      currentData = it.result; displayResults(it.result);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ---------- Phase 0: Accounts — sign-in ready, optional ---------- */
+  function authConfigured() { return Boolean(BYS_CONFIG.supabaseUrl && BYS_CONFIG.supabaseAnonKey); }
+  function setAuthStatus(msg) { document.getElementById("auth-status").textContent = msg; }
+  function updateAuthUI() {
+    const signedIn = Boolean(supabaseSession && supabaseSession.user);
+    document.getElementById("auth-state").textContent = signedIn ? (supabaseSession.user.email || "Signed in") : "Not signed in";
+    document.getElementById("auth-open-btn").classList.toggle("hidden", signedIn);
+    document.getElementById("auth-signout-btn").classList.toggle("hidden", !signedIn);
+    document.getElementById("auth-form").classList.toggle("hidden", signedIn);
+    if (signedIn) setAuthStatus("Signed in as " + (supabaseSession.user.email || "your account") + ".");
+  }
+  function loadSupabaseScript() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase) return resolve();
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+    });
+  }
+  async function initAuth() {
+    updateAuthUI();
+    if (!authConfigured()) { setAuthStatus("Sign-in isn't set up yet. Your history still works on this device."); return; }
+    try {
+      await loadSupabaseScript();
+      supabaseClient = window.supabase.createClient(BYS_CONFIG.supabaseUrl, BYS_CONFIG.supabaseAnonKey);
+      const sessionRes = await supabaseClient.auth.getSession();
+      supabaseSession = sessionRes.data ? sessionRes.data.session : null;
+      supabaseClient.auth.onAuthStateChange(function (_event, session) { supabaseSession = session; updateAuthUI(); });
+      updateAuthUI();
+      setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your history across devices.");
+    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); }
+  }
+  function getAuthHeaders() {
+    const h = { "Content-Type": "application/json" };
+    if (supabaseSession && supabaseSession.access_token) h["Authorization"] = "Bearer " + supabaseSession.access_token;
+    return h;
+  }
+  document.getElementById("auth-open-btn").addEventListener("click", function () { document.getElementById("account-section").scrollIntoView({ behavior: "smooth" }); document.getElementById("auth-email").focus(); });
+  document.getElementById("auth-magic-btn").addEventListener("click", async function () {
+    const email = document.getElementById("auth-email").value.trim();
+    if (!email) { setAuthStatus("Please enter your email first."); return; }
+    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your history still works on this device."); return; }
+    setAuthStatus("Sending your sign-in link…");
+    const res = await supabaseClient.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.origin } });
+    setAuthStatus(res.error ? ("Couldn't send the link: " + res.error.message) : "Check your email — tap the sign-in link to finish.");
+  });
+  document.getElementById("auth-google-btn").addEventListener("click", async function () {
+    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your history still works on this device."); return; }
+    await supabaseClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+  });
+  document.getElementById("auth-signout-btn").addEventListener("click", async function () {
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    supabaseSession = null; updateAuthUI(); setAuthStatus("Signed out. Your history on this device is unchanged.");
+  });
+  applyProfile(); renderHistory(); initAuth();
 
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -568,16 +804,17 @@
     startLoadingMessages('loading-text');
 
     try {
-      const response = await fetch('https://beforeyousay-backend.onrender.com/analyze', {
+      const response = await fetch(BYS_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, mode, turnstileToken })
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ message, mode, turnstileToken, toneProfile: getToneProfileForApi() })
       });
 
       const data = await response.json();
 
       if (response.ok) {
         currentData = data;
+        addHistory({ tab: 'rewrite', mode: mode, input: message, result: data });
         displayResults(data);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
@@ -664,15 +901,16 @@
     startLoadingMessages('reply-loading-text');
 
     try {
-      const response = await fetch('https://beforeyousay-backend.onrender.com/analyze', {
+      const response = await fetch(BYS_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true })
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi() })
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        addHistory({ tab: 'reply', mode: mode, input: message, result: data });
         displayReplyResults(data, message);
         requestCount++;
         document.getElementById('request-count').textContent = requestCount;
