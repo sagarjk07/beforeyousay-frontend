@@ -30,6 +30,12 @@
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
+  <!-- Batch 4: warm up the connections this page needs anyway, so first paint waits less -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://challenges.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
   <!-- Styles -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1067,12 +1073,8 @@
     if (!canCheckToday()) { setStyleStatus(tab, limitMessageFor(isSignedIn())); return; }
     setStyleStatus(tab, style ? ("Rewriting in " + style + " style…") : "Rewriting in the original style…");
     try {
-      const response = await fetch(BYS_API_URL, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
-      });
-      const data = await response.json();
+      const response = await postAnalyze({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
+      const data = await safeJson(response);
       if (!response.ok) { setStyleStatus(tab, (data && data.code === LIMIT_HIT_CODE && data.error) ? data.error : "That style didn't work — showing your original result."); return; }
       currentData = data;
       if (tab === "reply") displayReplyResults(data, lastAnalysis.message); else displayResults(data);
@@ -1081,7 +1083,7 @@
       document.getElementById("request-count").textContent = requestCount;
       setStyleStatus(tab, style ? ("Showing the " + style + " version.") : "Showing the original version.");
     } catch (e) {
-      setStyleStatus(tab, "That style didn't work — showing your original result.");
+      setStyleStatus(tab, "That style didn't work — your message and original result are still here, please try again.");
     } finally {
       if (window.turnstile) window.turnstile.reset();
     }
@@ -1824,6 +1826,32 @@
   }
 
   // Analyze (Rewrite) 
+  /* ---------- Batch 4 quality+speed: one shared /analyze caller ----------
+     Every check (Rewrite, Reply, style re-run) goes through here.
+     - 45-second timeout: a check that hangs says so instead of spinning forever.
+     - One automatic retry, but ONLY on a network failure or timeout — in that case the
+       Turnstile token never reached the server, so it is safe to send the same token
+       again. HTTP errors (429 limit, 403 verification, 500) are NOT retried: the
+       token was already spent and the user should see the real error.
+     - The user's typed message is never cleared here, so a failed check never loses it. */
+  const ANALYZE_TIMEOUT_MS = 45000;
+  async function postAnalyze(payload) {
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(function () { controller.abort(); }, ANALYZE_TIMEOUT_MS);
+      try {
+        const response = await fetch(BYS_API_URL, { method: "POST", headers: getAuthHeaders(), body: JSON.stringify(payload), signal: controller.signal });
+        clearTimeout(timer);
+        return response;
+      } catch (e) { clearTimeout(timer); lastError = e; /* network failure or timeout: retry once */ }
+    }
+    throw lastError || new Error("Network error");
+  }
+  /* A server error page is HTML, not JSON — parsing it must not turn a server
+     error into a confusing "network error". */
+  async function safeJson(response) { try { return await response.json(); } catch (e) { return {}; } }
+
   document.getElementById('analyze-btn').addEventListener('click', async () => {
     const message = document.getElementById('message').value.trim();
     const mode = document.querySelector('.mode-btn.active')?.dataset.mode;
@@ -1858,13 +1886,9 @@
     startLoadingMessages('loading-text');
 
     try {
-      const response = await fetch(BYS_API_URL, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
-      });
+      const response = await postAnalyze({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (response.ok) {
         currentData = data;
@@ -1879,7 +1903,7 @@
         document.getElementById('empty-state').classList.remove('hidden');
       }
     } catch (error) {
-      showError('Network error. Please try again.');
+      showError(error && error.name === 'AbortError' ? 'That check timed out — your message is still here, please try again.' : 'Network error — your message is still here, please try again.');
       document.getElementById('empty-state').classList.remove('hidden');
     } finally {
       btn.disabled = false;
@@ -1965,13 +1989,9 @@
     startLoadingMessages('reply-loading-text');
 
     try {
-      const response = await fetch(BYS_API_URL, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
-      });
+      const response = await postAnalyze({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (response.ok) {
         lastAnalysis = { tab: 'reply', mode: mode, message: message };
@@ -1985,7 +2005,7 @@
         document.getElementById('empty-state').classList.remove('hidden');
       }
     } catch (error) {
-      showError('Network error. Please try again.', 'reply-error-msg');
+      showError(error && error.name === 'AbortError' ? 'That check timed out — your message is still here, please try again.' : 'Network error — your message is still here, please try again.', 'reply-error-msg');
       document.getElementById('empty-state').classList.remove('hidden');
     } finally {
       btn.disabled = false;
