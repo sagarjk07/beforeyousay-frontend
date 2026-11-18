@@ -124,6 +124,22 @@
         <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-purple-700 hover:border-purple-300">Manage people</button>
       </div>
       <p id="context-note-line" class="text-xs text-slate-500 mt-2"></p>
+      <!-- Batch 6 polish: add / manage people right here, where the picker is —
+           no more jumping down the page to the Your people section. -->
+      <div id="context-inline-panel" class="hidden mt-3 p-4 bg-white/80 rounded-2xl border border-slate-200">
+        <p id="context-inline-title" class="text-sm font-bold text-slate-700 mb-2">Add a person</p>
+        <div class="space-y-3">
+          <input id="context-inline-name" type="text" maxlength="50" placeholder="Name — e.g. My manager" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+          <input id="context-inline-note" type="text" maxlength="200" placeholder="How do you want to sound with them? (optional)" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+          <div class="flex flex-col sm:flex-row gap-2">
+            <button id="context-inline-save-btn" type="button" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Save person</button>
+            <button id="context-inline-cancel-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
+          </div>
+          <p id="context-inline-status" class="text-sm text-slate-500" role="status"></p>
+          <div id="context-inline-list" class="space-y-3"></div>
+          <button id="context-inline-done-btn" type="button" class="w-full px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Done</button>
+        </div>
+      </div>
     </div>
 
     <!-- Phase 1 ratings+moments: daily moments — tap one to load it into the message box -->
@@ -474,6 +490,9 @@
         <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
           ↩ New Analysis
         </button>
+        <button id="copy-all-reply" class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
+          📋 Copy All
+        </button>
         <button id="share-reply" class="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
           🔗 Share
         </button>
@@ -494,7 +513,7 @@
   <section id="account-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
     <h3 class="text-lg font-bold text-slate-900 mb-2">Your account</h3>
     <p class="text-sm text-slate-600 mb-4">Sign-in is optional. Your history and tone still work on this device without an account.</p>
-    <p id="auth-status" class="text-sm text-slate-500 mb-4">Sign-in isn&apos;t set up yet. Your history still works on this device.</p>
+    <p id="auth-status" class="text-sm text-slate-500 mb-4">Loading sign-in…</p>
     <div id="auth-form" class="flex flex-col sm:flex-row gap-2">
       <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
       <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Email me a sign-in link</button>
@@ -644,7 +663,7 @@
 </footer>
 <!-- Email Capture -->
 <div class="flex flex-col items-center gap-3 py-8 px-4">
- <p class="text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Get notified when Pro features drop ✨</p>
+ <p class="text-sm font-medium bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">Get notified when Pro features drop ✨</p>
   <form
     action="https://beforeyousay.us7.list-manage.com/subscribe/post?u=e055c297a8cc1fa582ba02c5e&id=e2aca1b6bf&f_id=0034a0e0f0"
     method="POST"
@@ -656,7 +675,7 @@
   name="EMAIL"
   placeholder="your@email.com"
   required
-  class="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-purple-500/50 text-white placeholder-purple-300/60 text-sm focus:outline-none focus:border-pink-400"
+  class="flex-1 px-4 py-2 rounded-xl bg-white border border-purple-200 text-slate-900 text-sm focus:outline-none focus:border-pink-400"
 />
     <!-- Mailchimp bot protection — do not remove -->
     <div style="position:absolute;left:-5000px" aria-hidden="true">
@@ -879,8 +898,12 @@
   function getSelectedContextForApi() { const c = getSelectedContext(); return c ? { name: c.name, note: c.note || "" } : null; }
   function renderContextNoteLine() {
     const el = document.getElementById("context-note-line");
+    if (!el) return;
     const c = getSelectedContext();
-    if (el) el.textContent = c ? ("Writing for " + c.name + (c.note ? " — " + c.note : "") + ".") : "";
+    if (c) { el.textContent = "Writing for " + c.name + (c.note ? " — " + c.note : "") + "."; return; }
+    el.textContent = loadContexts().length === 0
+      ? "No people saved yet — pick “Add a person…” from the list above to save someone you write to often."
+      : "";
   }
   function renderContexts() {
     const items = loadContexts();
@@ -889,10 +912,11 @@
       const keep = selectedContextId;
       sel.innerHTML = '<option value="">No one in particular</option>' + items.map(function (c) {
         return '<option value="' + escapeHtml(c.id) + '"' + (c.id === keep ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
-      }).join("");
+      }).join("") + '<option value="__add__">＋ Add a person…</option>';
       if (keep && !items.some(function (c) { return c.id === keep; })) selectedContextId = "";
     }
     renderContextNoteLine();
+    renderInlineContextList();
     const empty = document.getElementById("context-empty");
     if (empty) empty.classList.toggle("hidden", items.length > 0);
     const list = document.getElementById("context-list");
@@ -982,7 +1006,7 @@
     const removed = loadContexts().find(function (x) { return x.id === id; });
     saveContexts(loadContexts().filter(function (x) { return x.id !== id; }));
     if (selectedContextId === id) { selectedContextId = ""; }
-    if (editingContextId === id) { editingContextId = null; document.getElementById("context-name").value = ""; document.getElementById("context-note").value = ""; document.getElementById("context-add-btn").textContent = "Add person"; document.getElementById("context-cancel-btn").classList.add("hidden"); }
+    if (editingContextId === id) { editingContextId = null; document.getElementById("context-name").value = ""; document.getElementById("context-note").value = ""; document.getElementById("context-add-btn").textContent = "Add person"; document.getElementById("context-cancel-btn").classList.add("hidden"); const inSave = document.getElementById("context-inline-save-btn"); if (inSave) inSave.textContent = "Save person"; const inName = document.getElementById("context-inline-name"); if (inName) inName.value = ""; const inNote = document.getElementById("context-inline-note"); if (inNote) inNote.value = ""; }
     renderContexts();
     if (removed && removed.cloudId) {
       rememberDeletedContextId(removed.cloudId);
@@ -995,23 +1019,113 @@
     }
     setContextStatus("Deleted.");
   }
-  document.getElementById("context-select").addEventListener("change", function (e) { selectedContextId = e.target.value || ""; renderContextNoteLine(); });
-  document.getElementById("context-manage-btn").addEventListener("click", function () { document.getElementById("contexts-section").scrollIntoView({ behavior: "smooth" }); document.getElementById("context-name").focus(); });
-  document.getElementById("context-add-btn").addEventListener("click", async function () {
-    const clean = sanitiseContextInput(document.getElementById("context-name").value, document.getElementById("context-note").value);
-    if (!clean) { setContextStatus("Please give the person a name first."); return; }
+  /* Batch 6 polish: one shared save for both add forms (the Your people
+     section below, and the inline panel in the picker box). A newly added
+     person is picked straight away, so the next analysis uses them. */
+  async function saveContextItem(clean, statusEl) {
     const items = loadContexts();
     if (editingContextId) {
       const found = items.find(function (x) { return x.id === editingContextId; });
-      if (found) { found.name = clean.name; found.note = clean.note; saveContexts(items); renderContexts(); setContextStatus("Saved."); if (isSignedIn()) { const ok = await syncContextToCloud(found); if (!ok) setContextStatus("Saved on this device — cloud sync will retry."); } }
-      editingContextId = null; document.getElementById("context-add-btn").textContent = "Add person"; document.getElementById("context-cancel-btn").classList.add("hidden");
-    } else {
-      if (items.length >= CONTEXTS_MAX) { setContextStatus("You can save up to " + CONTEXTS_MAX + " people. Delete one to add another."); return; }
-      const item = { id: "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name: clean.name, note: clean.note, createdAt: new Date().toISOString() };
-      items.push(item); saveContexts(items); renderContexts(); setContextStatus("Saved.");
-      if (isSignedIn()) { const ok = await syncContextToCloud(item); if (!ok) setContextStatus("Saved on this device — cloud sync will retry."); }
+      if (!found) return null;
+      found.name = clean.name; found.note = clean.note;
+      saveContexts(items); renderContexts();
+      if (statusEl) statusEl.textContent = "Saved.";
+      if (isSignedIn()) { const ok = await syncContextToCloud(found); if (!ok && statusEl) statusEl.textContent = "Saved on this device — cloud sync will retry."; }
+      editingContextId = null;
+      return found;
     }
-    document.getElementById("context-name").value = ""; document.getElementById("context-note").value = "";
+    if (items.length >= CONTEXTS_MAX) { if (statusEl) statusEl.textContent = "You can save up to " + CONTEXTS_MAX + " people. Delete one to add another."; return null; }
+    const item = { id: "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name: clean.name, note: clean.note, createdAt: new Date().toISOString() };
+    items.push(item); saveContexts(items);
+    selectedContextId = item.id; /* the new person is the one you are writing for */
+    renderContexts();
+    if (statusEl) statusEl.textContent = "Saved.";
+    if (isSignedIn()) { const ok = await syncContextToCloud(item); if (!ok && statusEl) statusEl.textContent = "Saved on this device — cloud sync will retry."; }
+    return item;
+  }
+  function resetContextForms() {
+    editingContextId = null;
+    const addBtn = document.getElementById("context-add-btn"); if (addBtn) addBtn.textContent = "Add person";
+    const cancelBtn = document.getElementById("context-cancel-btn"); if (cancelBtn) cancelBtn.classList.add("hidden");
+    const saveBtn = document.getElementById("context-inline-save-btn"); if (saveBtn) saveBtn.textContent = "Save person";
+    ["context-name", "context-note", "context-inline-name", "context-inline-note"].forEach(function (id) { const el = document.getElementById(id); if (el) el.value = ""; });
+  }
+  function openContextInlinePanel(title) {
+    const panel = document.getElementById("context-inline-panel"); if (!panel) return;
+    const t = document.getElementById("context-inline-title"); if (t) t.textContent = title || "Add a person";
+    panel.classList.remove("hidden");
+    renderInlineContextList();
+  }
+  function closeContextInlinePanel() {
+    const panel = document.getElementById("context-inline-panel"); if (panel) panel.classList.add("hidden");
+    const st = document.getElementById("context-inline-status"); if (st) st.textContent = "";
+  }
+  function renderInlineContextList() {
+    const list = document.getElementById("context-inline-list"); if (!list) return;
+    const items = loadContexts();
+    list.innerHTML = items.map(function (c) {
+      return '<div class="flex items-center justify-between gap-2 p-3 bg-white/80 rounded-xl border border-slate-200">'
+        + '<div><p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.name) + '</p>'
+        + (c.note ? '<p class="text-xs text-slate-500">' + escapeHtml(c.note) + '</p>' : '') + '</div>'
+        + '<div class="flex gap-2"><button type="button" data-context-inline-edit="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+        + '<button type="button" data-context-inline-delete="' + escapeHtml(c.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></div>';
+    }).join("");
+  }
+  document.getElementById("context-select").addEventListener("change", function (e) {
+    if (e.target.value === "__add__") {
+      /* Back to the previous pick, then open the add form right here —
+         the list is only a picker, adding happens in the panel. */
+      e.target.value = selectedContextId || "";
+      resetContextForms();
+      openContextInlinePanel("Add a person");
+      document.getElementById("context-inline-name").focus();
+      return;
+    }
+    selectedContextId = e.target.value || ""; renderContextNoteLine();
+  });
+  /* Batch 6 polish: Manage people opens the editor right here in the
+     picker box. It used to yank the page down to the Your people section
+     and pop the keyboard open. The full section is still below for
+     anyone who scrolls there. */
+  document.getElementById("context-manage-btn").addEventListener("click", function () {
+    const panel = document.getElementById("context-inline-panel");
+    if (panel && panel.classList.contains("hidden")) { resetContextForms(); openContextInlinePanel("Your people"); }
+    else closeContextInlinePanel();
+  });
+  document.getElementById("context-inline-save-btn").addEventListener("click", async function () {
+    const clean = sanitiseContextInput(document.getElementById("context-inline-name").value, document.getElementById("context-inline-note").value);
+    const st = document.getElementById("context-inline-status");
+    if (!clean) { if (st) st.textContent = "Please give the person a name first."; return; }
+    const saved = await saveContextItem(clean, st);
+    if (saved) { resetContextForms(); renderInlineContextList(); if (st) st.textContent = "Saved — writing for " + saved.name + "."; }
+  });
+  document.getElementById("context-inline-cancel-btn").addEventListener("click", function () { resetContextForms(); closeContextInlinePanel(); });
+  document.getElementById("context-inline-done-btn").addEventListener("click", function () { resetContextForms(); closeContextInlinePanel(); });
+  document.getElementById("context-inline-list").addEventListener("click", function (e) {
+    const editBtn = e.target.closest("[data-context-inline-edit]");
+    const delBtn = e.target.closest("[data-context-inline-delete]");
+    if (editBtn) {
+      const it = loadContexts().find(function (x) { return x.id === editBtn.getAttribute("data-context-inline-edit"); });
+      if (!it) return;
+      editingContextId = it.id;
+      document.getElementById("context-inline-name").value = it.name;
+      document.getElementById("context-inline-note").value = it.note || "";
+      document.getElementById("context-inline-save-btn").textContent = "Save changes";
+      document.getElementById("context-inline-title").textContent = "Edit person";
+      document.getElementById("context-inline-name").focus();
+      return;
+    }
+    if (delBtn) {
+      deleteContext(delBtn.getAttribute("data-context-inline-delete"));
+      renderInlineContextList();
+      const st = document.getElementById("context-inline-status"); if (st) st.textContent = "Deleted.";
+    }
+  });
+  document.getElementById("context-add-btn").addEventListener("click", async function () {
+    const clean = sanitiseContextInput(document.getElementById("context-name").value, document.getElementById("context-note").value);
+    if (!clean) { setContextStatus("Please give the person a name first."); return; }
+    const saved = await saveContextItem(clean, document.getElementById("context-status"));
+    if (saved) { resetContextForms(); }
   });
   document.getElementById("context-cancel-btn").addEventListener("click", function () {
     editingContextId = null; document.getElementById("context-name").value = ""; document.getElementById("context-note").value = "";
@@ -1064,7 +1178,7 @@
     if (!lastAnalysis || lastAnalysis.tab !== tab) { setStyleStatus(tab, "Run an analysis first, then pick a style."); return; }
     const token = document.querySelector(tab === "reply" ? '#tab-reply [name="cf-turnstile-response"]' : '#tab-rewrite [name="cf-turnstile-response"]')?.value;
     if (!token) {
-      setStyleStatus(tab, "Please complete the verification first — tick the human check above, then tap a style again.");
+      setStyleStatus(tab, turnstileReady(tab) ? "Please complete the verification first — tick the human check above, then tap a style again." : "The human check didn't load — please refresh the page, then try the style again.");
       document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile").scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
@@ -1190,12 +1304,10 @@
       const m = DAILY_MOMENTS[Number(b.getAttribute("data-moment"))];
       if (!m) return;
       document.querySelector('[data-tab="rewrite"]').click();
-      document.querySelectorAll(".mode-btn").forEach(function (x) { x.classList.toggle("active", x.dataset.mode === m.mode); });
       const box = document.getElementById("message");
       box.value = m.text;
       document.getElementById("char-count").textContent = m.text.length;
-      document.getElementById("analyze-btn").disabled = false;
-      document.getElementById("btn-text").textContent = "Analyze Message";
+      setMode(m.mode); /* fill the message first, so the button enables */
       box.focus();
       box.scrollIntoView({ behavior: "smooth", block: "center" });
     });
@@ -1317,12 +1429,8 @@
   function applyProfile() {
     const p = loadProfile();
     fillProfileForm(p);
-    // Pre-select the usual mode, so the Analyse button is ready.
-    document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === p.defaultMode); });
-    if (document.querySelector(".mode-btn.active")) {
-      document.getElementById("analyze-btn").disabled = false;
-      document.getElementById("btn-text").textContent = "Analyze Message";
-    }
+    // Pre-select the usual mode in both tabs, so the Analyse button is ready.
+    setMode(p.defaultMode);
   }
   function getToneProfileForApi() { return loadProfile(); }
   ["directness", "warmth", "formality", "playfulness"].forEach(function (k) {
@@ -1431,13 +1539,14 @@
     }
     if (it.tab === "reply") {
       document.getElementById("reply-message").value = it.input || "";
-      document.querySelectorAll(".reply-mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === it.mode); });
+      document.getElementById("reply-char-count").textContent = (it.input || "").length;
+      setMode(it.mode);
       document.querySelector('[data-tab="reply"]').click();
       displayReplyResults(it.result, it.input || "");
     } else {
       document.getElementById("message").value = it.input || "";
       document.getElementById("char-count").textContent = (it.input || "").length;
-      document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === it.mode); });
+      setMode(it.mode);
       document.querySelector('[data-tab="rewrite"]').click();
       currentData = it.result; displayResults(it.result);
     }
@@ -1643,6 +1752,22 @@
     document.getElementById("auth-form").classList.toggle("hidden", signedIn);
     if (signedIn) setAuthStatus("Signed in as " + (supabaseSession.user.email || "your account") + ".");
   }
+  /* Batch 6 polish: a failed sign-in used to land back here with the
+     reason hidden in the address bar (?error=...) and the page just
+     saying "Sign in" — exactly what happened with Google on 18 Nov.
+     Show the reason plainly, then tidy the address bar. */
+  function showAuthCallbackError() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      if (!err) return;
+      const desc = params.get("error_description") || "";
+      setAuthStatus("That sign-in didn't finish" + (desc ? ": " + desc : "") + " — please try again, or use email.");
+      ["error", "error_code", "error_description"].forEach(function (k) { params.delete(k); });
+      const q = params.toString();
+      history.replaceState(null, "", window.location.pathname + (q ? "?" + q : "") + window.location.hash);
+    } catch (e) { /* never break sign-in over a status line */ }
+  }
   function loadSupabaseScript() {
     return new Promise(function (resolve, reject) {
       if (window.supabase) return resolve();
@@ -1668,7 +1793,8 @@
       });
       updateAuthUI();
       setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your history across devices.");
-    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); }
+      showAuthCallbackError();
+    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your history still works on this device."); showAuthCallbackError(); }
   }
   function getAuthHeaders() {
     const h = { "Content-Type": "application/json" };
@@ -1692,13 +1818,17 @@
     if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your history still works on this device."); return; }
     setAuthStatus("Opening Google sign-in…");
     const res = await supabaseClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
-    if (res.error) setAuthStatus("Google sign-in isn't set up yet — please use email for now. (" + res.error.message + ")");
+    if (res.error) setAuthStatus("Google sign-in didn't work (" + res.error.message + ") — please try again, or use email for now.");
   });
   document.getElementById("auth-signout-btn").addEventListener("click", async function () {
     if (supabaseClient) await supabaseClient.auth.signOut();
     supabaseSession = null; userPlan = "free"; updateAuthUI(); restoreGuestData(); renderPlan(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
   applyProfile(); renderHistory(); renderContexts(); showWelcomeBack(); initAuth();
+  /* Batch 6 polish: the header count used to start at 0 on every reload,
+     even after a day of checks — count today from the history instead. */
+  requestCount = countChecksToday(loadHistory(), new Date());
+  document.getElementById("request-count").textContent = requestCount;
 
   /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
      The extension's "Open on the site" button links here with
@@ -1752,25 +1882,25 @@
     });
   });
 
-  // Rewrite mode buttons
-  document.querySelectorAll('.mode-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const analyzeBtn = document.getElementById('analyze-btn');
-      analyzeBtn.disabled = false;
-      document.getElementById('btn-text').textContent = 'Analyze Message';
-    });
-  });
+  /* Batch 6 polish: one mode for both tabs. It used to be per-tab, so
+     picking Workplace, switching to Reply and back meant picking it all
+     over again — and the Reply tab started with no mode at all. */
+  function setMode(mode) {
+    if (!VALID_MODES.includes(mode)) return;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    document.getElementById('analyze-btn').disabled = document.getElementById('message').value.trim().length === 0;
+    document.getElementById('btn-text').textContent = 'Analyze Message';
+    document.getElementById('reply-btn').disabled = document.getElementById('reply-message').value.trim().length === 0;
+    document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
+  }
 
-  // Reply mode buttons
+  // Rewrite + Reply mode buttons — one shared mode, both tabs stay in sync.
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
   document.querySelectorAll('.reply-mode-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('reply-btn').disabled = false;
-      document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
-    });
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
   });
 
   // Char counters
@@ -1851,6 +1981,14 @@
      error into a confusing "network error". */
   async function safeJson(response) { try { return await response.json(); } catch (e) { return {}; } }
 
+  /* Batch 6 polish: tell a missing human check apart from an un-ticked
+     one — when Turnstile never loaded (slow network, blocker), the old
+     message blamed the user for not ticking a box that was never there. */
+  function turnstileReady(tab) {
+    const widget = document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile");
+    return Boolean(widget && widget.querySelector("iframe"));
+  }
+
   document.getElementById('analyze-btn').addEventListener('click', async () => {
     const message = document.getElementById('message').value.trim();
     const mode = document.querySelector('.mode-btn.active')?.dataset.mode;
@@ -1859,7 +1997,7 @@
     if (!message || !mode) return;
 
     if (!turnstileToken) {
-      showError('Please complete the verification first.');
+      showError(turnstileReady("rewrite") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.");
       return;
     }
 
@@ -1962,7 +2100,7 @@
     if (!message || !mode) return;
 
     if (!turnstileToken) {
-      showError('Please complete the verification first.', 'reply-error-msg');
+      showError(turnstileReady("reply") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", 'reply-error-msg');
       return;
     }
 
@@ -2037,11 +2175,14 @@
   document.getElementById('new-analysis').addEventListener('click', () => {
     document.getElementById('message').value = '';
     document.getElementById('char-count').textContent = '0';
+    document.getElementById('char-count').className = '';
     document.getElementById('results').classList.add('hidden');
     document.getElementById('empty-state').classList.remove('hidden');
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    /* Batch 6 polish: keep the mode you picked — starting a new message
+       should not make you pick it again. */
+    lastAnalysis = null; currentHistoryId = null; selectedStyle = ""; markStyleButtons();
     document.getElementById('analyze-btn').disabled = true;
-    document.getElementById('btn-text').textContent = 'Choose a mode first';
+    document.getElementById('btn-text').textContent = 'Analyze Message';
     if (window.turnstile) window.turnstile.reset();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
@@ -2049,11 +2190,13 @@
   document.getElementById('new-reply').addEventListener('click', () => {
     document.getElementById('reply-message').value = '';
     document.getElementById('reply-char-count').textContent = '0';
+    document.getElementById('reply-char-count').className = '';
     document.getElementById('reply-results').classList.add('hidden');
     document.getElementById('empty-state').classList.remove('hidden');
-    document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.remove('active'));
+    /* Batch 6 polish: keep the mode you picked, as above. */
+    lastAnalysis = null; currentHistoryId = null; selectedStyle = ""; markStyleButtons();
     document.getElementById('reply-btn').disabled = true;
-    document.getElementById('reply-btn-text').textContent = 'Choose a mode first';
+    document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
     if (window.turnstile) window.turnstile.reset();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
@@ -2079,27 +2222,44 @@
     });
   });
 
+  /* Batch 6 polish: Share used to share the website address, not the
+     rewrite — so the person receiving it got a link, not the words. */
+  function shareTextOrCopy(text, btn, doneLabel, idleLabel) {
+    if (navigator.share) {
+      navigator.share({ title: 'BeforeYouSay', text: text }).catch(function () { /* user cancelled the share sheet */ });
+    } else {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent; btn.textContent = doneLabel;
+        setTimeout(() => btn.textContent = orig || idleLabel, 2000);
+      });
+    }
+  }
+  function replyTextsJoined() {
+    const calm = document.getElementById('reply-calm').textContent || '';
+    const assertive = document.getElementById('reply-assertive').textContent || '';
+    const warm = document.getElementById('reply-warm').textContent || '';
+    return { calm: calm, assertive: assertive, warm: warm };
+  }
+
   // Share
   document.getElementById('share-result').addEventListener('click', () => {
-    if (navigator.share) {
-      navigator.share({ title: 'BeforeYouSay AI Analysis', text: 'Check this out!', url: window.location.href });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      const btn = document.getElementById('share-result');
-      btn.textContent = '✓ Link Copied!';
-      setTimeout(() => btn.textContent = '🔗 Share', 2000);
-    }
+    if (!currentData) return;
+    shareTextOrCopy('BeforeYouSay rewrite:\n\n' + (currentData.better_version || ''), document.getElementById('share-result'), '✓ Copied!', '🔗 Share');
+  });
+
+  document.getElementById('copy-all-reply').addEventListener('click', () => {
+    const t = replyTextsJoined();
+    const text = 'BeforeYouSay replies\n\nCalm & clear:\n' + t.calm + '\n\nAssertive:\n' + t.assertive + '\n\nWarm & open:\n' + t.warm;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-all-reply');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+    });
   });
 
   document.getElementById('share-reply').addEventListener('click', () => {
-    if (navigator.share) {
-      navigator.share({ title: 'BeforeYouSay AI Analysis', text: 'Check this out!', url: window.location.href });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      const btn = document.getElementById('share-reply');
-      btn.textContent = '✓ Link Copied!';
-      setTimeout(() => btn.textContent = '🔗 Share', 2000);
-    }
+    const t = replyTextsJoined();
+    shareTextOrCopy('BeforeYouSay replies:\n\nCalm & clear: ' + t.calm + '\n\nAssertive: ' + t.assertive + '\n\nWarm & open: ' + t.warm, document.getElementById('share-reply'), '✓ Copied!', '🔗 Share');
   });
 
   document.getElementById('empty-state').classList.remove('hidden');
