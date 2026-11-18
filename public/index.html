@@ -495,6 +495,14 @@
       <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Sign in with Google</button>
     </div>
     <p class="text-xs text-slate-400 mt-3">We only use your email to sign you in. No password is stored here.</p>
+    <!-- Batch 3 money: your plan + checks left today -->
+    <div class="mt-5 pt-4 border-t border-slate-200">
+      <h4 class="text-sm font-bold text-slate-900 mb-1">Your plan</h4>
+      <p id="plan-line" class="text-sm text-slate-600 mb-1" role="status">Free plan — loading your checks for today…</p>
+      <p id="plan-price-line" class="text-sm text-slate-600 mb-3"></p>
+      <button id="upgrade-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">See Pro</button>
+      <p id="upgrade-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+    </div>
     <p id="google-note" class="text-xs text-slate-400 mt-1">Google sign-in is being set up — email works now. If the Google button does not work yet, use email.</p>
     <!-- Batch 1 trust+control: export your data -->
     <div class="mt-5 pt-4 border-t border-slate-200">
@@ -580,6 +588,7 @@
       </div>
     </div>
     <p id="week-empty" class="text-sm text-slate-500 mb-4">Nothing yet this week — run your first analysis.</p>
+    <p id="week-plan-line" class="text-sm text-slate-600 mb-4" role="status"></p>
     <div id="week-stats" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
       <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
       <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
@@ -793,7 +802,7 @@
       }
       /* Tone: cloud profile wins when it exists; otherwise the local
          profile is uploaded once so the cloud learns it. */
-      if (profileRes.data) { const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
+      if (profileRes.data) { userPlan = planFromProfileRow(profileRes.data); const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
       else { const localProfile = loadProfile(); if (JSON.stringify(localProfile) !== JSON.stringify(defaultProfile())) await syncProfileToCloud(localProfile); }
       /* History: merge (cloud wins for display), upload local-only items
          once, then show the merged list. Tombstoned cloud rows — deleted
@@ -1054,6 +1063,8 @@
       document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile").scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    /* Batch 3 money: a style re-run is a fresh /analyze call, so at the daily limit it is blocked like any other check. */
+    if (!canCheckToday()) { setStyleStatus(tab, limitMessageFor(isSignedIn())); return; }
     setStyleStatus(tab, style ? ("Rewriting in " + style + " style…") : "Rewriting in the original style…");
     try {
       const response = await fetch(BYS_API_URL, {
@@ -1062,7 +1073,7 @@
         body: JSON.stringify({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle })
       });
       const data = await response.json();
-      if (!response.ok) { setStyleStatus(tab, "That style didn't work — showing your original result."); return; }
+      if (!response.ok) { setStyleStatus(tab, (data && data.code === LIMIT_HIT_CODE && data.error) ? data.error : "That style didn't work — showing your original result."); return; }
       currentData = data;
       if (tab === "reply") displayReplyResults(data, lastAnalysis.message); else displayResults(data);
       updateLatestHistory(data, selectedStyle);
@@ -1366,6 +1377,7 @@
         + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
     }).join("");
     renderWeek(); /* Phase 1 your-week: history changed, so the week numbers change too */
+    renderPlan(); /* Batch 3 money: a check was added, cleared or deleted, so today's remaining checks changed too */
   }
   document.getElementById("history-list").addEventListener("click", function (e) {
     const viewBtn = e.target.closest("[data-history-view]");
@@ -1430,6 +1442,78 @@
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+
+  /* ---------- Batch 3 money: Free/Pro plans (no payments yet) ----------
+     Free: guests 5 checks a day, signed-in free users 10 checks a day.
+     Pro: unlimited. Nobody can become Pro in this batch — there is no
+     payment, no Stripe, and no plan column in Supabase yet, so everyone
+     is Free. The plan is read from the profiles row only if it has a
+     "plan" field (a future migration adds that column); until then
+     planFromProfileRow always says "free".
+     Counting: today's checks are counted from the history already on
+     this device / in the cloud (loadHistory) — no new table, no new
+     data. A style re-run updates the latest history item instead of
+     adding one, so it does not use up a new check on its own — but it
+     still calls /analyze, so at the daily limit it is blocked like any
+     other check. The backend enforces the same signed-in limit
+     server-side (see server.js); this frontend check is the friendly
+     warning before a check is run, so a user at the limit never burns
+     a Turnstile token or an AI call. The price lives in exactly one
+     place: BYS_PLAN_PRICING below. */
+  const BYS_PLAN_PRICING = { monthly: "$9", yearly: "$90", note: "test price — not final, not charging yet" };
+  const FREE_GUEST_DAILY_LIMIT = 5;
+  const FREE_SIGNED_IN_DAILY_LIMIT = 10;
+  const LIMIT_HIT_CODE = "daily_limit";
+  let userPlan = "free"; /* "free" | "pro" — see the note above */
+  function planFromProfileRow(row) { return row && (row.plan === "pro" || row.plan === "free") ? row.plan : "free"; }
+  function countChecksToday(items, now) {
+    const today = localDayKey(now || new Date());
+    return (items || []).filter(function (it) { const d = validHistoryDate(it); return d && localDayKey(d) === today; }).length;
+  }
+  function dailyLimitFor(plan, signedIn) { return plan === "pro" ? Infinity : (signedIn ? FREE_SIGNED_IN_DAILY_LIMIT : FREE_GUEST_DAILY_LIMIT); }
+  function checksLeftToday(plan, signedIn, items, now) {
+    const limit = dailyLimitFor(plan, signedIn);
+    if (!isFinite(limit)) return Infinity;
+    return Math.max(0, limit - countChecksToday(items, now));
+  }
+  function limitMessageFor(signedIn) {
+    return signedIn
+      ? "You've used all 10 of your free checks for today. Pro removes the limit — it's coming soon, and we're not taking payments yet. Your checks start again tomorrow."
+      : "You've used all 5 of your free checks for today as a guest. Sign in and you get 10 a day — or wait until tomorrow, when your checks start again. Pro (coming soon) removes the limit.";
+  }
+  function planLineText(plan, signedIn, items, now) {
+    if (plan === "pro") return "Pro plan — unlimited checks today.";
+    const limit = dailyLimitFor(plan, signedIn);
+    const left = checksLeftToday(plan, signedIn, items, now);
+    return "Free plan — " + left + " of " + limit + " check" + (limit === 1 ? "" : "s") + " left today" + (signedIn ? "." : " as a guest — sign in for 10 a day.");
+  }
+  function renderPlan() {
+    const items = loadHistory();
+    const signedIn = isSignedIn();
+    const line = planLineText(userPlan, signedIn, items, new Date());
+    const el = document.getElementById("plan-line"); if (el) el.textContent = line;
+    const weekEl = document.getElementById("week-plan-line"); if (weekEl) weekEl.textContent = line;
+    const priceEl = document.getElementById("plan-price-line");
+    if (priceEl) priceEl.textContent = userPlan === "pro"
+      ? "You're on Pro — thanks for supporting BeforeYouSay."
+      : "Pro is coming soon — " + BYS_PLAN_PRICING.monthly + "/month or " + BYS_PLAN_PRICING.yearly + "/year (" + BYS_PLAN_PRICING.note + "). Pro removes the daily limit and unlocks full searchable history.";
+  }
+  function canCheckToday() { return checksLeftToday(userPlan, isSignedIn(), loadHistory(), new Date()) > 0; }
+  /* Counter fix (Batch 3): the prefill below sets the message box value
+     before the character-counter listeners are attached, so the "input"
+     event it sends has nobody listening yet and the counter stays at 0.
+     Setting the counter here, directly, is what actually fixes it. */
+  function updateCharCounter(boxId, countId) {
+    const box = document.getElementById(boxId); const el = document.getElementById(countId);
+    if (box && el) el.textContent = box.value.length;
+  }
+  document.getElementById("upgrade-btn").addEventListener("click", function () {
+    const el = document.getElementById("upgrade-status");
+    if (el) el.textContent = "Pro is coming soon — we're not taking payments or card details yet. Pop your email in the \u201cGet notified when Pro features drop\u201d box at the bottom of this page and we'll let you know when it's ready.";
+    const notify = document.querySelector('form[action*="list-manage"]');
+    if (notify) notify.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  renderPlan();
 
   /* ---------- Batch 1 trust+control: export my data + delete my account ---------- */
   /* Export: the file is built on this device from the data already here —
@@ -1611,7 +1695,7 @@
   });
   document.getElementById("auth-signout-btn").addEventListener("click", async function () {
     if (supabaseClient) await supabaseClient.auth.signOut();
-    supabaseSession = null; updateAuthUI(); restoreGuestData(); setAuthStatus("Signed out. Showing history saved on this device.");
+    supabaseSession = null; userPlan = "free"; updateAuthUI(); restoreGuestData(); renderPlan(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
   applyProfile(); renderHistory(); renderContexts(); showWelcomeBack(); initAuth();
 
@@ -1635,11 +1719,13 @@
         var replyBox = document.getElementById("reply-message");
         if (replyBox && prefill) {
           replyBox.value = prefill;
+          updateCharCounter("reply-message", "reply-char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
           replyBox.dispatchEvent(new Event("input", { bubbles: true }));
         }
       } else if (prefill) {
         var box = document.getElementById("message");
         box.value = prefill;
+        updateCharCounter("message", "char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
         box.dispatchEvent(new Event("input", { bubbles: true }));
       }
       if (mode && ["workplace", "relationship", "rizz", "negotiation"].indexOf(mode) !== -1) {
@@ -1707,6 +1793,9 @@
     }
   });
 
+  updateCharCounter("message", "char-count"); /* Batch 3: counter fix — re-sync now the listeners above exist, in case the box was pre-filled */
+  updateCharCounter("reply-message", "reply-char-count");
+
   function startLoadingMessages(textId) {
     let i = 0;
     document.getElementById(textId).textContent = loadingMessages[0];
@@ -1744,6 +1833,13 @@
 
     if (!turnstileToken) {
       showError('Please complete the verification first.');
+      return;
+    }
+
+    /* Batch 3 money: at the daily limit, do not run the check at all — no Turnstile token spent, no AI call, nothing counted. */
+    if (!canCheckToday()) {
+      showError(limitMessageFor(isSignedIn()));
+      document.getElementById('empty-state').classList.remove('hidden');
       return;
     }
 
@@ -1844,6 +1940,13 @@
 
     if (!turnstileToken) {
       showError('Please complete the verification first.', 'reply-error-msg');
+      return;
+    }
+
+    /* Batch 3 money: at the daily limit, do not run the check at all — no Turnstile token spent, no AI call, nothing counted. */
+    if (!canCheckToday()) {
+      showError(limitMessageFor(isSignedIn()), 'reply-error-msg');
+      document.getElementById('empty-state').classList.remove('hidden');
       return;
     }
 
