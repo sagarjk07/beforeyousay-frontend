@@ -495,6 +495,30 @@
       <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Sign in with Google</button>
     </div>
     <p class="text-xs text-slate-400 mt-3">We only use your email to sign you in. No password is stored here.</p>
+    <p id="google-note" class="text-xs text-slate-400 mt-1">Google sign-in is being set up — email works now. If the Google button does not work yet, use email.</p>
+    <!-- Batch 1 trust+control: export your data -->
+    <div class="mt-5 pt-4 border-t border-slate-200">
+      <h4 class="text-sm font-bold text-slate-900 mb-1">Your data</h4>
+      <p class="text-sm text-slate-600 mb-3">Download everything BeforeYouSay has for you — your tone, your history (including ratings), and your saved people — as one file. It is made on this device; nothing is sent anywhere.</p>
+      <button id="export-data-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Download my data</button>
+      <p id="export-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+    </div>
+    <!-- Batch 1 trust+control: delete your account -->
+    <div class="mt-5 pt-4 border-t border-slate-200">
+      <h4 class="text-sm font-bold text-slate-900 mb-1">Delete my account</h4>
+      <p id="delete-account-note" class="text-sm text-slate-600 mb-3">This deletes your tone, history and saved people — from the cloud and from this device — and removes your sign-in account. It cannot be undone. You need to be signed in to delete an account.</p>
+      <button id="delete-account-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-red-200 text-sm font-bold text-red-600 hover:border-red-400">Delete my account</button>
+      <div id="delete-confirm-box" class="hidden mt-3 p-4 bg-red-50 rounded-2xl border border-red-200">
+        <p class="text-sm font-bold text-red-800 mb-1">Are you sure? This cannot be undone.</p>
+        <p class="text-sm text-red-700 mb-3">Type <span class="font-bold">DELETE</span> below, then confirm. Your tone, history and saved people will be deleted from the cloud and this device, and your sign-in account will be removed.</p>
+        <input id="delete-confirm-input" type="text" maxlength="10" placeholder="Type DELETE" autocomplete="off" class="w-full p-3 rounded-xl border-2 border-red-200 focus:border-red-400 focus:outline-none text-sm bg-white">
+        <div class="flex flex-col sm:flex-row gap-2 mt-3">
+          <button id="delete-confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, delete everything</button>
+          <button id="delete-cancel-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Keep my account</button>
+        </div>
+      </div>
+      <p id="delete-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+    </div>
   </section>
 
   <section id="tone-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
@@ -1407,6 +1431,122 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  /* ---------- Batch 1 trust+control: export my data + delete my account ---------- */
+  /* Export: the file is built on this device from the data already here —
+     profile (loadProfile), history (loadHistory, ratings ride inside each
+     item's result), and saved people (loadContexts). Signed in or not, the
+     same file is made; signed in, it holds the cloud copy (which is also
+     what is on this device after a sync). No backend call, no new table.
+     Delete: two confirmations — type DELETE, then a final confirm box.
+     The frontend first deletes the user's own cloud rows directly (RLS
+     lets each user delete only their own rows), then asks the backend
+     POST /delete-account to remove anything left and the Supabase auth
+     user itself (that last step needs a service-role key on the server —
+     it must NEVER go in this file). Whatever the backend says, local data
+     is cleared and the user is signed out, so nothing is left on a shared
+     device. A failure can never leave the account half-deleted silently:
+     the status line says exactly what was and was not removed. */
+  const EXPORT_VERSION = 1;
+  function buildExportData() {
+    return {
+      app: "BeforeYouSay",
+      version: EXPORT_VERSION,
+      exportedAt: new Date().toISOString(),
+      account: { signedIn: isSignedIn(), email: (supabaseSession && supabaseSession.user && supabaseSession.user.email) || null },
+      profile: loadProfile(),
+      history: loadHistory(),
+      contexts: loadContexts()
+    };
+  }
+  function exportFileName() {
+    return "beforeyousay-my-data-" + new Date().toISOString().slice(0, 10) + ".json";
+  }
+  function downloadExport() {
+    try {
+      const data = buildExportData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = exportFileName(); document.body.appendChild(a); a.click();
+      a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      const who = isSignedIn() ? "Your cloud data" : "Your data on this device";
+      document.getElementById("export-status").textContent = who + " downloaded as " + exportFileName() + " (" + data.history.length + " history item" + (data.history.length === 1 ? "" : "s") + ", " + data.contexts.length + " saved " + (data.contexts.length === 1 ? "person" : "people") + ").";
+      return true;
+    } catch (e) {
+      document.getElementById("export-status").textContent = "Couldn't make the download on this device. Please try again.";
+      return false;
+    }
+  }
+  function deleteAccountUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/delete-account"; }
+  function deleteConfirmValid(value) { return String(value || "").trim() === "DELETE"; }
+  function clearAllLocalData() {
+    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, LAST_VISIT_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
+  }
+  async function deleteMyAccount() {
+    const statusEl = document.getElementById("delete-status");
+    if (!isSignedIn() || !supabaseClient) { statusEl.textContent = "You are not signed in, so there is no account to delete. Your data on this device is still here — use Clear all in Your history to remove it."; return; }
+    const userId = supabaseSession.user.id;
+    const token = supabaseSession.access_token;
+    statusEl.textContent = "Deleting your data…";
+    let cloudRowsDeleted = false;
+    let backendResult = null;
+    try {
+      /* Step 1: delete the user's own cloud rows directly. RLS allows
+         each user to delete only their own rows, so this works today with
+         no new server setup. */
+      const results = await Promise.all([
+        supabaseClient.from("history").delete().eq("user_id", userId),
+        supabaseClient.from("contexts").delete().eq("user_id", userId),
+        supabaseClient.from("profiles").delete().eq("id", userId)
+      ]);
+      cloudRowsDeleted = results.every(function (r) { return !r.error; });
+    } catch (e) { cloudRowsDeleted = false; }
+    try {
+      /* Step 2: ask the backend to remove anything left, and the auth
+         user itself. 503 means the server is not set up for this yet
+         (see README.md) — that is not a failure of step 1. */
+      const res = await fetch(deleteAccountUrl(), { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token } });
+      backendResult = await res.json().catch(function () { return null; });
+      backendResult = backendResult || { ok: res.ok };
+    } catch (e) { backendResult = null; }
+    /* Step 3: always clear this device and sign out, whatever happened
+       above, so nothing is left behind on a shared device. */
+    clearAllLocalData();
+    try { await supabaseClient.auth.signOut(); } catch (e) { /* already signed out */ }
+    supabaseSession = null; selectedContextId = "";
+    saveProfile(defaultProfile()); saveHistory([]); saveContexts([]);
+    applyProfile(); renderHistory(); renderContexts(); updateAuthUI();
+    document.getElementById("delete-confirm-box").classList.add("hidden");
+    document.getElementById("delete-confirm-input").value = "";
+    if (backendResult && backendResult.deleted) {
+      statusEl.textContent = "Your account is deleted — your tone, history and saved people are gone from the cloud and this device.";
+    } else if (cloudRowsDeleted) {
+      statusEl.textContent = "Your tone, history and saved people were deleted and you are signed out. Your sign-in account itself could not be removed automatically yet — it holds no data now, and it will be removed once the server is set up (see the note in Your account). You can sign in again with the same email and start fresh.";
+    } else {
+      statusEl.textContent = "You are signed out and everything on this device is cleared. Your cloud data could not be deleted just now — please try deleting again after signing back in, or contact us and we will remove it.";
+    }
+    setAuthStatus("Account deleted. Showing a fresh start on this device.");
+  }
+  document.getElementById("export-data-btn").addEventListener("click", function () { downloadExport(); });
+  document.getElementById("delete-account-btn").addEventListener("click", function () {
+    if (!isSignedIn()) { document.getElementById("delete-status").textContent = "You are not signed in, so there is no account to delete. Your data on this device is still here — use Clear all in Your history to remove it."; return; }
+    document.getElementById("delete-confirm-box").classList.remove("hidden");
+    document.getElementById("delete-status").textContent = "";
+    document.getElementById("delete-confirm-input").focus();
+  });
+  document.getElementById("delete-cancel-btn").addEventListener("click", function () {
+    document.getElementById("delete-confirm-box").classList.add("hidden");
+    document.getElementById("delete-confirm-input").value = "";
+    document.getElementById("delete-status").textContent = "Keeping your account — nothing was deleted.";
+  });
+  document.getElementById("delete-confirm-btn").addEventListener("click", async function () {
+    const value = document.getElementById("delete-confirm-input").value;
+    if (!deleteConfirmValid(value)) { document.getElementById("delete-status").textContent = "Please type DELETE exactly, in capitals, to confirm."; return; }
+    if (!confirm("This really is the last step — your tone, history, saved people and sign-in account will all be deleted and cannot be brought back. Delete everything?")) return;
+    document.getElementById("delete-confirm-btn").disabled = true;
+    try { await deleteMyAccount(); } finally { document.getElementById("delete-confirm-btn").disabled = false; }
+  });
+
   /* ---------- Phase 0: Accounts — sign-in ready, optional ---------- */
   function authConfigured() { return Boolean(BYS_CONFIG.supabaseUrl && BYS_CONFIG.supabaseAnonKey); }
   function setAuthStatus(msg) { document.getElementById("auth-status").textContent = msg; }
@@ -1459,9 +1599,15 @@
     const res = await supabaseClient.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.origin } });
     setAuthStatus(res.error ? ("Couldn't send the link: " + res.error.message) : "Check your email — tap the sign-in link to finish.");
   });
+  /* Batch 1 trust+control: Google sign-in. The button only works once
+     Google is switched on in Supabase (see README.md). Until then Supabase
+     answers with an error here, and we say so plainly instead of doing
+     nothing — the old code awaited the call and ignored its result. */
   document.getElementById("auth-google-btn").addEventListener("click", async function () {
     if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your history still works on this device."); return; }
-    await supabaseClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+    setAuthStatus("Opening Google sign-in…");
+    const res = await supabaseClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+    if (res.error) setAuthStatus("Google sign-in isn't set up yet — please use email for now. (" + res.error.message + ")");
   });
   document.getElementById("auth-signout-btn").addEventListener("click", async function () {
     if (supabaseClient) await supabaseClient.auth.signOut();
