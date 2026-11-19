@@ -527,6 +527,18 @@
         <button id="upgrade-yearly-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Pro yearly — $50/year (save $10)</button>
       </div>
       <p id="upgrade-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      <!-- Batch 11 self-serve cancel: Pro users can cancel themselves. The subscription ends at the end of the paid period — they keep Pro until then. No automatic refund; refunds are on request by email. -->
+      <button id="cancel-pro-btn" class="hidden px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600 hover:border-purple-300">Cancel Pro</button>
+      <div id="cancel-confirm-box" class="hidden mt-3 p-4 bg-amber-50 rounded-2xl border border-amber-200">
+        <p class="text-sm font-bold text-slate-800 mb-1">Cancel Pro?</p>
+        <p class="text-sm text-slate-600 mb-3">You&rsquo;ll keep Pro until the end of the time you&rsquo;ve already paid for, then drop back to Free. No refund is automatic &mdash; if you&rsquo;d like your money back, email us and we&rsquo;ll sort it out.</p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button id="cancel-confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, cancel Pro</button>
+          <button id="cancel-back-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Keep Pro</button>
+        </div>
+      </div>
+      <p id="cancel-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      <p id="cancel-refund-note" class="hidden text-sm text-slate-500 mt-2">Pro is cancelled, but you keep it until the date above. Changed your mind about the money? Refunds are available on request &mdash; email <a class="text-purple-600 font-bold" href="mailto:hello@beforeyousay.com">hello@beforeyousay.com</a> and we&rsquo;ll sort it out.</p>
     </div>
     <!-- Batch 1 trust+control: export your data -->
     <div class="mt-5 pt-4 border-t border-slate-200">
@@ -828,7 +840,7 @@
       }
       /* Tone: cloud profile wins when it exists; otherwise the local
          profile is uploaded once so the cloud learns it. */
-      if (profileRes.data) { userPlan = planFromProfileRow(profileRes.data); const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
+      if (profileRes.data) { userPlan = planFromProfileRow(profileRes.data); planEndsAt = profileRes.data.plan_ends_at || null; const p = cloudRowToProfile(profileRes.data); saveProfile(p); applyProfile(); }
       else { const localProfile = loadProfile(); if (JSON.stringify(localProfile) !== JSON.stringify(defaultProfile())) await syncProfileToCloud(localProfile); }
       renderPlan(); /* Batch 9: the plan was just loaded from the cloud row - re-render the plan line now, so a Pro plan shows immediately even if anything later in this sync fails before renderHistory runs. */
       /* History: merge (cloud wins for display), upload local-only items
@@ -1579,6 +1591,8 @@
   const FREE_SIGNED_IN_DAILY_LIMIT = 10;
   const LIMIT_HIT_CODE = "daily_limit";
   let userPlan = "free"; /* "free" | "pro" — see the note above */
+  let planEndsAt = null; /* Batch 11: ISO date string when Pro has been cancelled but still runs until the end of the paid period; null otherwise. Read from the cloud profile row, set by the cancel endpoint. */
+  function formatPlanEndsAt(iso) { try { const d = new Date(iso); if (!Number.isFinite(d.getTime())) return ""; return d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return ""; } }
   function planFromProfileRow(row) { return row && (row.plan === "pro" || row.plan === "free") ? row.plan : "free"; }
   function countChecksToday(items, now) {
     const today = localDayKey(now || new Date());
@@ -1595,8 +1609,8 @@
       ? "You've used all 10 of your free checks for today. Pro removes the limit — upgrade in Your account below. Your checks start again tomorrow."
       : "You've used all 5 of your free checks for today as a guest. Sign in and you get 10 a day — or wait until tomorrow, when your checks start again. Pro removes the limit.";
   }
-  function planLineText(plan, signedIn, items, now) {
-    if (plan === "pro") return "Pro plan — unlimited checks today.";
+  function planLineText(plan, signedIn, items, now, endsAt) {
+    if (plan === "pro") { const until = endsAt ? formatPlanEndsAt(endsAt) : ""; return until ? "Pro plan until " + until + " — then Free." : "Pro plan — unlimited checks today."; }
     const limit = dailyLimitFor(plan, signedIn);
     const left = checksLeftToday(plan, signedIn, items, now);
     return "Free plan — " + left + " of " + limit + " check" + (limit === 1 ? "" : "s") + " left today" + (signedIn ? "." : " as a guest — sign in for 10 a day.");
@@ -1604,7 +1618,11 @@
   function renderPlan() {
     const items = loadHistory();
     const signedIn = isSignedIn();
-    const line = planLineText(userPlan, signedIn, items, new Date());
+    const line = planLineText(userPlan, signedIn, items, new Date(), planEndsAt);
+    /* Batch 11: the Cancel Pro button only exists for signed-in Pro users who have not already cancelled; the refund note only shows once Pro is cancelled. */
+    const cancelBtn = document.getElementById("cancel-pro-btn"); if (cancelBtn) cancelBtn.classList.toggle("hidden", !(signedIn && userPlan === "pro" && !planEndsAt));
+    const cancelNote = document.getElementById("cancel-refund-note"); if (cancelNote) cancelNote.classList.toggle("hidden", !(signedIn && userPlan === "pro" && Boolean(planEndsAt)));
+    if (!(signedIn && userPlan === "pro")) { const box = document.getElementById("cancel-confirm-box"); if (box) box.classList.add("hidden"); }
     const el = document.getElementById("plan-line"); if (el) el.textContent = line;
     const weekEl = document.getElementById("week-plan-line"); if (weekEl) weekEl.textContent = line;
     const priceEl = document.getElementById("plan-price-line");
@@ -1644,6 +1662,43 @@
   }
   document.getElementById("upgrade-monthly-btn").addEventListener("click", function () { startCheckout("monthly"); });
   document.getElementById("upgrade-yearly-btn").addEventListener("click", function () { startCheckout("yearly"); });
+  /* ---------- Batch 11 self-serve cancel ----------
+     Two taps: Cancel Pro opens the confirm box, Yes cancels. The
+     backend cancels at the end of the paid period (cancel_at_
+     period_end), so Pro keeps working until then — the plan line
+     shows "Pro until <date>". No automatic refund; the refund note
+     points at hello@beforeyousay.com (that mailbox does not exist
+     yet — set it up, or change the address, before this goes live).
+     Free users and guests never see the button (renderPlan hides it). */
+  function cancelUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/cancel-subscription"; }
+  async function cancelPro() {
+    const el = document.getElementById("cancel-status");
+    if (!isSignedIn()) { if (el) el.textContent = "Sign in first — Pro is tied to your account."; return; }
+    if (el) el.textContent = "Cancelling Pro…";
+    try {
+      const res = await fetch(cancelUrl(), { method: "POST", headers: getAuthHeaders() });
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.cancelled) { if (el) el.textContent = (data && data.error) ? data.error : "Cancellation couldn't be completed. Please try again."; return; }
+      planEndsAt = data.planEndsAt || null;
+      renderPlan();
+      if (el) el.textContent = planEndsAt ? "Pro is cancelled. You keep Pro until " + formatPlanEndsAt(planEndsAt) + ", then you're back on Free." : "Pro is cancelled.";
+    } catch (e) { if (el) el.textContent = "Cancellation couldn't be completed — please check your connection and try again."; }
+  }
+  document.getElementById("cancel-pro-btn").addEventListener("click", function () {
+    const box = document.getElementById("cancel-confirm-box");
+    if (box) box.classList.remove("hidden");
+    const el = document.getElementById("cancel-status"); if (el) el.textContent = "";
+  });
+  document.getElementById("cancel-back-btn").addEventListener("click", function () {
+    const box = document.getElementById("cancel-confirm-box");
+    if (box) box.classList.add("hidden");
+  });
+  document.getElementById("cancel-confirm-btn").addEventListener("click", async function () {
+    const btn = document.getElementById("cancel-confirm-btn");
+    const box = document.getElementById("cancel-confirm-box");
+    if (btn) btn.disabled = true;
+    try { await cancelPro(); } finally { if (btn) btn.disabled = false; if (box) box.classList.add("hidden"); }
+  });
   renderPlan();
 
   /* ---------- Batch 1 trust+control: export my data + delete my account ---------- */
@@ -1812,7 +1867,7 @@
         try {
           const res = await supabaseClient.from("profiles").select("plan").eq("id", supabaseSession.user.id).maybeSingle();
           if (res && res.data && res.data.plan === "pro") {
-            userPlan = "pro"; renderPlan();
+            userPlan = "pro"; planEndsAt = null; renderPlan();
             if (el) el.textContent = "You're on Pro — thanks for supporting BeforeYouSay.";
             return;
           }
@@ -1876,7 +1931,7 @@
   });
   document.getElementById("auth-signout-btn").addEventListener("click", async function () {
     if (supabaseClient) await supabaseClient.auth.signOut();
-    supabaseSession = null; userPlan = "free"; updateAuthUI(); restoreGuestData(); renderPlan(); setAuthStatus("Signed out. Showing history saved on this device.");
+    supabaseSession = null; userPlan = "free"; planEndsAt = null; updateAuthUI(); restoreGuestData(); renderPlan(); setAuthStatus("Signed out. Showing history saved on this device.");
   });
   applyProfile(); renderHistory(); renderContexts(); showWelcomeBack(); initAuth();
   /* Batch 6 polish: the header count used to start at 0 on every reload,
