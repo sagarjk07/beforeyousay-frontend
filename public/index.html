@@ -1641,6 +1641,20 @@
   }
   /* ---------- Batch 8 Pro checkout ---------- */
   function checkoutUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/create-checkout-session"; }
+  /* Batch 12: look a just-paid Checkout session up on the backend.
+     No sign-in needed — the user is signed out at exactly this
+     moment. Returns { email, plan } for the paying customer, or null
+     when the session cannot be found or checked (the generic return
+     messages below still apply then). */
+  function checkoutSessionUrl(sessionId) { return BYS_API_URL.replace(/\/analyze$/, "") + "/checkout-session?session_id=" + encodeURIComponent(sessionId); }
+  async function lookupCheckoutSession(sessionId) {
+    try {
+      const res = await fetch(checkoutSessionUrl(sessionId));
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.email) return null;
+      return { email: data.email, plan: data.plan || "free" };
+    } catch (e) { return null; }
+  }
   document.getElementById("upgrade-btn").addEventListener("click", function () {
     const el = document.getElementById("upgrade-status");
     const choices = document.getElementById("upgrade-choices");
@@ -1854,13 +1868,46 @@
       const params = new URLSearchParams(window.location.search);
       const result = params.get("checkout");
       if (!result) return;
+      const sessionId = params.get("session_id");
       params.delete("checkout");
+      params.delete("session_id");
       const q = params.toString();
       history.replaceState(null, "", window.location.pathname + (q ? "?" + q : "") + window.location.hash);
       const el = document.getElementById("upgrade-status");
       if (result === "cancelled") { if (el) el.textContent = "Checkout was cancelled — no charge, you're still on the Free plan."; return; }
       if (result !== "success") return;
-      if (!isSignedIn()) { if (el) el.textContent = "Your payment went through — sign in to finish setting up your Pro."; return; }
+      /* Batch 12: after paying, Stripe sends the user back here — and
+         twice now Sagar landed back signed out, feeling locked out.
+         The payment itself was fine both times, but the site could
+         not say WHO had just paid. So look the payment up first:
+         the backend returns the paying customer's email (and plan),
+         and we name that account in the message. If the lookup fails
+         we fall back to the generic messages, exactly as before. */
+      let payer = null;
+      if (sessionId) payer = await lookupCheckoutSession(sessionId);
+      /* The sign-in session can still be refreshing when Stripe sends
+         the user back — check once more before declaring them signed
+         out, so a slow refresh does not look like a lockout. */
+      if (!isSignedIn() && supabaseClient) {
+        try {
+          const again = await supabaseClient.auth.getSession();
+          if (again && again.data && again.data.session) supabaseSession = again.data.session;
+        } catch (e) { /* still signed out — the message below says so plainly */ }
+      }
+      if (!isSignedIn()) {
+        if (el) el.textContent = payer && payer.email
+          ? "Your payment went through — you paid as " + payer.email + ". Sign in with that account to finish setting up your Pro."
+          : "Your payment went through — sign in to finish setting up your Pro.";
+        return;
+      }
+      /* Signed in — but as the wrong account? That is the other half
+         of the confusion: paying as one email and landing signed in
+         as another shows Free and looks like the payment vanished. */
+      const signedInEmail = (supabaseSession.user.email || "").toLowerCase();
+      if (payer && payer.email && signedInEmail && payer.email.toLowerCase() !== signedInEmail) {
+        if (el) el.textContent = "You paid as " + payer.email + " — but you're signed in as " + supabaseSession.user.email + ". Sign out and back in as " + payer.email + " to see your Pro.";
+        return;
+      }
       if (el) el.textContent = "Setting up your Pro… this takes a few seconds.";
       for (let i = 0; i < 6; i++) {
         await new Promise(function (r) { setTimeout(r, 3000); });
