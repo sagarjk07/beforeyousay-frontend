@@ -5,28 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>BeforeYouSay — AI Message Coach for Texts, Work & Relationships</title>
-  <meta name="description" content="Paste any message and get 3 smarter replies instantly. AI-powered communication coach for workplace, relationships, and negotiation.">
-  <meta name="keywords" content="AI message rewriter, how to reply to texts, communication coach, workplace message helper, relationship texting advice">
+  <title>BeforeYouSay — High-Stakes Message Coach for Work, Money & Boundaries</title>
+  <meta name="description" content="Paste a message and get the subtext, the trap, and the exact reply. High-stakes communication coaching for career, negotiation, high-conflict, and boundaries.">
+  <meta name="keywords" content="AI message coach, high-stakes communication, reply to boss, negotiation reply, BIFF response, co-parenting message, set boundaries">
   <link rel="canonical" href="https://beforeyousay.com/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="BeforeYouSay — AI Message Coach">
-  <meta property="og:description" content="Paste any message. Get 3 smarter replies. Workplace, relationship, negotiation modes.">
+  <meta property="og:title" content="BeforeYouSay — High-Stakes Message Coach">
+  <meta property="og:description" content="Paste a message. Get the subtext, the trap, and the exact reply. Career, negotiation, high-conflict, and boundaries.">
   <meta property="og:url" content="https://beforeyousay.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BeforeYouSay — AI Message Coach">
-  <meta name="twitter:description" content="Paste any message. Get 3 smarter replies instantly.">
+  <meta name="twitter:title" content="BeforeYouSay — High-Stakes Message Coach">
+  <meta name="twitter:description" content="Paste a message. Get the subtext, the trap, and the exact reply.">
   <meta name="twitter:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Favicon -->
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#8b5cf6">
+<meta name="theme-color" content="#0f172a">
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
@@ -41,9 +41,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .glass { backdrop-filter: blur(20px); background: rgba(255,255,255,0.1); }
-    .mode-btn.active, .reply-mode-btn.active { border-width: 3px; background: linear-gradient(135deg,#8b5cf6,#ec4899); color: white; box-shadow: 0 8px 25px rgba(139,92,246,0.35); transform: translateY(-1px); }
-    .tab-btn.active { background: linear-gradient(135deg,#8b5cf6,#ec4899); color: white; box-shadow: 0 4px 15px rgba(139,92,246,0.3); }
+    .mode-btn.active, .reply-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
+    .mode-btn.active .lane-desc, .reply-mode-btn.active .lane-desc { color: #cbd5e1; }
+    .tab-btn.active { background: #0f172a; color: white; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .fade-in { animation: fadeIn 0.35s ease forwards; }
     .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
@@ -54,28 +54,28 @@
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 text-slate-900">
+<body class="min-h-screen bg-white text-slate-900">
 
 <!-- Header -->
-<header class="glass backdrop-blur-xl sticky top-0 z-50 border-b border-white/30 shadow-lg">
+<header class="bg-white sticky top-0 z-50 border-b border-slate-200">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <img src="/icon.svg" alt="BeforeYouSay logo" class="w-10 h-10 rounded-xl shadow-lg">
+        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-lg leading-none" aria-hidden="true">B</span>
         <div>
           <h1 class="text-xl font-bold text-slate-900">BeforeYouSay</h1>
-          <p class="text-xs text-slate-500 font-medium hidden sm:block">AI Communication Coach</p>
+          <p class="text-xs text-slate-500 font-medium hidden sm:block">High-Stakes Communication Coach</p>
         </div>
       </div>
       <div class="flex items-center space-x-4">
         <div class="text-sm text-slate-500">
-          <span id="request-count" class="font-bold text-purple-600">0</span>
+          <span id="request-count" class="font-bold text-slate-900">0</span>
           <span class="hidden sm:inline"> analyses today</span>
         </div>
         <div id="auth-area" class="flex items-center gap-2">
           <span id="auth-state" class="hidden sm:inline text-sm text-slate-500">Not signed in</span>
-          <button id="auth-open-btn" class="px-3 py-2.5 rounded-xl bg-white/70 border border-purple-200 text-sm font-semibold text-purple-700 hover:bg-white transition">Sign in</button>
-          <button id="auth-signout-btn" class="hidden px-3 py-2.5 rounded-xl bg-white/70 border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
+          <button id="auth-open-btn" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Sign in</button>
+          <button id="auth-signout-btn" class="hidden px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
         </div>
       </div>
     </div>
@@ -86,52 +86,52 @@
 
   <!-- Hero -->
   <section class="text-center space-y-4">
-    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-purple-800 to-slate-900 bg-clip-text text-transparent leading-tight">
+    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight">
       Never send a message you'll regret. Upload a screenshot thread—get the subtext, the trap, and the exact reply.
     </h2>
     <p class="text-lg sm:text-xl text-slate-600 max-w-lg mx-auto leading-relaxed">
-      AI analyzes tone, predicts emotional impact, and rewrites your messages for work, relationships, and negotiation.
+      AI reads the subtext, flags the trap, and writes the exact reply — for the messages your job, money, or sanity depend on.
     </p>
   </section>
 
   <!-- Mode Tabs -->
   <div class="flex justify-center">
-    <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-lg border border-white/50 inline-flex gap-1">
+    <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1">
       <button data-tab="rewrite" class="tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
-        ✏️ <span class="hidden sm:inline">Rewrite </span>Mine
+        <span class="hidden sm:inline">Rewrite </span>Mine
       </button>
       <button data-tab="reply" class="tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
-        💬 <span class="hidden sm:inline">Reply to </span>This
+        <span class="hidden sm:inline">Reply to </span>This
       </button>
     </div>
   </div>
 
   <!-- App Card -->
-  <section class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section class="bg-white rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-3xl mx-auto">
 
     <!-- Phase 1 your-week: gentle welcome back — one short line, never a popup -->
-    <p id="welcome-back" class="hidden mb-6 p-4 bg-amber-50/80 rounded-2xl border border-amber-100 text-sm text-slate-700" role="status"></p>
+    <p id="welcome-back" class="hidden mb-6 p-4 bg-amber-50 rounded-2xl border border-amber-100 text-sm text-slate-700" role="status"></p>
 
     <!-- Phase 1 contexts+styles: Who is this for? Shared by both tabs. -->
-    <div class="mb-6 p-4 bg-purple-50/70 rounded-2xl border border-purple-100">
+    <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
       <label for="context-select" class="block text-sm font-bold text-slate-700 mb-2">Who is this for? <span class="font-normal text-slate-500">(optional)</span></label>
       <div class="flex flex-col sm:flex-row gap-2">
-        <select id="context-select" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+        <select id="context-select" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
           <option value="">No one in particular</option>
         </select>
-        <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-purple-700 hover:border-purple-300">Manage people</button>
+        <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Manage people</button>
       </div>
       <p id="context-note-line" class="text-xs text-slate-500 mt-2"></p>
       <!-- Batch 6 polish: add / manage people right here, where the picker is —
            no more jumping down the page to the Your people section. -->
-      <div id="context-inline-panel" class="hidden mt-3 p-4 bg-white/80 rounded-2xl border border-slate-200">
+      <div id="context-inline-panel" class="hidden mt-3 p-4 bg-white rounded-2xl border border-slate-200">
         <p id="context-inline-title" class="text-sm font-bold text-slate-700 mb-2">Add a person</p>
         <div class="space-y-3">
-          <input id="context-inline-name" type="text" maxlength="50" placeholder="Name — e.g. My manager" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
-          <input id="context-inline-note" type="text" maxlength="200" placeholder="How do you want to sound with them? (optional)" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+          <input id="context-inline-name" type="text" maxlength="50" placeholder="Name — e.g. My manager" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+          <input id="context-inline-note" type="text" maxlength="200" placeholder="How do you want to sound with them? (optional)" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
           <div class="flex flex-col sm:flex-row gap-2">
-            <button id="context-inline-save-btn" type="button" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Save person</button>
-            <button id="context-inline-cancel-btn" type="button" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
+            <button id="context-inline-save-btn" type="button" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Save person</button>
+            <button id="context-inline-cancel-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
           </div>
           <p id="context-inline-status" class="text-sm text-slate-500" role="status"></p>
           <div id="context-inline-list" class="space-y-3"></div>
@@ -145,27 +145,32 @@
       <p class="text-sm font-bold text-slate-700 mb-2">Try one today</p>
       <p class="text-xs text-slate-500 mb-3">Tap one to load it into the message box — edit it however you like before you analyse.</p>
       <div id="daily-moments" class="flex flex-wrap gap-2">
-        <button type="button" data-moment="0" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🙏 Apologise to a friend</button>
-        <button type="button" data-moment="1" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💼 Follow up on a job application</button>
-        <button type="button" data-moment="2" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💰 Ask for a pay rise</button>
-        <button type="button" data-moment="3" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🚫 Say no politely</button>
-        <button type="button" data-moment="4" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">💬 Check in after an argument</button>
-        <button type="button" data-moment="5" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">🧾 Ask a client for payment</button>
+        <button type="button" data-moment="0" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Push back on a Friday deadline</button>
+        <button type="button" data-moment="1" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Push back on scope creep</button>
+        <button type="button" data-moment="2" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Reply to a heated message</button>
+        <button type="button" data-moment="3" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Say no to family</button>
       </div>
     </div>
 
     <!-- Rewrite Tab -->
     <div id="tab-rewrite" class="tab-content">
       <!-- Mode Selector -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-6">
-        <button data-mode="workplace" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💼 Workplace
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button data-mode="career" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
         </button>
-        <button data-mode="relationship" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💕 Relationship
+        <button data-mode="negotiation" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
         </button>
-        <button data-mode="negotiation" class="mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💰 Negotiation
+        <button data-mode="high_conflict" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
+        </button>
+        <button data-mode="boundaries" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
         </button>
       </div>
 
@@ -176,8 +181,19 @@
           placeholder="Paste your message here... e.g. 'Why didn't you reply?'"
           rows="4"
           maxlength="1000"
-          class="w-full p-5 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-none font-medium text-base transition-all duration-200 bg-white/80"
+          class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"
         ></textarea>
+        <div>
+          <label for="goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact outcome/goal? <span class="font-normal text-slate-500">(optional)</span></label>
+          <input id="goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+        </div>
+        <div>
+          <button id="draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
+          <div id="draft-box" class="hidden mt-2">
+            <textarea id="draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
+          </div>
+        </div>
         <div class="flex justify-between items-center px-1">
           <span id="error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
           <div class="ml-auto text-sm font-medium">
@@ -189,10 +205,10 @@
 
         <button
           id="analyze-btn"
-          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled
         >
-          <span id="btn-text">Choose a mode first</span>
+          <span id="btn-text">Choose a lane first</span>
           <span id="loading-spinner" class="hidden items-center justify-center gap-2">
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -206,15 +222,22 @@
 
     <!-- Reply Tab -->
     <div id="tab-reply" class="tab-content hidden">
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-6">
-        <button data-mode="workplace" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💼 Workplace
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button data-mode="career" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
         </button>
-        <button data-mode="relationship" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-pink-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💕 Relationship
+        <button data-mode="negotiation" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
         </button>
-        <button data-mode="negotiation" class="reply-mode-btn p-3 sm:p-4 rounded-2xl border-2 border-slate-200 hover:border-orange-300 transition-all duration-200 font-medium text-sm sm:text-base">
-          💰 Negotiation
+        <button data-mode="high_conflict" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
+        </button>
+        <button data-mode="boundaries" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
         </button>
       </div>
 
@@ -225,8 +248,19 @@
           placeholder="e.g. 'I think we need to talk about your performance lately...'"
           rows="4"
           maxlength="1000"
-          class="w-full p-5 rounded-2xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-100 resize-none font-medium text-base transition-all duration-200 bg-white/80"
+          class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"
         ></textarea>
+        <div>
+          <label for="reply-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact outcome/goal? <span class="font-normal text-slate-500">(optional)</span></label>
+          <input id="reply-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+        </div>
+        <div>
+          <button id="reply-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
+          <div id="reply-draft-box" class="hidden mt-2">
+            <textarea id="reply-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="reply-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
+          </div>
+        </div>
         <div class="flex justify-between items-center px-1">
           <span id="reply-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
           <div class="ml-auto text-sm font-medium">
@@ -238,10 +272,10 @@
 
         <button
           id="reply-btn"
-          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled
         >
-          <span id="reply-btn-text">Choose a mode first</span>
+          <span id="reply-btn-text">Choose a lane first</span>
           <span id="reply-loading-spinner" class="hidden items-center justify-center gap-2">
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -255,13 +289,13 @@
 
     <!-- Skeleton Loader -->
     <div id="skeleton" class="hidden space-y-5">
-      <div class="h-20 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+      <div class="h-20 bg-slate-100 rounded-2xl animate-pulse"></div>
       <div class="grid md:grid-cols-2 gap-4">
-        <div class="h-36 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
-        <div class="h-36 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+        <div class="h-36 bg-slate-100 rounded-2xl animate-pulse"></div>
+        <div class="h-36 bg-slate-100 rounded-2xl animate-pulse"></div>
       </div>
-      <div class="h-28 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
-      <div class="h-24 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-2xl animate-pulse"></div>
+      <div class="h-28 bg-slate-100 rounded-2xl animate-pulse"></div>
+      <div class="h-24 bg-slate-100 rounded-2xl animate-pulse"></div>
     </div>
 
     <!-- Rewrite Results -->
@@ -269,7 +303,7 @@
 
       <!-- Original -->
       <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">📝 Original Message</p>
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Original Message</p>
         <p id="original-message" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
       </div>
 
@@ -278,33 +312,32 @@
         <div id="risk-card" class="p-5 rounded-2xl border">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span id="risk-icon" class="text-xl">⚠️</span>
               <h3 class="font-bold text-lg">Risk Level</h3>
             </div>
             <span id="risk-badge" class="px-3 py-1 rounded-full text-xs font-bold">Medium</span>
           </div>
           <p id="risk-text" class="text-sm text-slate-700 leading-relaxed mb-3"></p>
-          <span id="should-send" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-white/60 border border-current"></span>
+          <span id="should-send" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-white border border-current"></span>
         </div>
 
-        <div class="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
-          <h3 class="font-bold text-lg mb-4 text-emerald-800">📊 Scores</h3>
+        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-200">
+          <h3 class="font-bold text-lg mb-4 text-emerald-800">Scores</h3>
           <div class="space-y-3">
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Clarity</span><span id="score-clarity" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-clarity" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-clarity" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Confidence</span><span id="score-confidence" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-confidence" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-confidence" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Emotional Control</span><span id="score-emotional" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-emotional" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-emotional" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Effectiveness</span><span id="score-effectiveness" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-effectiveness" class="h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full score-bar" style="width:0%"></div></div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-effectiveness" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
             </div>
           </div>
         </div>
@@ -312,20 +345,20 @@
 
       <!-- Tone + Intent -->
       <div class="grid md:grid-cols-2 gap-4">
-        <div class="p-5 bg-purple-50 rounded-2xl border border-purple-200">
-          <p class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-2">🎭 Tone Detected</p>
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Tone Detected</p>
           <p id="tone-detected" class="text-slate-800 font-medium text-lg"></p>
         </div>
         <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
-          <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">🎯 Your Intent</p>
+          <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Your Intent</p>
           <p id="intent-guess" class="text-slate-800 font-medium text-lg"></p>
         </div>
       </div>
 
       <!-- Best Version -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">✨ Best Version</p>
-        <div class="relative p-5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white shadow-lg">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Best Version</p>
+        <div class="relative p-5 bg-slate-900 rounded-2xl text-white">
           <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
           <button onclick="copyText('better-version', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
         </div>
@@ -334,14 +367,14 @@
       <!-- Softer + Stronger -->
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <p class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">😌 Softer Version</p>
+          <p class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">Softer Version</p>
           <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
             <p id="softer-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
             <button onclick="copyText('softer-version', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
         <div>
-          <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">💪 Stronger Version</p>
+          <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">Stronger Version</p>
           <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
             <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
             <button onclick="copyText('stronger-version', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
@@ -351,50 +384,93 @@
 
       <!-- Coach Note -->
       <div class="p-5 bg-slate-900 rounded-2xl text-white">
-        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">💡 Coach Note</p>
+        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">Coach Note</p>
         <p id="coach-note" class="leading-relaxed"></p>
+      </div>
+
+      <!-- Sprint 1: 4-part AI output — Power Dynamic, Emotional Trap, Draft Critique, Tactical Replies -->
+      <div id="power-dynamic-box" class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Power Dynamic</p>
+        <p id="power-dynamic" class="text-slate-800 leading-relaxed"></p>
+      </div>
+      <div id="emotional-trap-box" class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Emotional Trap</p>
+        <p id="emotional-trap" class="text-slate-800 leading-relaxed"></p>
+      </div>
+      <div id="draft-critique-box" class="hidden p-5 bg-slate-50 rounded-2xl border border-slate-200">
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Draft Critique</p>
+        <p class="text-slate-800 leading-relaxed"><span id="draft-critique-score" class="font-bold"></span> <span id="draft-critique-flaw"></span></p>
+      </div>
+      <div id="tactical-replies-box">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">3 Tactical Replies</p>
+        <div class="space-y-3">
+          <div>
+            <p id="tactical-0-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Hold the Line (Firm)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="tactical-0-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('tactical-0-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="tactical-0-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <div>
+            <p id="tactical-1-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">De-escalate (Neutral)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="tactical-1-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('tactical-1-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="tactical-1-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <div>
+            <p id="tactical-2-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Strategic Pivot (Reframe)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="tactical-2-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('tactical-2-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="tactical-2-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+        </div>
       </div>
 
       <!-- Phase 1 contexts+styles: try another style (same message, new rewrite) -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Try another style</p>
         <p class="text-xs text-slate-500 mb-2">Same message, new rewrite — no retyping. If it asks, tick the human check above first, then tap a style.</p>
         <div id="style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
         </div>
         <p id="style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
       <!-- Phase 1 ratings+moments: rate this rewrite -->
       <div id="rating-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Did this help?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Didn&apos;t help</button>
         </div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">No, didn&apos;t send</button>
         </div>
         <p id="rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
-          ↩ New Analysis
+        <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">
+          New Analysis
         </button>
-        <button id="copy-all" class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
-          📋 Copy All
+        <button id="copy-all" class="px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition-all duration-200">
+          Copy All
         </button>
-        <button id="share-result" class="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
-          🔗 Share
+        <button id="share-result" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">
+          Share
         </button>
       </div>
     </div>
@@ -402,39 +478,39 @@
     <!-- Reply Results -->
     <div id="reply-results" class="hidden space-y-5 fade-in">
       <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
-        <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">💬 Their Message</p>
+        <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Their Message</p>
         <p id="reply-original" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
       </div>
 
-      <div class="p-5 bg-purple-50 rounded-2xl border border-purple-200">
-        <p class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-2">🎭 Their Tone</p>
+      <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Their Tone</p>
         <p id="reply-tone" class="text-slate-800 font-medium text-lg"></p>
       </div>
 
       <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">⚠️ What to Watch Out For</p>
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">What to Watch Out For</p>
         <p id="reply-watch" class="text-slate-800 leading-relaxed"></p>
       </div>
 
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">💬 Suggested Replies</p>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Suggested Replies</p>
         <div class="space-y-3">
           <div>
-            <p class="text-xs font-semibold text-emerald-600 mb-1.5">✅ Calm & Clear</p>
+            <p class="text-xs font-semibold text-emerald-600 mb-1.5">Calm &amp; Clear</p>
             <div class="relative p-4 bg-emerald-50 rounded-xl border border-emerald-200">
               <p id="reply-calm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
               <button onclick="copyText('reply-calm', this)" class="copy-btn absolute top-3 right-3 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
             </div>
           </div>
           <div>
-            <p class="text-xs font-semibold text-orange-600 mb-1.5">💪 Assertive</p>
+            <p class="text-xs font-semibold text-orange-600 mb-1.5">Assertive</p>
             <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
               <p id="reply-assertive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
               <button onclick="copyText('reply-assertive', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
             </div>
           </div>
           <div>
-            <p class="text-xs font-semibold text-rose-600 mb-1.5">💕 Warm & Open</p>
+            <p class="text-xs font-semibold text-rose-600 mb-1.5">Warm &amp; Open</p>
             <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
               <p id="reply-warm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
               <button onclick="copyText('reply-warm', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
@@ -444,70 +520,113 @@
       </div>
 
       <div class="p-5 bg-slate-900 rounded-2xl text-white">
-        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">💡 Coach Note</p>
+        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">Coach Note</p>
         <p id="reply-coach-note" class="leading-relaxed"></p>
+      </div>
+
+      <!-- Sprint 1: 4-part AI output — Power Dynamic, Emotional Trap, Draft Critique, Tactical Replies -->
+      <div id="reply-power-dynamic-box" class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Power Dynamic</p>
+        <p id="reply-power-dynamic" class="text-slate-800 leading-relaxed"></p>
+      </div>
+      <div id="reply-emotional-trap-box" class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Emotional Trap</p>
+        <p id="reply-emotional-trap" class="text-slate-800 leading-relaxed"></p>
+      </div>
+      <div id="reply-draft-critique-box" class="hidden p-5 bg-slate-50 rounded-2xl border border-slate-200">
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Draft Critique</p>
+        <p class="text-slate-800 leading-relaxed"><span id="reply-draft-critique-score" class="font-bold"></span> <span id="reply-draft-critique-flaw"></span></p>
+      </div>
+      <div id="reply-tactical-replies-box">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">3 Tactical Replies</p>
+        <div class="space-y-3">
+          <div>
+            <p id="reply-tactical-0-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Hold the Line (Firm)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="reply-tactical-0-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-tactical-0-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="reply-tactical-0-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <div>
+            <p id="reply-tactical-1-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">De-escalate (Neutral)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="reply-tactical-1-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-tactical-1-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="reply-tactical-1-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <div>
+            <p id="reply-tactical-2-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Strategic Pivot (Reframe)</p>
+            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+              <p id="reply-tactical-2-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+              <button onclick="copyText('reply-tactical-2-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+            </div>
+            <p id="reply-tactical-2-why" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+        </div>
       </div>
 
       <!-- Phase 1 contexts+styles: try another style (same message, new replies) -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">🔁 Try another style</p>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Try another style</p>
         <p class="text-xs text-slate-500 mb-2">Same message, new replies — no retyping. If it asks, tick the human check above first, then tap a style.</p>
         <div id="reply-style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
+          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Original</button>
+          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
+          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
+          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
+          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
         </div>
         <p id="reply-style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
       <!-- Phase 1 ratings+moments: rate these replies -->
       <div id="reply-rating-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ Did this help?</p>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Did this help?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👍 Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">👎 Didn&apos;t help</button>
+          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Helped</button>
+          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Didn&apos;t help</button>
         </div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
         <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">✅ Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">⏳ Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700">❌ No, didn&apos;t send</button>
+          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Yes, sent it</button>
+          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Not yet</button>
+          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">No, didn&apos;t send</button>
         </div>
         <p id="reply-rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200">
-          ↩ New Analysis
+        <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">
+          New Analysis
         </button>
-        <button id="copy-all-reply" class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
-          📋 Copy All
+        <button id="copy-all-reply" class="px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition-all duration-200">
+          Copy All
         </button>
-        <button id="share-reply" class="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-2xl shadow-lg transition-all duration-200">
-          🔗 Share
+        <button id="share-reply" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">
+          Share
         </button>
       </div>
     </div>
 
     <!-- Empty State -->
     <div id="empty-state" class="text-center py-16 space-y-4">
-      <img src="/icon.svg" alt="BeforeYouSay logo" class="w-20 h-20 mx-auto rounded-3xl shadow-xl">
+      <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl bg-slate-900 text-white font-bold text-4xl" aria-hidden="true">B</span>
       <h3 class="text-xl font-bold text-slate-900">Ready to analyze</h3>
-      <p class="text-slate-500 max-w-sm mx-auto">Paste a message, choose a mode, and get AI coaching before you hit send.</p>
+      <p class="text-slate-500 max-w-sm mx-auto">Paste a message, pick a lane, and get the subtext, the trap, and the exact reply before you send.</p>
     </div>
   </section>
 
   <!-- Phase 0: Account, Tone Profile and History -->
-  <section id="account-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section id="account-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
     <h3 class="text-lg font-bold text-slate-900 mb-2">Your account</h3>
     <p class="text-sm text-slate-600 mb-4">Sign-in is optional. Your history and tone still work on this device without an account.</p>
     <p id="auth-status" class="text-sm text-slate-500 mb-4">Loading sign-in…</p>
     <div id="auth-form" class="flex flex-col sm:flex-row gap-2">
-      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
-      <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Email me a sign-in link</button>
-      <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Sign in with Google</button>
+      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+      <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Email me a sign-in link</button>
+      <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Sign in with Google</button>
     </div>
     <p class="text-xs text-slate-500 mt-3">We only use your email to sign you in. No password is stored here.</p>
     <!-- Batch 3 money: your plan + checks left today -->
@@ -515,92 +634,92 @@
       <h4 class="text-sm font-bold text-slate-900 mb-1">Your plan</h4>
       <p id="plan-line" class="text-sm text-slate-600 mb-1" role="status">Free plan — loading your checks for today…</p>
       <p id="plan-price-line" class="text-sm text-slate-600 mb-3"></p>
-      <button id="upgrade-btn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">See Pro</button>
+      <button id="upgrade-btn" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">See Pro</button>
       <div id="upgrade-choices" class="hidden mt-2 flex flex-col gap-2">
-        <button id="upgrade-monthly-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Pro monthly — $5/month</button>
-        <button id="upgrade-yearly-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Pro yearly — $50/year (save $10)</button>
+        <button id="upgrade-monthly-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Pro monthly — $5/month</button>
+        <button id="upgrade-yearly-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Pro yearly — $50/year (save $10)</button>
       </div>
       <p id="upgrade-status" class="text-sm text-slate-500 mt-2" role="status"></p>
       <!-- Batch 11 self-serve cancel: Pro users can cancel themselves. The subscription ends at the end of the paid period — they keep Pro until then. No automatic refund; refunds are on request by email. -->
-      <button id="cancel-pro-btn" class="hidden px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600 hover:border-purple-300">Cancel Pro</button>
+      <button id="cancel-pro-btn" class="hidden px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:border-slate-400">Cancel Pro</button>
       <div id="cancel-confirm-box" class="hidden mt-3 p-4 bg-amber-50 rounded-2xl border border-amber-200">
         <p class="text-sm font-bold text-slate-800 mb-1">Cancel Pro?</p>
         <p class="text-sm text-slate-600 mb-3">You&rsquo;ll keep Pro until the end of the time you&rsquo;ve already paid for, then drop back to Free. No refund is automatic &mdash; if you&rsquo;d like your money back, email us and we&rsquo;ll sort it out.</p>
         <div class="flex flex-col sm:flex-row gap-2">
           <button id="cancel-confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, cancel Pro</button>
-          <button id="cancel-back-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Keep Pro</button>
+          <button id="cancel-back-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Keep Pro</button>
         </div>
       </div>
       <p id="cancel-status" class="text-sm text-slate-500 mt-2" role="status"></p>
-      <p id="cancel-refund-note" class="hidden text-sm text-slate-500 mt-2">Pro is cancelled, but you keep it until the date above. Changed your mind about the money? Refunds are available on request &mdash; email <a class="text-purple-600 font-bold" href="mailto:hello@beforeyousay.com">hello@beforeyousay.com</a> and we&rsquo;ll sort it out.</p>
+      <p id="cancel-refund-note" class="hidden text-sm text-slate-500 mt-2">Pro is cancelled, but you keep it until the date above. Changed your mind about the money? Refunds are available on request &mdash; email <a class="text-slate-900 font-bold underline" href="mailto:hello@beforeyousay.com">hello@beforeyousay.com</a> and we&rsquo;ll sort it out.</p>
     </div>
     <!-- Batch 1 trust+control: export your data -->
     <div class="mt-5 pt-4 border-t border-slate-200">
       <h4 class="text-sm font-bold text-slate-900 mb-1">Your data</h4>
       <p class="text-sm text-slate-600 mb-3">Download everything BeforeYouSay has for you — your tone, your history (including ratings), and your saved people — as one file. It is made on this device; nothing is sent anywhere.</p>
-      <button id="export-data-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-purple-300">Download my data</button>
+      <button id="export-data-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Download my data</button>
       <p id="export-status" class="text-sm text-slate-500 mt-2" role="status"></p>
     </div>
     <!-- Batch 1 trust+control: delete your account -->
     <div class="mt-5 pt-4 border-t border-slate-200">
       <h4 class="text-sm font-bold text-slate-900 mb-1">Delete my account</h4>
       <p id="delete-account-note" class="text-sm text-slate-600 mb-3">This deletes your tone, history and saved people — from the cloud and from this device — and removes your sign-in account. It cannot be undone. You need to be signed in to delete an account.</p>
-      <button id="delete-account-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-red-200 text-sm font-bold text-red-600 hover:border-red-400">Delete my account</button>
+      <button id="delete-account-btn" class="px-4 py-3 rounded-xl bg-white border border-red-200 text-sm font-bold text-red-600 hover:border-red-400">Delete my account</button>
       <div id="delete-confirm-box" class="hidden mt-3 p-4 bg-red-50 rounded-2xl border border-red-200">
         <p class="text-sm font-bold text-red-800 mb-1">Are you sure? This cannot be undone.</p>
         <p class="text-sm text-red-700 mb-3">Type <span class="font-bold">DELETE</span> below, then confirm. Your tone, history and saved people will be deleted from the cloud and this device, and your sign-in account will be removed.</p>
-        <input id="delete-confirm-input" type="text" maxlength="10" placeholder="Type DELETE" autocomplete="off" class="w-full p-3 rounded-xl border-2 border-red-200 focus:border-red-400 focus:outline-none text-sm bg-white">
+        <input id="delete-confirm-input" type="text" maxlength="10" placeholder="Type DELETE" autocomplete="off" class="w-full p-3 rounded-xl border border-red-200 focus:border-red-400 focus:outline-none text-sm bg-white">
         <div class="flex flex-col sm:flex-row gap-2 mt-3">
           <button id="delete-confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, delete everything</button>
-          <button id="delete-cancel-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Keep my account</button>
+          <button id="delete-cancel-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Keep my account</button>
         </div>
       </div>
       <p id="delete-status" class="text-sm text-slate-500 mt-2" role="status"></p>
     </div>
   </section>
 
-  <section id="tone-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section id="tone-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
     <h3 class="text-lg font-bold text-slate-900 mb-2">Your tone</h3>
     <p class="text-sm text-slate-600 mb-4">Tell BeforeYouSay how you like to sound. We&apos;ll use this for every rewrite, and save it on this device — and in the cloud when you&apos;re signed in.</p>
     <div class="space-y-4">
       <div>
         <label for="profile-name" class="block text-sm font-semibold text-slate-700 mb-1">Your name <span class="font-normal text-slate-500">(optional)</span></label>
-        <input id="profile-name" type="text" maxlength="80" placeholder="e.g. Sagar" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+        <input id="profile-name" type="text" maxlength="80" placeholder="e.g. Sagar" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
-        <div><label for="profile-directness" class="block text-sm font-semibold text-slate-700 mb-1">Directness: <span id="profile-directness-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-directness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
-        <div><label for="profile-warmth" class="block text-sm font-semibold text-slate-700 mb-1">Warmth: <span id="profile-warmth-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-warmth" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
-        <div><label for="profile-formality" class="block text-sm font-semibold text-slate-700 mb-1">Formality: <span id="profile-formality-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-formality" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
-        <div><label for="profile-playfulness" class="block text-sm font-semibold text-slate-700 mb-1">Playfulness: <span id="profile-playfulness-value" class="font-bold text-purple-600">3</span> / 5</label><input id="profile-playfulness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-purple-600"></div>
+        <div><label for="profile-directness" class="block text-sm font-semibold text-slate-700 mb-1">Directness: <span id="profile-directness-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-directness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
+        <div><label for="profile-warmth" class="block text-sm font-semibold text-slate-700 mb-1">Warmth: <span id="profile-warmth-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-warmth" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
+        <div><label for="profile-formality" class="block text-sm font-semibold text-slate-700 mb-1">Formality: <span id="profile-formality-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-formality" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
+        <div><label for="profile-playfulness" class="block text-sm font-semibold text-slate-700 mb-1">Playfulness: <span id="profile-playfulness-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-playfulness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
-        <div><label for="profile-default-mode" class="block text-sm font-semibold text-slate-700 mb-1">Usual mode</label><select id="profile-default-mode" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80"><option value="workplace">Workplace</option><option value="relationship">Relationship</option><option value="negotiation">Negotiation</option></select></div>
-        <div><label for="profile-default-reply" class="block text-sm font-semibold text-slate-700 mb-1">Usual reply style</label><select id="profile-default-reply" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80"><option value="balanced">Balanced</option><option value="calm">Calm &amp; clear</option><option value="assertive">Assertive</option><option value="warm">Warm &amp; open</option></select></div>
+        <div><label for="profile-default-mode" class="block text-sm font-semibold text-slate-700 mb-1">Usual mode</label><select id="profile-default-mode" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white"><option value="career">Career &amp; Boss</option><option value="negotiation">Client &amp; Negotiation</option><option value="high_conflict">High-Conflict / Legal &amp; Co-Parenting</option><option value="boundaries">Hard Personal Boundaries</option></select></div>
+        <div><label for="profile-default-reply" class="block text-sm font-semibold text-slate-700 mb-1">Usual reply style</label><select id="profile-default-reply" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white"><option value="balanced">Balanced</option><option value="calm">Calm &amp; clear</option><option value="assertive">Assertive</option><option value="warm">Warm &amp; open</option></select></div>
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
-        <button id="save-profile-btn" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Save my tone</button>
-        <button id="reset-profile-btn" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Reset</button>
+        <button id="save-profile-btn" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Save my tone</button>
+        <button id="reset-profile-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Reset</button>
       </div>
       <p id="profile-status" class="text-sm text-slate-500" role="status"></p>
     </div>
   </section>
 
   <!-- Phase 1 contexts+styles: saved people -->
-  <section id="contexts-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section id="contexts-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
     <h3 class="text-lg font-bold text-slate-900 mb-2">Your people</h3>
     <p class="text-sm text-slate-600 mb-4">Save the people you write to most, and how you want to sound with each of them. Pick one above before you analyse, and the rewrite adapts to that person. Saved on this device — and in the cloud when you&apos;re signed in.</p>
     <div class="space-y-3">
       <div>
         <label for="context-name" class="block text-sm font-semibold text-slate-700 mb-1">Name</label>
-        <input id="context-name" type="text" maxlength="50" placeholder="e.g. My manager" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+        <input id="context-name" type="text" maxlength="50" placeholder="e.g. My manager" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
       </div>
       <div>
         <label for="context-note" class="block text-sm font-semibold text-slate-700 mb-1">How do you want to sound with them? <span class="font-normal text-slate-500">(optional, max 200 characters)</span></label>
-        <input id="context-note" type="text" maxlength="200" placeholder="e.g. Polite and to the point, no slang" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-purple-400 focus:outline-none text-sm bg-white/80">
+        <input id="context-note" type="text" maxlength="200" placeholder="e.g. Polite and to the point, no slang" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
-        <button id="context-add-btn" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold shadow">Add person</button>
-        <button id="context-cancel-btn" class="hidden px-4 py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
+        <button id="context-add-btn" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Add person</button>
+        <button id="context-cancel-btn" class="hidden px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
       </div>
       <p id="context-status" class="text-sm text-slate-500" role="status"></p>
       <p id="context-empty" class="text-sm text-slate-500">No saved people yet. Add your first one above — for example, your manager or your partner.</p>
@@ -609,30 +728,30 @@
   </section>
 
   <!-- Phase 1 your-week: computed only from the history already on this device / in the cloud -->
-  <section id="week-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section id="week-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-bold text-slate-900">Your week</h3>
       <div class="flex gap-2">
-        <button id="week-this-btn" type="button" data-week-offset="0" class="week-btn active px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">This week</button>
-        <button id="week-last-btn" type="button" data-week-offset="1" class="week-btn px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600">Last week</button>
+        <button id="week-this-btn" type="button" data-week-offset="0" class="week-btn active px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600">This week</button>
+        <button id="week-last-btn" type="button" data-week-offset="1" class="week-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600">Last week</button>
       </div>
     </div>
     <p id="week-empty" class="text-sm text-slate-500 mb-4">Nothing yet this week — run your first analysis.</p>
     <p id="week-plan-line" class="text-sm text-slate-600 mb-4" role="status"></p>
     <div id="week-stats" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Helped</p><p id="week-helped" class="text-2xl font-bold text-slate-900">0</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Day streak</p><p class="text-2xl font-bold text-slate-900"><span id="week-streak">0</span> <span class="text-sm font-semibold text-slate-500">days</span></p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used mode</p><p id="week-mode" class="text-lg font-bold text-slate-900">—</p></div>
-      <div class="p-4 bg-white/80 rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used person</p><p id="week-person" class="text-lg font-bold text-slate-900">—</p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Analyses</p><p id="week-total" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Sent</p><p id="week-sent" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Helped</p><p id="week-helped" class="text-2xl font-bold text-slate-900">0</p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Day streak</p><p class="text-2xl font-bold text-slate-900"><span id="week-streak">0</span> <span class="text-sm font-semibold text-slate-500">days</span></p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used lane</p><p id="week-mode" class="text-lg font-bold text-slate-900">—</p></div>
+      <div class="p-4 bg-white rounded-2xl border border-slate-200"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Most used person</p><p id="week-person" class="text-lg font-bold text-slate-900">—</p></div>
     </div>
   </section>
 
-  <section id="history-section" class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50 max-w-3xl mx-auto">
+  <section id="history-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-bold text-slate-900">Your history</h3>
-      <button id="clear-history-btn" class="px-3 py-2.5 rounded-xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
+      <button id="clear-history-btn" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
     </div>
     <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved <span id="history-location">on this device</span>. Tap one to open it again.</p>
     <p id="sync-status" class="text-sm text-slate-500 mb-4" role="status"></p>
@@ -644,20 +763,20 @@
   <section class="max-w-3xl mx-auto">
     <h3 class="text-center text-lg font-bold text-slate-700 mb-6">How it works</h3>
     <div class="grid sm:grid-cols-3 gap-4">
-      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
-        <div class="text-3xl mb-3">📋</div>
+      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">1</div>
         <h4 class="font-bold mb-1">Paste your message</h4>
         <p class="text-sm text-slate-500">Type or paste the message you want to send or received</p>
       </div>
-      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
-        <div class="text-3xl mb-3">🎯</div>
-        <h4 class="font-bold mb-1">Choose a mode</h4>
-        <p class="text-sm text-slate-500">Workplace, relationship, or negotiation</p>
+      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">2</div>
+        <h4 class="font-bold mb-1">Pick a lane</h4>
+        <p class="text-sm text-slate-500">Career, negotiation, high-conflict, or boundaries</p>
       </div>
-      <div class="bg-white/60 rounded-2xl p-5 text-center border border-white/50 shadow-sm">
-        <div class="text-3xl mb-3">✨</div>
-        <h4 class="font-bold mb-1">Get coached</h4>
-        <p class="text-sm text-slate-500">AI rewrites, scores, and explains your message instantly</p>
+      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">3</div>
+        <h4 class="font-bold mb-1">Get the exact reply</h4>
+        <p class="text-sm text-slate-500">The subtext, the trap, and a reply you can send as-is</p>
       </div>
     </div>
   </section>
@@ -665,11 +784,11 @@
 </main>
 
 <footer class="text-center text-slate-500 text-sm py-10 mt-4">
-  <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-purple-600 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
+  <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-slate-900 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
 <!-- Email Capture -->
 <div class="flex flex-col items-center gap-3 py-8 px-4">
- <p class="text-sm font-medium bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">Get notified when Pro features drop ✨</p>
+ <p class="text-sm font-medium text-slate-600">Get notified when Pro features drop</p>
   <form
     action="https://beforeyousay.us7.list-manage.com/subscribe/post?u=e055c297a8cc1fa582ba02c5e&id=e2aca1b6bf&f_id=0034a0e0f0"
     method="POST"
@@ -681,7 +800,7 @@
   name="EMAIL"
   placeholder="your@email.com"
   required
-  class="flex-1 px-4 py-2 rounded-xl bg-white border border-purple-200 text-slate-900 text-sm focus:outline-none focus:border-pink-400"
+  class="flex-1 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-slate-900"
 />
     <!-- Mailchimp bot protection — do not remove -->
     <div style="position:absolute;left:-5000px" aria-hidden="true">
@@ -689,7 +808,7 @@
     </div>
     <button
       type="submit"
-      class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition"
+      class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:opacity-90 transition"
     >
       Notify me
     </button>
@@ -739,7 +858,14 @@
   const GUEST_PROFILE_KEY = "beforeyousay.profile.guest.v1";
   const DELETED_CLOUD_IDS_KEY = "beforeyousay.history.deletedCloudIds.v1";
   const VALID_TABS = ["rewrite", "reply"];
-  const VALID_MODES = ["workplace", "relationship", "negotiation"];
+  const VALID_MODES = ["career", "negotiation", "high_conflict", "boundaries"];
+  const MODE_LABELS = { career: "Career & Boss", negotiation: "Client & Negotiation", high_conflict: "High-Conflict / Legal & Co-Parenting", boundaries: "Hard Personal Boundaries" };
+  /* Sprint 1 lanes: the old ids still exist in saved profiles, saved
+     history and old prefill links — map them to the lane they became, so
+     nothing a user saved before the redesign breaks. */
+  const LEGACY_MODE_MAP = { workplace: "career", relationship: "boundaries", negotiation: "negotiation" };
+  function migrateMode(m) { return LEGACY_MODE_MAP[m] || (VALID_MODES.includes(m) ? m : null); }
+  function modeDisplayLabel(m) { return MODE_LABELS[m] || MODE_LABELS[migrateMode(m)] || m || ""; }
   let cloudSyncInProgress = false;
   let cloudSyncedUserId = null;
   function isSignedIn() { return Boolean(supabaseClient && supabaseSession && supabaseSession.user); }
@@ -773,17 +899,18 @@
     return { merged: merged.slice(0, HISTORY_MAX), toUpload: toUpload };
   }
   function historyItemToCloudRow(item, userId) {
-    if (!VALID_TABS.includes(item.tab) || !VALID_MODES.includes(item.mode)) return null;
-    return { user_id: userId, tab: item.tab, mode: item.mode, input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
+    const mode = migrateMode(item.mode);
+    if (!VALID_TABS.includes(item.tab) || !mode) return null;
+    return { user_id: userId, tab: item.tab, mode: mode, input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
   }
   function profileToCloudRow(p, user) {
-    return { id: user.id, email: user.email || p.email || null, display_name: (p.name || "").slice(0, 80) || null, directness: clampScore(p.directness), warmth: clampScore(p.warmth), formality: clampScore(p.formality), playfulness: clampScore(p.playfulness), default_mode: VALID_MODES.includes(p.defaultMode) ? p.defaultMode : "workplace", default_reply_style: ["balanced", "calm", "assertive", "warm"].includes(p.defaultReplyStyle) ? p.defaultReplyStyle : "balanced", updated_at: new Date().toISOString() };
+    return { id: user.id, email: user.email || p.email || null, display_name: (p.name || "").slice(0, 80) || null, directness: clampScore(p.directness), warmth: clampScore(p.warmth), formality: clampScore(p.formality), playfulness: clampScore(p.playfulness), default_mode: migrateMode(p.defaultMode) || "career", default_reply_style: ["balanced", "calm", "assertive", "warm"].includes(p.defaultReplyStyle) ? p.defaultReplyStyle : "balanced", updated_at: new Date().toISOString() };
   }
   function cloudRowToProfile(row) {
     const p = defaultProfile();
     p.name = row.display_name || ""; p.directness = clampScore(row.directness); p.warmth = clampScore(row.warmth);
     p.formality = clampScore(row.formality); p.playfulness = clampScore(row.playfulness);
-    p.defaultMode = VALID_MODES.includes(row.default_mode) ? row.default_mode : "workplace";
+    p.defaultMode = migrateMode(row.default_mode) || "career";
     p.defaultReplyStyle = ["balanced", "calm", "assertive", "warm"].includes(row.default_reply_style) ? row.default_reply_style : "balanced";
     return p;
   }
@@ -931,10 +1058,10 @@
     const list = document.getElementById("context-list");
     if (list) {
       list.innerHTML = items.map(function (c) {
-        return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
+        return '<article class="p-4 bg-white rounded-2xl border border-slate-200">'
           + '<p class="font-bold text-slate-800">' + escapeHtml(c.name) + '</p>'
           + (c.note ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">' + escapeHtml(c.note) + '</p>' : '')
-          + '<div class="flex gap-2"><button data-context-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+          + '<div class="flex gap-2"><button data-context-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Edit</button>'
           + '<button data-context-delete="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
       }).join("");
     }
@@ -1073,10 +1200,10 @@
     const list = document.getElementById("context-inline-list"); if (!list) return;
     const items = loadContexts();
     list.innerHTML = items.map(function (c) {
-      return '<div class="flex items-center justify-between gap-2 p-3 bg-white/80 rounded-xl border border-slate-200">'
+      return '<div class="flex items-center justify-between gap-2 p-3 bg-white rounded-xl border border-slate-200">'
         + '<div><p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.name) + '</p>'
         + (c.note ? '<p class="text-xs text-slate-500">' + escapeHtml(c.note) + '</p>' : '') + '</div>'
-        + '<div class="flex gap-2"><button type="button" data-context-inline-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Edit</button>'
+        + '<div class="flex gap-2"><button type="button" data-context-inline-edit="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Edit</button>'
         + '<button type="button" data-context-inline-delete="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></div>';
     }).join("");
   }
@@ -1173,7 +1300,7 @@
     if (!lastAnalysis) return;
     const items = loadHistory();
     const found = items.find(function (x) { return x.tab === lastAnalysis.tab && x.mode === lastAnalysis.mode && x.input === lastAnalysis.message; });
-    if (!found) { const created = addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "" }); currentHistoryId = created.id; return; }
+    if (!found) { const created = addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "", goal: lastAnalysis.goal || null, draft: lastAnalysis.draft || null }); currentHistoryId = created.id; return; }
     currentHistoryId = found.id;
     const keepRating = getRating(found.result);
     found.result = result; if (keepRating) found.result.rating = keepRating; found.style = style || ""; saveHistory(items); renderHistory();
@@ -1195,7 +1322,7 @@
     if (!canCheckToday()) { setStyleStatus(tab, limitMessageFor(isSignedIn())); return; }
     setStyleStatus(tab, style ? ("Rewriting in " + style + " style…") : "Rewriting in the original style…");
     try {
-      const response = await postAnalyze({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
+      const response = await postAnalyze({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: lastAnalysis.goal || null, draft: lastAnalysis.draft || null });
       const data = await safeJson(response);
       if (!response.ok) { setStyleStatus(tab, (data && data.code === LIMIT_HIT_CODE && data.error) ? data.error : "That style didn't work — showing your original result."); return; }
       currentData = data;
@@ -1244,8 +1371,8 @@
   function ratingSummary(r) {
     if (!r) return "";
     const parts = [];
-    if (r.helpful === "up") parts.push("👍 Helped");
-    if (r.helpful === "down") parts.push("👎 Didn't help");
+    if (r.helpful === "up") parts.push("Helped");
+    if (r.helpful === "down") parts.push("Didn't help");
     if (r.sent === "yes") parts.push("Sent ✓");
     if (r.sent === "not-yet") parts.push("Not sent yet");
     if (r.sent === "no") parts.push("Didn't send");
@@ -1301,12 +1428,10 @@
      loads it into the Rewrite box, pre-selects its mode, and leaves the
      text editable — nothing is analysed until the user taps Analyse. */
   const DAILY_MOMENTS = [
-    { mode: "relationship", text: "Hey, I'm really sorry about what I said yesterday. I didn't mean to upset you — can we talk it through?" },
-    { mode: "workplace", text: "Hi, I applied for the role last week and just wanted to check in — I'm still really keen and happy to share anything else you need." },
-    { mode: "negotiation", text: "Hi, I'd love to chat about my pay when you have a moment. My role has grown a lot this year, and I'd like to talk about bringing it in line with that." },
-    { mode: "workplace", text: "Thanks so much for thinking of me — I won't be able to take this on right now, but I really appreciate you asking." },
-    { mode: "relationship", text: "Hey, I know things were tense between us earlier. I don't want that hanging over us — are you okay to talk?" },
-    { mode: "negotiation", text: "Hi, just a friendly follow-up on the invoice from last month — it's now overdue, so could you let me know when payment will be made?" }
+    { mode: "career", text: "Hi — I saw the Friday 5pm deadline come through. I can't turn this around by then without dropping the client work due Thursday. Can we agree on Monday morning, or reprioritise the Thursday piece?" },
+    { mode: "negotiation", text: "Hi — happy to take this on. Just flagging this sits outside the scope we agreed, so I'd need to adjust the fee to cover the extra work. Can we confirm that before I start?" },
+    { mode: "high_conflict", text: "You never stick to the plan and the kids always suffer because of you. I'm done rearranging my life around you." },
+    { mode: "boundaries", text: "I won't be able to lend the money this time — I need to keep things steady on my end. I hope you understand." }
   ];
   document.querySelectorAll("[data-moment]").forEach(function (b) {
     b.addEventListener("click", function () {
@@ -1334,7 +1459,7 @@
      only: the last-visit date lives in localStorage, never in the cloud,
      and it only shows when the last visit was more than 1 day ago. */
   const LAST_VISIT_KEY = "beforeyousay.lastVisit.v1";
-  const WEEK_MODE_LABELS = { workplace: "Workplace", relationship: "Relationship", negotiation: "Negotiation" };
+  const WEEK_MODE_LABELS = MODE_LABELS;
   let weekOffset = 0; /* 0 = this week, 1 = last week */
   function localDayKey(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function dayKeyToDate(key) { const parts = String(key || "").split("-"); if (parts.length !== 3) return null; const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); return isNaN(d.getTime()) ? null : d; }
@@ -1369,7 +1494,7 @@
     const weekItems = itemsInWeek(items, range.start, range.end);
     let sent = 0; let helped = 0;
     weekItems.forEach(function (it) { const r = getRating(it.result); if (r && r.sent === "yes") sent++; if (r && r.helpful === "up") helped++; });
-    const mode = mostUsed(weekItems, function (it) { return WEEK_MODE_LABELS[it.mode] || null; });
+    const mode = mostUsed(weekItems, function (it) { return modeDisplayLabel(it.mode) || null; });
     const person = mostUsed(weekItems, function (it) { return it.context && it.context.name ? String(it.context.name) : null; });
     return { total: weekItems.length, sent: sent, helped: helped, streak: computeStreak(items, now || new Date()), mode: mode ? mode.value : null, modeCount: mode ? mode.count : 0, person: person ? person.value : null, personCount: person ? person.count : 0, hasHistory: (items || []).length > 0, start: range.start, end: range.end };
   }
@@ -1412,8 +1537,8 @@
   }
 
   function clampScore(v) { const n = Number(v); return Number.isFinite(n) ? Math.min(5, Math.max(1, Math.round(n))) : 3; }
-  function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "workplace", defaultReplyStyle: "balanced" }; }
-  function loadProfile() { try { const raw = localStorage.getItem(PROFILE_KEY); if (!raw) return defaultProfile(); return Object.assign(defaultProfile(), JSON.parse(raw)); } catch (e) { return defaultProfile(); } }
+  function defaultProfile() { return { name: "", directness: 3, warmth: 3, formality: 3, playfulness: 3, defaultMode: "career", defaultReplyStyle: "balanced" }; }
+  function loadProfile() { try { const raw = localStorage.getItem(PROFILE_KEY); if (!raw) return defaultProfile(); const p = Object.assign(defaultProfile(), JSON.parse(raw)); p.defaultMode = migrateMode(p.defaultMode) || "career"; return p; } catch (e) { return defaultProfile(); } }
   function saveProfile(p) { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) { /* storage unavailable — site still works */ } }
   function readProfileFromForm() {
     return {
@@ -1485,12 +1610,13 @@
     list.innerHTML = items.map(function (it) {
       const when = new Date(it.createdAt).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
       const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
-      return '<article class="p-4 bg-white/80 rounded-2xl border border-slate-200">'
-        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-purple-600">' + escapeHtml(it.mode || "") + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
+      return '<article class="p-4 bg-white rounded-2xl border border-slate-200">'
+        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-slate-600">' + escapeHtml(modeDisplayLabel(it.mode)) + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
         + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml((it.input || "").slice(0, 140)) + ((it.input || "").length > 140 ? "…" : "") + '</p>'
+        + (it.goal ? '<p class="text-xs text-slate-500 leading-relaxed mb-2">Goal: ' + escapeHtml(it.goal) + '</p>' : '')
         + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
         + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
-        + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-bold">Open</button>'
+        + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Open</button>'
         + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
         + '<button data-history-delete="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
     }).join("");
@@ -1539,6 +1665,14 @@
     const it = loadHistory().find(function (x) { return x.id === id; });
     if (!it || !it.result) return;
     currentHistoryId = id;
+    /* Sprint 1: restore the goal and draft this analysis was run with. */
+    const goalEl = document.getElementById(it.tab === "reply" ? "reply-goal-input" : "goal-input");
+    if (goalEl) goalEl.value = it.goal || "";
+    const draftBoxEl = document.getElementById(it.tab === "reply" ? "reply-draft-box" : "draft-box");
+    const draftEl = document.getElementById(it.tab === "reply" ? "reply-draft-input" : "draft-input");
+    const draftToggleEl = document.getElementById(it.tab === "reply" ? "reply-draft-toggle" : "draft-toggle");
+    if (draftEl) { draftEl.value = it.draft || ""; updateCharCounter(draftEl.id, it.tab === "reply" ? "reply-draft-char-count" : "draft-char-count"); }
+    if (draftBoxEl && draftToggleEl) { const open = Boolean(it.draft); draftBoxEl.classList.toggle("hidden", !open); draftToggleEl.setAttribute("aria-expanded", open ? "true" : "false"); draftToggleEl.textContent = open ? "I already drafted a reply (hide)" : "I already drafted a reply (show)"; }
     if (it.context && it.context.id) {
       const ctx = loadContexts().find(function (x) { return x.id === it.context.id; });
       selectedContextId = ctx ? ctx.id : "";
@@ -1549,13 +1683,13 @@
     if (it.tab === "reply") {
       document.getElementById("reply-message").value = it.input || "";
       document.getElementById("reply-char-count").textContent = (it.input || "").length;
-      setMode(it.mode);
+      setMode(migrateMode(it.mode) || it.mode);
       document.querySelector('[data-tab="reply"]').click();
       displayReplyResults(it.result, it.input || "");
     } else {
       document.getElementById("message").value = it.input || "";
       document.getElementById("char-count").textContent = (it.input || "").length;
-      setMode(it.mode);
+      setMode(migrateMode(it.mode) || it.mode);
       document.querySelector('[data-tab="rewrite"]').click();
       currentData = it.result; displayResults(it.result);
     }
@@ -2024,43 +2158,6 @@
   requestCount = countChecksToday(loadHistory(), new Date());
   document.getElementById("request-count").textContent = requestCount;
 
-  /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
-     The extension's "Open on the site" button links here with
-     ?message=...&mode=workplace&reply=1 (and &from=extension). Only the
-     message box, the mode and the tab are filled in — nothing is analysed
-     until the user taps Analyse, and the text stays editable. Values are
-     capped at 1000 characters and the mode must be one of the four real
-     modes; anything else is ignored. */
-  (function prefillFromExtensionLink() {
-    try {
-      var params = new URLSearchParams(window.location.search);
-      var prefill = (params.get("message") || "").trim().slice(0, 1000);
-      var mode = params.get("mode") || "";
-      var reply = params.get("reply") === "1";
-      if (!prefill && !mode && !reply) return;
-      if (reply) {
-        var replyTab = document.querySelector('.tab-btn[data-tab="reply"]');
-        if (replyTab) replyTab.click();
-        var replyBox = document.getElementById("reply-message");
-        if (replyBox && prefill) {
-          replyBox.value = prefill;
-          updateCharCounter("reply-message", "reply-char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
-          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      } else if (prefill) {
-        var box = document.getElementById("message");
-        box.value = prefill;
-        updateCharCounter("message", "char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
-        box.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-      if (mode && ["workplace", "relationship", "negotiation"].indexOf(mode) !== -1) {
-        var btn = document.querySelector((reply ? ".reply-mode-btn" : ".mode-btn") + '[data-mode="' + mode + '"]');
-        if (btn) btn.click();
-      }
-      var appCard = document.querySelector(".tab-btn");
-      if (appCard) appCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (e) { /* a bad link must never break the page */ }
-  })();
 
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2120,6 +2217,8 @@
 
   updateCharCounter("message", "char-count"); /* Batch 3: counter fix — re-sync now the listeners above exist, in case the box was pre-filled */
   updateCharCounter("reply-message", "reply-char-count");
+  wireDraftToggle("draft-toggle", "draft-box", "draft-input", "draft-char-count");
+  wireDraftToggle("reply-draft-toggle", "reply-draft-box", "reply-draft-input", "reply-draft-char-count");
 
   function startLoadingMessages(textId) {
     let i = 0;
@@ -2149,6 +2248,73 @@
   }
 
   // Analyze (Rewrite) 
+  /* Sprint 1: goal + draft — optional inputs, sent with every /analyze
+     call (Rewrite, Reply, style re-run) and stored on the history item.
+     Goal is a single line (max 200 chars); draft is a reply the user
+     already wrote (max 1000 chars) for the AI to grade and fix. */
+  function getGoal(tab) { const el = document.getElementById(tab === "reply" ? "reply-goal-input" : "goal-input"); const v = el ? el.value.trim().slice(0, 200) : ""; return v || null; }
+  function getDraft(tab) { const el = document.getElementById(tab === "reply" ? "reply-draft-input" : "draft-input"); const v = el ? el.value.trim().slice(0, 1000) : ""; return v || null; }
+  function wireDraftToggle(toggleId, boxId, inputId, countId) {
+    const toggle = document.getElementById(toggleId); const box = document.getElementById(boxId);
+    if (!toggle || !box) return;
+    toggle.addEventListener("click", function () {
+      const hidden = box.classList.toggle("hidden");
+      const open = !hidden;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.textContent = open ? "I already drafted a reply (hide)" : "I already drafted a reply (show)";
+      if (open) { const inp = document.getElementById(inputId); if (inp) inp.focus(); }
+    });
+    const input = document.getElementById(inputId);
+    if (input) input.addEventListener("input", function () { updateCharCounter(inputId, countId); });
+  }
+  /* Sprint 1: the 4-part AI output. tacticalReplies falls back to the
+     existing versions in order (Hold the Line <- better, De-escalate <-
+     softer, Strategic Pivot <- stronger) so old history items without
+     a replies array still show 3 copy-pasteable replies. */
+  const TACTICAL_STRATEGIES = ["Hold the Line (Firm)", "De-escalate (Neutral)", "Strategic Pivot (Reframe)"];
+  function tacticalReplies(data) {
+    const given = data && Array.isArray(data.replies) ? data.replies : [];
+    const fallbacks = [data && data.better_version, data && data.softer_version, data && data.stronger_version];
+    return TACTICAL_STRATEGIES.map(function (strategy, i) {
+      const r = given[i];
+      const message = r && typeof r.message === "string" && r.message.trim() ? r.message.trim() : (fallbacks[i] || "");
+      const why = r && typeof r.why_it_works === "string" && r.why_it_works.trim() ? r.why_it_works.trim() : "";
+      return { strategy: strategy, message: message, why_it_works: why };
+    });
+  }
+  function renderFourPart(data, prefix) {
+    const pd = document.getElementById(prefix + "power-dynamic"); if (pd) pd.textContent = data.power_dynamic || "";
+    const et = document.getElementById(prefix + "emotional-trap"); if (et) et.textContent = data.emotional_trap || "";
+    const box = document.getElementById(prefix + "draft-critique-box");
+    if (box) {
+      const c = data.draft_critique;
+      const show = Boolean(c && typeof c === "object" && (c.flaw || c.score !== undefined));
+      box.classList.toggle("hidden", !show);
+      if (show) {
+        document.getElementById(prefix + "draft-critique-score").textContent = "Score: " + c.score + "/100";
+        document.getElementById(prefix + "draft-critique-flaw").textContent = c.flaw || "";
+      }
+    }
+    const replies = tacticalReplies(data);
+    const tbox = document.getElementById(prefix + "tactical-replies-box");
+    if (tbox) tbox.classList.toggle("hidden", !replies.some(function (r) { return r.message; }));
+    replies.forEach(function (r, i) {
+      const sEl = document.getElementById(prefix + "tactical-" + i + "-strategy"); if (sEl) sEl.textContent = r.strategy;
+      const mEl = document.getElementById(prefix + "tactical-" + i + "-message"); if (mEl) mEl.textContent = r.message || "—";
+      const wEl = document.getElementById(prefix + "tactical-" + i + "-why"); if (wEl) wEl.textContent = r.why_it_works || "";
+    });
+  }
+  function fourPartCopyText(data) {
+    let extra = "";
+    if (data.power_dynamic) extra += "\n\nPower Dynamic:\n" + data.power_dynamic;
+    if (data.emotional_trap) extra += "\n\nEmotional Trap:\n" + data.emotional_trap;
+    const tr = tacticalReplies(data);
+    if (tr.some(function (r) { return r.message; })) {
+      extra += "\n\nTactical Replies:\n" + tr.map(function (r) { return r.strategy + ": " + r.message + (r.why_it_works ? " (" + r.why_it_works + ")" : ""); }).join("\n");
+    }
+    return extra;
+  }
+
   /* ---------- Batch 4 quality+speed: one shared /analyze caller ----------
      Every check (Rewrite, Reply, style re-run) goes through here.
      - 45-second timeout: a check that hangs says so instead of spinning forever.
@@ -2220,14 +2386,14 @@
     startLoadingMessages('loading-text');
 
     try {
-      const response = await postAnalyze({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
+      const response = await postAnalyze({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: getGoal("rewrite"), draft: getDraft("rewrite") });
 
       const data = await safeJson(response);
 
       if (response.ok) {
         currentData = data;
-        lastAnalysis = { tab: 'rewrite', mode: mode, message: message };
-        const savedHistory = addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        lastAnalysis = { tab: 'rewrite', mode: mode, message: message, goal: getGoal("rewrite"), draft: getDraft("rewrite") };
+        const savedHistory = addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle, goal: getGoal("rewrite"), draft: getDraft("rewrite") });
         currentHistoryId = savedHistory.id;
         displayResults(data);
         requestCount++;
@@ -2255,20 +2421,19 @@
     document.getElementById('original-message').textContent = data.original_message;
 
     const riskMap = {
-      low: { icon: '✅', color: 'bg-emerald-50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
-      medium: { icon: '⚠️', color: 'bg-amber-50 border-amber-200', badge: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
-      high: { icon: '🚨', color: 'bg-red-50 border-red-200', badge: 'bg-red-100 text-red-800', text: 'High Risk' }
+      low: { color: 'bg-emerald-50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
+      medium: { color: 'bg-amber-50 border-amber-200', badge: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
+      high: { color: 'bg-red-50 border-red-200', badge: 'bg-red-100 text-red-800', text: 'High Risk' }
     };
     const risk = riskMap[data.risk_level] || riskMap.medium;
     const card = document.getElementById('risk-card');
     card.className = `p-5 rounded-2xl border ${risk.color}`;
-    document.getElementById('risk-icon').textContent = risk.icon;
     document.getElementById('risk-badge').textContent = risk.text;
     document.getElementById('risk-badge').className = `px-3 py-1 rounded-full text-xs font-bold ${risk.badge}`;
     document.getElementById('risk-text').textContent = data.why_it_might_land_badly;
 
-    const sendMap = { yes: '✅ Send As Is', edit_first: '✏️ Edit First', no: '⏸️ Don\'t Send' };
-    document.getElementById('should-send').textContent = sendMap[data.should_send] || '✏️ Edit First';
+    const sendMap = { yes: 'Send As Is', edit_first: 'Edit First', no: 'Don\'t Send' };
+    document.getElementById('should-send').textContent = sendMap[data.should_send] || 'Edit First';
 
     setScoreBar('score-clarity', 'bar-clarity', data.scores.clarity);
     setScoreBar('score-confidence', 'bar-confidence', data.scores.confidence);
@@ -2281,6 +2446,7 @@
     document.getElementById('softer-version').textContent = data.softer_version;
     document.getElementById('stronger-version').textContent = data.stronger_version;
     document.getElementById('coach-note').textContent = data.coach_note;
+    renderFourPart(data, "");
 
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('empty-state').classList.add('hidden');
@@ -2323,13 +2489,13 @@
     startLoadingMessages('reply-loading-text');
 
     try {
-      const response = await postAnalyze({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle });
+      const response = await postAnalyze({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: getGoal("reply"), draft: getDraft("reply") });
 
       const data = await safeJson(response);
 
       if (response.ok) {
-        lastAnalysis = { tab: 'reply', mode: mode, message: message };
-        const savedHistory = addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle });
+        lastAnalysis = { tab: 'reply', mode: mode, message: message, goal: getGoal("reply"), draft: getDraft("reply") };
+        const savedHistory = addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle, goal: getGoal("reply"), draft: getDraft("reply") });
         currentHistoryId = savedHistory.id;
         displayReplyResults(data, message);
         requestCount++;
@@ -2361,6 +2527,7 @@
     document.getElementById('reply-assertive').textContent = data.stronger_version || '—';
     document.getElementById('reply-warm').textContent = data.better_version || '—';
     document.getElementById('reply-coach-note').textContent = data.coach_note || '—';
+    renderFourPart(data, "reply-");
 
     document.getElementById('reply-results').classList.remove('hidden');
     document.getElementById('empty-state').classList.add('hidden');
@@ -2373,6 +2540,12 @@
     document.getElementById('message').value = '';
     document.getElementById('char-count').textContent = '0';
     document.getElementById('char-count').className = '';
+    document.getElementById('goal-input').value = '';
+    document.getElementById('draft-input').value = '';
+    document.getElementById('draft-box').classList.add('hidden');
+    document.getElementById('draft-toggle').setAttribute('aria-expanded', 'false');
+    document.getElementById('draft-toggle').textContent = 'I already drafted a reply (show)';
+    document.getElementById('draft-char-count').textContent = '0';
     document.getElementById('results').classList.add('hidden');
     document.getElementById('empty-state').classList.remove('hidden');
     /* Batch 6 polish: keep the mode you picked — starting a new message
@@ -2388,6 +2561,12 @@
     document.getElementById('reply-message').value = '';
     document.getElementById('reply-char-count').textContent = '0';
     document.getElementById('reply-char-count').className = '';
+    document.getElementById('reply-goal-input').value = '';
+    document.getElementById('reply-draft-input').value = '';
+    document.getElementById('reply-draft-box').classList.add('hidden');
+    document.getElementById('reply-draft-toggle').setAttribute('aria-expanded', 'false');
+    document.getElementById('reply-draft-toggle').textContent = 'I already drafted a reply (show)';
+    document.getElementById('reply-draft-char-count').textContent = '0';
     document.getElementById('reply-results').classList.add('hidden');
     document.getElementById('empty-state').classList.remove('hidden');
     /* Batch 6 polish: keep the mode you picked, as above. */
@@ -2411,11 +2590,11 @@
   // Copy all
   document.getElementById('copy-all').addEventListener('click', () => {
     if (!currentData) return;
-    const text = `BeforeYouSay Analysis\n\nOriginal: ${currentData.original_message}\nTone: ${currentData.tone_detected}\nRisk: ${currentData.risk_level}\n\nBest Version:\n${currentData.better_version}\n\nSofter Version:\n${currentData.softer_version}\n\nStronger Version:\n${currentData.stronger_version}\n\nCoach Note:\n${currentData.coach_note}`;
+    const text = `BeforeYouSay Analysis\n\nOriginal: ${currentData.original_message}\nTone: ${currentData.tone_detected}\nRisk: ${currentData.risk_level}\n\nBest Version:\n${currentData.better_version}\n\nSofter Version:\n${currentData.softer_version}\n\nStronger Version:\n${currentData.stronger_version}\n\nCoach Note:\n${currentData.coach_note}` + fourPartCopyText(currentData);
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copy-all');
       btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+      setTimeout(() => btn.textContent = 'Copy All', 2000);
     });
   });
 
@@ -2441,7 +2620,7 @@
   // Share
   document.getElementById('share-result').addEventListener('click', () => {
     if (!currentData) return;
-    shareTextOrCopy('BeforeYouSay rewrite:\n\n' + (currentData.better_version || ''), document.getElementById('share-result'), '✓ Copied!', '🔗 Share');
+    shareTextOrCopy('BeforeYouSay rewrite:\n\n' + (currentData.better_version || ''), document.getElementById('share-result'), '✓ Copied!', 'Share');
   });
 
   document.getElementById('copy-all-reply').addEventListener('click', () => {
@@ -2450,14 +2629,59 @@
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copy-all-reply');
       btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+      setTimeout(() => btn.textContent = 'Copy All', 2000);
     });
   });
 
   document.getElementById('share-reply').addEventListener('click', () => {
     const t = replyTextsJoined();
-    shareTextOrCopy('BeforeYouSay replies:\n\nCalm & clear: ' + t.calm + '\n\nAssertive: ' + t.assertive + '\n\nWarm & open: ' + t.warm, document.getElementById('share-reply'), '✓ Copied!', '🔗 Share');
+    shareTextOrCopy('BeforeYouSay replies:\n\nCalm & clear: ' + t.calm + '\n\nAssertive: ' + t.assertive + '\n\nWarm & open: ' + t.warm, document.getElementById('share-reply'), '✓ Copied!', 'Share');
   });
+
+  /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
+     This block MUST stay at the end of the script: it clicks a mode
+     button and a tab button, and those clicks only work once their
+     listeners (attached above) exist. Before Sprint 1 it sat above
+     them, so ?mode= and ?reply=1 links silently did nothing — the
+     message still landed in the box, which is why nobody noticed.
+     The extension's "Open on the site" button links here with
+     ?message=...&mode=career&reply=1 (and &from=extension). Only the
+     message box, the mode and the tab are filled in — nothing is analysed
+     until the user taps Analyse, and the text stays editable. Values are
+     capped at 1000 characters and the mode must be one of the four lanes
+     (old workplace/relationship links are mapped to their lane); anything
+     else is ignored. */
+  (function prefillFromExtensionLink() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var prefill = (params.get("message") || "").trim().slice(0, 1000);
+      var mode = params.get("mode") || "";
+      var reply = params.get("reply") === "1";
+      if (!prefill && !mode && !reply) return;
+      if (reply) {
+        var replyTab = document.querySelector('.tab-btn[data-tab="reply"]');
+        if (replyTab) replyTab.click();
+        var replyBox = document.getElementById("reply-message");
+        if (replyBox && prefill) {
+          replyBox.value = prefill;
+          updateCharCounter("reply-message", "reply-char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
+          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      } else if (prefill) {
+        var box = document.getElementById("message");
+        box.value = prefill;
+        updateCharCounter("message", "char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      var mappedMode = migrateMode(mode);
+      if (mappedMode) {
+        var btn = document.querySelector((reply ? ".reply-mode-btn" : ".mode-btn") + '[data-mode="' + mappedMode + '"]');
+        if (btn) btn.click();
+      }
+      var appCard = document.querySelector(".tab-btn");
+      if (appCard) appCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) { /* a bad link must never break the page */ }
+  })();
 
   document.getElementById('empty-state').classList.remove('hidden');
 </script>
