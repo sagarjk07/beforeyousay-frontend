@@ -1639,6 +1639,51 @@
     const box = document.getElementById(boxId); const el = document.getElementById(countId);
     if (box && el) el.textContent = box.value.length;
   }
+  /* ---------- Batch 13 fresh token + retry ----------
+     Two fixes for paid calls (checkout, cancel) failing in a tab that
+     has been open a while while a fresh tab works:
+     - The page keeps the sign-in in `supabaseSession`, set at load and
+       only refreshed on auth-state-change events. In a tab left open
+       through a trip to Stripe (or backgrounded for a while) that token
+       can go stale. `freshAuthHeaders()` asks Supabase for the current
+       session right before the call and uses that token. If the lookup
+       itself fails, it falls back to the saved token and carries on —
+       a refresh failure must never block the user.
+     - Checkout/cancel had no timeout and no retry: one network blip,
+       or the free Render instance waking up slowly, showed the
+       "check your connection" error at once. `fetchBackendWithRetry`
+       gives them the same treatment analysis already has — a 45-second
+       timeout and ONE automatic retry, only on a network failure or
+       timeout. HTTP errors are NOT retried: the server already
+       answered, so the user should see the real error. Retrying a
+       checkout after a lost response can leave an extra Stripe
+       checkout session behind; it simply expires unpaid — no charge.
+       Cancelling is idempotent server-side, so retrying a cancel is
+       safe. */
+  const BACKEND_TIMEOUT_MS = 45000;
+  async function freshAuthHeaders() {
+    try {
+      if (supabaseClient) {
+        const res = await supabaseClient.auth.getSession();
+        if (res && res.data && res.data.session) supabaseSession = res.data.session;
+      }
+    } catch (e) { /* keep the saved token and carry on */ }
+    return getAuthHeaders();
+  }
+  async function fetchBackendWithRetry(url, opts, onRetry) {
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt === 1 && onRetry) { try { onRetry(); } catch (e) { /* never break the retry */ } }
+      const controller = new AbortController();
+      const timer = setTimeout(function () { controller.abort(); }, BACKEND_TIMEOUT_MS);
+      try {
+        const response = await fetch(url, Object.assign({}, opts, { signal: controller.signal }));
+        clearTimeout(timer);
+        return response;
+      } catch (e) { clearTimeout(timer); lastError = e; /* network failure or timeout: retry once */ }
+    }
+    throw lastError || new Error("Network error");
+  }
   /* ---------- Batch 8 Pro checkout ---------- */
   function checkoutUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/create-checkout-session"; }
   /* Batch 12: look a just-paid Checkout session up on the backend.
@@ -1668,7 +1713,7 @@
     if (!isSignedIn()) { if (el) el.textContent = "Sign in first — Pro is tied to your account."; return; }
     if (el) el.textContent = "Opening secure checkout…";
     try {
-      const res = await fetch(checkoutUrl(), { method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ billing: billing }) });
+      const res = await fetchBackendWithRetry(checkoutUrl(), { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify({ billing: billing }) }, function () { if (el) el.textContent = "Connection dropped — trying again…"; });
       const data = await res.json().catch(function () { return {}; });
       if (!res.ok || !data.url) { if (el) el.textContent = "Checkout couldn't be started" + (data && data.error ? ": " + data.error : ". Please try again."); return; }
       window.location.href = data.url;
@@ -1690,7 +1735,7 @@
     if (!isSignedIn()) { if (el) el.textContent = "Sign in first — Pro is tied to your account."; return; }
     if (el) el.textContent = "Cancelling Pro…";
     try {
-      const res = await fetch(cancelUrl(), { method: "POST", headers: getAuthHeaders() });
+      const res = await fetchBackendWithRetry(cancelUrl(), { method: "POST", headers: await freshAuthHeaders() }, function () { if (el) el.textContent = "Connection dropped — trying again…"; });
       const data = await res.json().catch(function () { return {}; });
       if (!res.ok || !data.cancelled) { if (el) el.textContent = (data && data.error) ? data.error : "Cancellation couldn't be completed. Please try again."; return; }
       planEndsAt = data.planEndsAt || null;
@@ -1770,7 +1815,6 @@
     const statusEl = document.getElementById("delete-status");
     if (!isSignedIn() || !supabaseClient) { statusEl.textContent = "You are not signed in, so there is no account to delete. Your data on this device is still here — use Clear all in Your history to remove it."; return; }
     const userId = supabaseSession.user.id;
-    const token = supabaseSession.access_token;
     statusEl.textContent = "Deleting your data…";
     let cloudRowsDeleted = false;
     let backendResult = null;
@@ -1789,7 +1833,7 @@
       /* Step 2: ask the backend to remove anything left, and the auth
          user itself. 503 means the server is not set up for this yet
          (see README.md) — that is not a failure of step 1. */
-      const res = await fetch(deleteAccountUrl(), { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token } });
+      const res = await fetch(deleteAccountUrl(), { method: "POST", headers: await freshAuthHeaders() });
       backendResult = await res.json().catch(function () { return null; });
       backendResult = backendResult || { ok: res.ok };
     } catch (e) { backendResult = null; }
@@ -2118,7 +2162,10 @@
        Turnstile token never reached the server, so it is safe to send the same token
        again. HTTP errors (429 limit, 403 verification, 500) are NOT retried: the
        token was already spent and the user should see the real error.
-     - The user's typed message is never cleared here, so a failed check never loses it. */
+     - The user's typed message is never cleared here, so a failed check never loses it.
+     - Batch 13: the sign-in token is fetched fresh before each attempt
+       (see freshAuthHeaders), so a tab left open for a while does not
+       send a stale token. */
   const ANALYZE_TIMEOUT_MS = 45000;
   async function postAnalyze(payload) {
     let lastError = null;
@@ -2126,7 +2173,7 @@
       const controller = new AbortController();
       const timer = setTimeout(function () { controller.abort(); }, ANALYZE_TIMEOUT_MS);
       try {
-        const response = await fetch(BYS_API_URL, { method: "POST", headers: getAuthHeaders(), body: JSON.stringify(payload), signal: controller.signal });
+        const response = await fetch(BYS_API_URL, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload), signal: controller.signal });
         clearTimeout(timer);
         return response;
       } catch (e) { clearTimeout(timer); lastError = e; /* network failure or timeout: retry once */ }
