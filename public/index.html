@@ -46,6 +46,10 @@
     .tab-btn.active { background: #0f172a; color: white; }
     .thread-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
     .thread-mode-btn.active .lane-desc { color: #cbd5e1; }
+    .analyser-tab-btn.active { background: #0f172a; color: white; }
+    /* Sprint 2 fix pass: thumbnail reorder/remove buttons must be tappable
+       on a phone - at least 44x44px, whatever the padding works out to. */
+    .thread-thumb-btn { min-height: 44px; min-width: 44px; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .fade-in { animation: fadeIn 0.35s ease forwards; }
     .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
@@ -96,8 +100,8 @@
     </p>
   </section>
 
-  <!-- Mode Tabs -->
-  <div class="flex justify-center">
+  <!-- Mode Tabs: Rewrite / Reply - only shown on the Paste Text panel (see setAnalyserTab) -->
+  <div id="text-tab-switcher" class="flex justify-center hidden">
     <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1">
       <button data-tab="rewrite" class="tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
         <span class="hidden sm:inline">Rewrite </span>Mine
@@ -111,6 +115,83 @@
   <!-- App Card -->
   <section class="bg-white rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-3xl mx-auto">
 
+    <!-- Sprint 2 fix pass: analyser switcher at the TOP of the analyser.
+         Screenshot Thread is the default - the uploader no longer sits
+         buried below the text box. Paste Text keeps the existing text
+         analyser intact (lanes, goal, draft toggle, Check/Reply, history). -->
+    <div class="flex justify-center mb-6">
+      <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1" role="tablist" aria-label="Choose how to analyse">
+        <button type="button" data-analyser="thread" class="analyser-tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Screenshot Thread</button>
+        <button type="button" data-analyser="text" class="analyser-tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Paste Text</button>
+      </div>
+    </div>
+
+    <div id="panel-screenshots">
+    <!-- Sprint 2: Screenshot thread — paste / drag / pick up to 5 screenshots
+         of one thread, in order, and analyse them with the vision model.
+         Images live in memory only (threadImages below) and are never
+         written to history or the cloud — see addHistory call in the
+         thread handler, which stores only a text label + the result. -->
+    <div id="thread-section" class="mt-5 pt-4 border-t border-slate-200">
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Screenshot thread</h3>
+      <p class="text-sm text-slate-600 mb-4">Paste or drop screenshots of one conversation — iMessage, WhatsApp or Slack — in order, and get the subtext, the trap, and the exact reply.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button type="button" data-mode="career" class="thread-mode-btn active p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
+        </button>
+        <button type="button" data-mode="negotiation" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
+        </button>
+        <button type="button" data-mode="high_conflict" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
+        </button>
+        <button type="button" data-mode="boundaries" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
+        </button>
+      </div>
+      <div id="thread-dropzone" tabindex="0" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center mb-2">
+        <p class="text-sm font-bold text-slate-700 mb-1">Paste screenshots here (Ctrl+V / Cmd+V), drag them in, or choose photos</p>
+        <p class="text-sm text-slate-500 mb-3">Up to 5 screenshots, in the order they happened.</p>
+        <button id="thread-file-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Choose photos</button>
+        <input id="thread-file-input" type="file" accept="image/*" multiple class="hidden">
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Screenshots are processed in memory and never stored.</p>
+      <div id="thread-thumbs" class="flex flex-wrap gap-2 mb-2"></div>
+      <div class="flex justify-between items-center px-1 mb-4">
+        <span id="thread-count" class="text-sm text-slate-500">0 of 5 screenshots</span>
+        <button id="thread-clear-btn" type="button" class="text-sm font-bold text-slate-600 hover:text-slate-900">Clear screenshots</button>
+      </div>
+      <div class="space-y-3 mb-6">
+        <div>
+          <label for="thread-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact goal here? <span class="font-normal text-slate-500">(required)</span></label>
+          <input id="thread-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+        </div>
+        <div>
+          <button id="thread-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
+          <div id="thread-draft-box" class="hidden mt-2">
+            <textarea id="thread-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="thread-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
+          </div>
+        </div>
+        <span id="thread-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+        <div id="thread-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+        <button id="thread-analyze-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <span id="thread-btn-text">Add a screenshot and your goal first</span>
+          <span id="thread-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span id="thread-loading-text">Reading your screenshots...</span>
+          </span>
+        </button>
+        <p id="thread-status" class="text-sm text-slate-500" role="status"></p>
+      </div>
+    </div>
+    </div>
+
+    <div id="panel-text" class="hidden">
     <!-- Phase 1 your-week: gentle welcome back — one short line, never a popup -->
     <p id="welcome-back" class="hidden mb-6 p-4 bg-amber-50 rounded-2xl border border-amber-100 text-sm text-slate-700" role="status"></p>
 
@@ -288,67 +369,6 @@
         </button>
       </div>
     </div>
-
-    <!-- Sprint 2: Screenshot thread — paste / drag / pick up to 5 screenshots
-         of one thread, in order, and analyse them with the vision model.
-         Images live in memory only (threadImages below) and are never
-         written to history or the cloud — see addHistory call in the
-         thread handler, which stores only a text label + the result. -->
-    <div id="thread-section" class="mt-5 pt-4 border-t border-slate-200">
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Screenshot thread</h3>
-      <p class="text-sm text-slate-600 mb-4">Paste or drop screenshots of one conversation — iMessage, WhatsApp or Slack — in order, and get the subtext, the trap, and the exact reply.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
-        <button type="button" data-mode="career" class="thread-mode-btn active p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
-        </button>
-        <button type="button" data-mode="negotiation" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
-        </button>
-        <button type="button" data-mode="high_conflict" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
-        </button>
-        <button type="button" data-mode="boundaries" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
-        </button>
-      </div>
-      <div id="thread-dropzone" tabindex="0" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center mb-2">
-        <p class="text-sm font-bold text-slate-700 mb-1">Paste screenshots here (Ctrl+V / Cmd+V), drag them in, or choose photos</p>
-        <p class="text-sm text-slate-500 mb-3">Up to 5 screenshots, in the order they happened.</p>
-        <button id="thread-file-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Choose photos</button>
-        <input id="thread-file-input" type="file" accept="image/*" multiple class="hidden">
-      </div>
-      <p class="text-xs text-slate-500 mb-4">Screenshots are processed in memory and never stored.</p>
-      <div id="thread-thumbs" class="flex flex-wrap gap-2 mb-2"></div>
-      <div class="flex justify-between items-center px-1 mb-4">
-        <span id="thread-count" class="text-sm text-slate-500">0 of 5 screenshots</span>
-        <button id="thread-clear-btn" type="button" class="text-sm font-bold text-slate-600 hover:text-slate-900">Clear screenshots</button>
-      </div>
-      <div class="space-y-3 mb-6">
-        <div>
-          <label for="thread-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact goal here? <span class="font-normal text-slate-500">(required)</span></label>
-          <input id="thread-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-        </div>
-        <div>
-          <button id="thread-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
-          <div id="thread-draft-box" class="hidden mt-2">
-            <textarea id="thread-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="thread-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
-          </div>
-        </div>
-        <span id="thread-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-        <button id="thread-analyze-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-          <span id="thread-btn-text">Add a screenshot and your goal first</span>
-          <span id="thread-loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <span id="thread-loading-text">Reading your screenshots...</span>
-          </span>
-        </button>
-        <p id="thread-status" class="text-sm text-slate-500" role="status"></p>
-      </div>
     </div>
 
     <!-- Skeleton Loader -->
@@ -1752,6 +1772,7 @@
       const td = document.getElementById("thread-draft-input"); if (td) { td.value = it.draft || ""; updateCharCounter("thread-draft-input", "thread-draft-char-count"); }
       setMode(migrateMode(it.mode) || it.mode);
       setThreadMode(migrateMode(it.mode) || it.mode);
+      setAnalyserTab("thread");
       document.querySelector('[data-tab="rewrite"]').click();
       currentData = it.result; displayResults(it.result);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1761,12 +1782,14 @@
       document.getElementById("reply-message").value = it.input || "";
       document.getElementById("reply-char-count").textContent = (it.input || "").length;
       setMode(migrateMode(it.mode) || it.mode);
+      setAnalyserTab("text");
       document.querySelector('[data-tab="reply"]').click();
       displayReplyResults(it.result, it.input || "");
     } else {
       document.getElementById("message").value = it.input || "";
       document.getElementById("char-count").textContent = (it.input || "").length;
       setMode(migrateMode(it.mode) || it.mode);
+      setAnalyserTab("text");
       document.querySelector('[data-tab="rewrite"]').click();
       currentData = it.result; displayResults(it.result);
     }
@@ -2425,9 +2448,41 @@
      one — when Turnstile never loaded (slow network, blocker), the old
      message blamed the user for not ticking a box that was never there. */
   function turnstileReady(tab) {
-    const widget = document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile");
+    /* Sprint 2 fix pass: "thread" checks the thread panel's own widget -
+       the text widgets start hidden, so the thread must not depend on them. */
+    const widget = tab === "thread" ? document.getElementById("thread-turnstile")
+      : document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile");
     return Boolean(widget && widget.querySelector("iframe"));
   }
+
+  /* Sprint 2 fix pass: analyser switcher - Screenshot Thread (default) vs
+     Paste Text. The text panel's Turnstile widgets start hidden behind the
+     thread panel; if one never rendered while hidden, render it now that
+     its panel is visible. Already-rendered widgets are left alone. */
+  var analyserTab = "thread";
+  function ensureTurnstileWidgets() {
+    if (!window.turnstile || typeof window.turnstile.render !== "function") return;
+    document.querySelectorAll("#panel-text .cf-turnstile").forEach(function (el) {
+      if (!el.querySelector("iframe")) {
+        try { window.turnstile.render(el, { sitekey: el.getAttribute("data-sitekey") }); } catch (e) { /* the handlers below still show the refresh message */ }
+      }
+    });
+  }
+  function setAnalyserTab(which) {
+    if (which !== "thread" && which !== "text") return;
+    analyserTab = which;
+    document.querySelectorAll(".analyser-tab-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.analyser === which); });
+    var shot = document.getElementById("panel-screenshots");
+    var text = document.getElementById("panel-text");
+    if (shot) shot.classList.toggle("hidden", which !== "thread");
+    if (text) text.classList.toggle("hidden", which !== "text");
+    var outer = document.getElementById("text-tab-switcher");
+    if (outer) outer.classList.toggle("hidden", which !== "text");
+    if (which === "text") ensureTurnstileWidgets();
+  }
+  document.querySelectorAll(".analyser-tab-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () { setAnalyserTab(btn.dataset.analyser); });
+  });
 
   document.getElementById('analyze-btn').addEventListener('click', async () => {
     const message = document.getElementById('message').value.trim();
@@ -2770,9 +2825,9 @@
       return '<div class="relative p-1 bg-white rounded-xl border border-slate-200" draggable="true" data-thread-index="' + i + '">'
         + '<span class="absolute top-3 right-3 bg-slate-900 text-white text-xs font-bold px-3 py-2.5 rounded-lg">' + (i + 1) + '</span>'
         + '<img src="' + img.dataUrl + '" alt="Screenshot ' + (i + 1) + '" style="width:80px;height:80px;object-fit:cover;display:block;border-radius:8px;">'
-        + '<div class="flex gap-2 mt-1"><button type="button" data-thread-move="' + i + '" data-dir="-1" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move left</button>'
-        + '<button type="button" data-thread-move="' + i + '" data-dir="1" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move right</button>'
-        + '<button type="button" data-thread-remove="' + i + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Remove</button></div>'
+        + '<div class="flex gap-2 mt-1"><button type="button" data-thread-move="' + i + '" data-dir="-1" aria-label="Move screenshot ' + (i + 1) + ' left" class="thread-thumb-btn px-3 py-3 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">← Move left</button>'
+        + '<button type="button" data-thread-move="' + i + '" data-dir="1" aria-label="Move screenshot ' + (i + 1) + ' right" class="thread-thumb-btn px-3 py-3 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move right →</button>'
+        + '<button type="button" data-thread-remove="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" class="thread-thumb-btn px-3 py-3 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Remove</button></div>'
         + '<p class="text-xs text-slate-500 mt-1">Drag to reorder</p></div>';
     }).join("");
   }
@@ -2862,8 +2917,8 @@
   document.getElementById("thread-analyze-btn").addEventListener("click", async function () {
     const goal = threadGoal(); const draft = threadDraft();
     if (threadImages.length === 0 || !goal) { threadError("Add at least 1 screenshot and your goal first."); return; }
-    const turnstileToken = (document.querySelector('#tab-rewrite [name="cf-turnstile-response"]') || document.querySelector('[name="cf-turnstile-response"]') || {}).value;
-    if (!turnstileToken) { threadError(turnstileReady("rewrite") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again."); return; }
+    const turnstileToken = (document.querySelector('#thread-turnstile [name="cf-turnstile-response"]') || document.querySelector('#tab-rewrite [name="cf-turnstile-response"]') || document.querySelector('[name="cf-turnstile-response"]') || {}).value;
+    if (!turnstileToken) { threadError(turnstileReady("thread") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again."); return; }
     if (!canCheckToday()) { threadError(limitMessageFor(isSignedIn())); return; }
     const btn = document.getElementById("thread-analyze-btn"); const btnText = document.getElementById("thread-btn-text");
     const spinner = document.getElementById("thread-loading-spinner"); const status = document.getElementById("thread-status");
@@ -2921,6 +2976,7 @@
       var mode = params.get("mode") || "";
       var reply = params.get("reply") === "1";
       if (!prefill && !mode && !reply) return;
+      setAnalyserTab("text"); /* Sprint 2 fix pass: a prefilled message lives on the Paste Text panel */
       if (reply) {
         var replyTab = document.querySelector('.tab-btn[data-tab="reply"]');
         if (replyTab) replyTab.click();
