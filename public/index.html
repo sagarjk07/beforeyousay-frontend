@@ -44,6 +44,8 @@
     .mode-btn.active, .reply-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
     .mode-btn.active .lane-desc, .reply-mode-btn.active .lane-desc { color: #cbd5e1; }
     .tab-btn.active { background: #0f172a; color: white; }
+    .thread-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
+    .thread-mode-btn.active .lane-desc { color: #cbd5e1; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .fade-in { animation: fadeIn 0.35s ease forwards; }
     .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
@@ -284,6 +286,68 @@
             <span id="reply-loading-text">Analyzing the message...</span>
           </span>
         </button>
+      </div>
+    </div>
+
+    <!-- Sprint 2: Screenshot thread — paste / drag / pick up to 5 screenshots
+         of one thread, in order, and analyse them with the vision model.
+         Images live in memory only (threadImages below) and are never
+         written to history or the cloud — see addHistory call in the
+         thread handler, which stores only a text label + the result. -->
+    <div id="thread-section" class="mt-5 pt-4 border-t border-slate-200">
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Screenshot thread</h3>
+      <p class="text-sm text-slate-600 mb-4">Paste or drop screenshots of one conversation — iMessage, WhatsApp or Slack — in order, and get the subtext, the trap, and the exact reply.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+        <button type="button" data-mode="career" class="thread-mode-btn active p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
+        </button>
+        <button type="button" data-mode="negotiation" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
+        </button>
+        <button type="button" data-mode="high_conflict" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
+        </button>
+        <button type="button" data-mode="boundaries" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
+          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
+          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
+        </button>
+      </div>
+      <div id="thread-dropzone" tabindex="0" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center mb-2">
+        <p class="text-sm font-bold text-slate-700 mb-1">Paste screenshots here (Ctrl+V / Cmd+V), drag them in, or choose photos</p>
+        <p class="text-sm text-slate-500 mb-3">Up to 5 screenshots, in the order they happened.</p>
+        <button id="thread-file-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Choose photos</button>
+        <input id="thread-file-input" type="file" accept="image/*" multiple class="hidden">
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Screenshots are processed in memory and never stored.</p>
+      <div id="thread-thumbs" class="flex flex-wrap gap-2 mb-2"></div>
+      <div class="flex justify-between items-center px-1 mb-4">
+        <span id="thread-count" class="text-sm text-slate-500">0 of 5 screenshots</span>
+        <button id="thread-clear-btn" type="button" class="text-sm font-bold text-slate-600 hover:text-slate-900">Clear screenshots</button>
+      </div>
+      <div class="space-y-3 mb-6">
+        <div>
+          <label for="thread-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact goal here? <span class="font-normal text-slate-500">(required)</span></label>
+          <input id="thread-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+        </div>
+        <div>
+          <button id="thread-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
+          <div id="thread-draft-box" class="hidden mt-2">
+            <textarea id="thread-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="thread-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
+          </div>
+        </div>
+        <span id="thread-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+        <button id="thread-analyze-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <span id="thread-btn-text">Add a screenshot and your goal first</span>
+          <span id="thread-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span id="thread-loading-text">Reading your screenshots...</span>
+          </span>
+        </button>
+        <p id="thread-status" class="text-sm text-slate-500" role="status"></p>
       </div>
     </div>
 
@@ -1680,6 +1744,19 @@
       if (sel) sel.value = selectedContextId;
       renderContextNoteLine();
     }
+    if (it.thread) {
+      /* Sprint 2: a thread item stores no message text and no images —
+         only a label, goal, draft and result. Show the result, restore
+         the thread goal/draft, and do not fill the text box. */
+      const tg = document.getElementById("thread-goal-input"); if (tg) tg.value = it.goal || "";
+      const td = document.getElementById("thread-draft-input"); if (td) { td.value = it.draft || ""; updateCharCounter("thread-draft-input", "thread-draft-char-count"); }
+      setMode(migrateMode(it.mode) || it.mode);
+      setThreadMode(migrateMode(it.mode) || it.mode);
+      document.querySelector('[data-tab="rewrite"]').click();
+      currentData = it.result; displayResults(it.result);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     if (it.tab === "reply") {
       document.getElementById("reply-message").value = it.input || "";
       document.getElementById("reply-char-count").textContent = (it.input || "").length;
@@ -2637,6 +2714,192 @@
     const t = replyTextsJoined();
     shareTextOrCopy('BeforeYouSay replies:\n\nCalm & clear: ' + t.calm + '\n\nAssertive: ' + t.assertive + '\n\nWarm & open: ' + t.warm, document.getElementById('share-reply'), '✓ Copied!', 'Share');
   });
+
+  /* ---------- Sprint 2: Screenshot Thread Engine ----------
+     Images live ONLY in `threadImages` (Base64 data URLs, downscaled
+     client-side to max 1024px, JPEG ~0.8) and are sent once to
+     POST /analyze-thread. They are never written to history, localStorage
+     or the cloud: the history item stores a text label, the lane, goal,
+     draft and result only (pattern_summary rides in result, for Sprint 3).
+     A thread counts as one check: addHistory adds one history row, so
+     the existing guest/signed-in daily-limit counting counts it once.
+     No Sprint 4 paywall here — guests run a thread under the same Free
+     limits as a text check. */
+  const THREAD_MAX_IMAGES = 5;
+  const THREAD_MAX_DIM = 1024;
+  const BYS_THREAD_URL = BYS_API_URL.replace(/\/analyze$/, "") + "/analyze-thread";
+  let threadImages = []; /* [{ dataUrl }] in chronological order */
+  let threadMode = "career";
+  let threadDragIndex = null;
+  function threadGoal() { const el = document.getElementById("thread-goal-input"); const v = el ? el.value.trim().slice(0, 200) : ""; return v || null; }
+  function threadDraft() { const el = document.getElementById("thread-draft-input"); const v = el ? el.value.trim().slice(0, 1000) : ""; return v || null; }
+  function setThreadMode(mode) {
+    if (!VALID_MODES.includes(mode)) return;
+    threadMode = mode;
+    document.querySelectorAll(".thread-mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === mode); });
+    updateThreadButton();
+  }
+  function threadError(msg) { const el = document.getElementById("thread-error-msg"); if (!el) return; if (!msg) { el.classList.add("hidden"); el.textContent = ""; return; } el.textContent = msg; el.classList.remove("hidden"); setTimeout(function () { el.classList.add("hidden"); }, 6000); }
+  function updateThreadButton() {
+    const btn = document.getElementById("thread-analyze-btn"); const txt = document.getElementById("thread-btn-text");
+    if (!btn || !txt) return;
+    const ready = threadImages.length >= 1 && Boolean(threadGoal());
+    btn.disabled = !ready;
+    txt.textContent = ready ? "Analyse thread" : (threadImages.length === 0 ? "Add a screenshot and your goal first" : "Add your goal to analyse the thread");
+    const count = document.getElementById("thread-count"); if (count) count.textContent = threadImages.length + " of 5 screenshots";
+  }
+  function addThreadImageDataUrl(dataUrl) {
+    if (typeof dataUrl !== "string" || !/^data:image\/(jpeg|png|webp);base64,/.test(dataUrl)) return { ok: false, error: "That file is not a JPEG, PNG or WebP image." };
+    if (threadImages.length >= THREAD_MAX_IMAGES) return { ok: false, error: "You can upload up to 5 screenshots in a thread." };
+    threadImages.push({ dataUrl: dataUrl });
+    renderThreadThumbs(); updateThreadButton();
+    return { ok: true };
+  }
+  function removeThreadImage(index) {
+    if (index < 0 || index >= threadImages.length) return;
+    threadImages.splice(index, 1); renderThreadThumbs(); updateThreadButton();
+  }
+  function moveThreadImage(from, to) {
+    if (from < 0 || from >= threadImages.length || to < 0 || to >= threadImages.length || from === to) return;
+    const item = threadImages.splice(from, 1)[0]; threadImages.splice(to, 0, item);
+    renderThreadThumbs(); updateThreadButton();
+  }
+  function renderThreadThumbs() {
+    const box = document.getElementById("thread-thumbs"); if (!box) return;
+    box.innerHTML = threadImages.map(function (img, i) {
+      return '<div class="relative p-1 bg-white rounded-xl border border-slate-200" draggable="true" data-thread-index="' + i + '">'
+        + '<span class="absolute top-3 right-3 bg-slate-900 text-white text-xs font-bold px-3 py-2.5 rounded-lg">' + (i + 1) + '</span>'
+        + '<img src="' + img.dataUrl + '" alt="Screenshot ' + (i + 1) + '" style="width:80px;height:80px;object-fit:cover;display:block;border-radius:8px;">'
+        + '<div class="flex gap-2 mt-1"><button type="button" data-thread-move="' + i + '" data-dir="-1" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move left</button>'
+        + '<button type="button" data-thread-move="' + i + '" data-dir="1" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move right</button>'
+        + '<button type="button" data-thread-remove="' + i + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Remove</button></div>'
+        + '<p class="text-xs text-slate-500 mt-1">Drag to reorder</p></div>';
+    }).join("");
+  }
+  function downscaleImageFile(file) {
+    return new Promise(function (resolve) {
+      try {
+        if (typeof FileReader === "undefined" || typeof Image === "undefined" || typeof document === "undefined" || !document.createElement("canvas")) { resolve(null); return; }
+        const reader = new FileReader();
+        reader.onload = function () {
+          const img = new Image();
+          img.onload = function () {
+            try {
+              const scale = Math.min(1, THREAD_MAX_DIM / Math.max(img.width, img.height));
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.max(1, Math.round(img.width * scale));
+              canvas.height = Math.max(1, Math.round(img.height * scale));
+              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+              resolve(canvas.toDataURL("image/jpeg", 0.8));
+            } catch (e) { resolve(typeof reader.result === "string" ? reader.result : null); }
+          };
+          img.onerror = function () { resolve(typeof reader.result === "string" ? reader.result : null); };
+          img.src = reader.result;
+        };
+        reader.onerror = function () { resolve(null); };
+        reader.readAsDataURL(file);
+      } catch (e) { resolve(null); }
+    });
+  }
+  async function addThreadFiles(files) {
+    const list = Array.prototype.slice.call(files || []);
+    for (const file of list) {
+      if (threadImages.length >= THREAD_MAX_IMAGES) { threadError("You can upload up to 5 screenshots in a thread."); return; }
+      if (!file || !file.type || file.type.indexOf("image/") !== 0) { threadError("That file is not an image — add a screenshot (JPEG, PNG or WebP)."); continue; }
+      threadError("");
+      const dataUrl = await downscaleImageFile(file);
+      if (!dataUrl) { threadError("That screenshot could not be read — try a different image."); continue; }
+      const added = addThreadImageDataUrl(dataUrl);
+      if (!added.ok) threadError(added.error);
+    }
+  }
+  async function postThreadAnalyze(payload) {
+    return fetchBackendWithRetry(BYS_THREAD_URL, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) }, function () {
+      const st = document.getElementById("thread-status"); if (st) st.textContent = "Connection dropped — trying again…";
+    });
+  }
+  document.querySelectorAll(".thread-mode-btn").forEach(function (btn) { btn.addEventListener("click", function () { setThreadMode(btn.dataset.mode); }); });
+  document.getElementById("thread-goal-input").addEventListener("input", updateThreadButton);
+  wireDraftToggle("thread-draft-toggle", "thread-draft-box", "thread-draft-input", "thread-draft-char-count");
+  document.getElementById("thread-file-btn").addEventListener("click", function () { document.getElementById("thread-file-input").click(); });
+  document.getElementById("thread-file-input").addEventListener("change", function (e) { addThreadFiles(e.target.files); e.target.value = ""; });
+  document.getElementById("thread-clear-btn").addEventListener("click", function () { threadImages = []; renderThreadThumbs(); updateThreadButton(); });
+  (function () {
+    const dz = document.getElementById("thread-dropzone"); if (!dz) return;
+    dz.addEventListener("dragover", function (e) { e.preventDefault(); });
+    dz.addEventListener("drop", function (e) { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files) addThreadFiles(e.dataTransfer.files); });
+    dz.addEventListener("paste", function (e) { if (e.clipboardData) addThreadFiles(Array.prototype.slice.call(e.clipboardData.files || [])); });
+    dz.addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") { /* paste is handled by the document listener below */ } });
+  })();
+  document.addEventListener("paste", function (e) {
+    const t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return; /* pasting text into a box stays text */
+    if (!e.clipboardData) return;
+    const files = Array.prototype.slice.call(e.clipboardData.files || []);
+    const images = files.filter(function (f) { return f.type && f.type.indexOf("image/") === 0; });
+    if (images.length) { e.preventDefault(); addThreadFiles(images); }
+  });
+  document.getElementById("thread-thumbs").addEventListener("click", function (e) {
+    const rm = e.target.closest("[data-thread-remove]");
+    if (rm) { removeThreadImage(Number(rm.getAttribute("data-thread-remove"))); return; }
+    const mv = e.target.closest("[data-thread-move]");
+    if (mv) { moveThreadImage(Number(mv.getAttribute("data-thread-move")), Number(mv.getAttribute("data-thread-move")) + Number(mv.getAttribute("data-dir"))); return; }
+  });
+  document.getElementById("thread-thumbs").addEventListener("dragstart", function (e) {
+    const card = e.target.closest("[data-thread-index]"); if (!card) return;
+    threadDragIndex = Number(card.getAttribute("data-thread-index"));
+    if (e.dataTransfer) { e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", String(threadDragIndex)); } catch (err) { /* drag still works without the payload */ } }
+  });
+  document.getElementById("thread-thumbs").addEventListener("dragover", function (e) { if (e.target.closest("[data-thread-index]")) e.preventDefault(); });
+  document.getElementById("thread-thumbs").addEventListener("drop", function (e) {
+    const card = e.target.closest("[data-thread-index]"); if (!card) return;
+    e.preventDefault();
+    const to = Number(card.getAttribute("data-thread-index"));
+    const from = threadDragIndex !== null ? threadDragIndex : Number(e.dataTransfer ? e.dataTransfer.getData("text/plain") : NaN);
+    threadDragIndex = null;
+    if (Number.isFinite(from)) moveThreadImage(from, to);
+  });
+  document.getElementById("thread-analyze-btn").addEventListener("click", async function () {
+    const goal = threadGoal(); const draft = threadDraft();
+    if (threadImages.length === 0 || !goal) { threadError("Add at least 1 screenshot and your goal first."); return; }
+    const turnstileToken = (document.querySelector('#tab-rewrite [name="cf-turnstile-response"]') || document.querySelector('[name="cf-turnstile-response"]') || {}).value;
+    if (!turnstileToken) { threadError(turnstileReady("rewrite") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again."); return; }
+    if (!canCheckToday()) { threadError(limitMessageFor(isSignedIn())); return; }
+    const btn = document.getElementById("thread-analyze-btn"); const btnText = document.getElementById("thread-btn-text");
+    const spinner = document.getElementById("thread-loading-spinner"); const status = document.getElementById("thread-status");
+    btn.disabled = true; btnText.classList.add("hidden"); spinner.classList.remove("hidden"); spinner.classList.add("inline-flex");
+    document.getElementById("skeleton").classList.remove("hidden");
+    document.getElementById("results").classList.add("hidden"); document.getElementById("reply-results").classList.add("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    startLoadingMessages("thread-loading-text");
+    try {
+      const response = await postThreadAnalyze({ images: threadImages.map(function (x) { return x.dataUrl; }), mode: threadMode, goal: goal, draft: draft, turnstileToken: turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi() });
+      const data = await safeJson(response);
+      if (response.ok) {
+        currentData = data;
+        const label = "Screenshot thread (" + threadImages.length + " image" + (threadImages.length === 1 ? "" : "s") + ") — Goal: " + goal;
+        lastAnalysis = { tab: "rewrite", mode: threadMode, message: label, goal: goal, draft: draft };
+        const savedHistory = addHistory({ tab: "rewrite", mode: threadMode, input: label, result: data, context: getSelectedContext(), style: "", goal: goal, draft: draft, thread: true, imageCount: threadImages.length });
+        currentHistoryId = savedHistory.id;
+        displayResults(data);
+        requestCount++; document.getElementById("request-count").textContent = requestCount;
+        if (status) status.textContent = "";
+      } else {
+        threadError(data.error || "Something went wrong.");
+        document.getElementById("empty-state").classList.remove("hidden");
+      }
+    } catch (error) {
+      threadError(error && error.name === "AbortError" ? "That check timed out — your screenshots are still here, please try again." : "Network error — your screenshots are still here, please try again.");
+      document.getElementById("empty-state").classList.remove("hidden");
+    } finally {
+      btn.disabled = false; btnText.classList.remove("hidden"); spinner.classList.add("hidden"); spinner.classList.remove("inline-flex");
+      btnText.textContent = "Analyse thread";
+      document.getElementById("skeleton").classList.add("hidden"); stopLoadingMessages();
+      updateThreadButton();
+      if (window.turnstile) window.turnstile.reset();
+    }
+  });
+  updateThreadButton();
 
   /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
      This block MUST stay at the end of the script: it clicks a mode
