@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>BeforeYouSay — High-Stakes Message Coach for Work, Money & Boundaries</title>
-  <meta name="description" content="Paste a message and get the subtext, the trap, and the exact reply. High-stakes communication coaching for career, negotiation, high-conflict, and boundaries.">
-  <meta name="keywords" content="AI message coach, high-stakes communication, reply to boss, negotiation reply, BIFF response, co-parenting message, set boundaries">
+  <title>BeforeYouSay — HR & Policy Compliance Firewall for Australian Businesses</title>
+  <meta name="description" content="Upload your company policies and employment contracts. Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.">
+  <meta name="keywords" content="HR compliance, Fair Work Act, National Employment Standards, NES, employment contract audit, HR email check, Australian small business HR">
   <link rel="canonical" href="https://beforeyousay.com/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="BeforeYouSay — High-Stakes Message Coach">
-  <meta property="og:description" content="Paste a message. Get the subtext, the trap, and the exact reply. Career, negotiation, high-conflict, and boundaries.">
+  <meta property="og:title" content="BeforeYouSay — HR & Policy Compliance Firewall">
+  <meta property="og:description" content="Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.">
   <meta property="og:url" content="https://beforeyousay.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BeforeYouSay — High-Stakes Message Coach">
-  <meta name="twitter:description" content="Paste a message. Get the subtext, the trap, and the exact reply.">
+  <meta name="twitter:title" content="BeforeYouSay — HR & Policy Compliance Firewall">
+  <meta name="twitter:description" content="Check manager emails and contracts against your internal rules and Fair Work compliance before you hit send.">
   <meta name="twitter:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Favicon -->
@@ -41,22 +41,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .mode-btn.active, .reply-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
-    .mode-btn.active .lane-desc, .reply-mode-btn.active .lane-desc { color: #cbd5e1; }
-    .tab-btn.active { background: #0f172a; color: white; }
-    .thread-mode-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
-    .thread-mode-btn.active .lane-desc { color: #cbd5e1; }
-    .analyser-tab-btn.active { background: #0f172a; color: white; }
-    /* Sprint 2 fix pass: thumbnail reorder/remove buttons must be tappable
-       on a phone - at least 44x44px, whatever the padding works out to. */
-    .thread-thumb-btn { min-height: 44px; min-width: 44px; }
+    .b2b-tab-btn.active { background: #0f172a; color: white; }
+    .jurisdiction-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
+    .week-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .copy-btn { transition: all 0.2s; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .fade-in { animation: fadeIn 0.35s ease forwards; }
-    .score-bar { transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
-    .copy-btn { transition: all 0.2s; }
-    .style-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
-    .rating-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
-    .week-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
@@ -70,13 +60,13 @@
         <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-lg leading-none" aria-hidden="true">B</span>
         <div>
           <h1 class="text-xl font-bold text-slate-900">BeforeYouSay</h1>
-          <p class="text-xs text-slate-500 font-medium hidden sm:block">High-Stakes Communication Coach</p>
+          <p class="text-xs text-slate-500 font-medium hidden sm:block">HR &amp; Policy Compliance Firewall</p>
         </div>
       </div>
       <div class="flex items-center space-x-4">
         <div class="text-sm text-slate-500">
           <span id="request-count" class="font-bold text-slate-900">0</span>
-          <span class="hidden sm:inline"> analyses today</span>
+          <span class="hidden sm:inline"> checks today</span>
         </div>
         <div id="auth-area" class="flex items-center gap-2">
           <span id="auth-state" class="hidden sm:inline text-sm text-slate-500">Not signed in</span>
@@ -93,282 +83,156 @@
   <!-- Hero -->
   <section class="text-center space-y-4">
     <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight">
-      Never send a message you'll regret. Upload a screenshot thread—get the subtext, the trap, and the exact reply.
+      Never send an HR email or contract that puts your business at risk.
     </h2>
     <p class="text-lg sm:text-xl text-slate-600 max-w-lg mx-auto leading-relaxed">
-      AI reads the subtext, flags the trap, and writes the exact reply — for the messages your job, money, or sanity depend on.
+      Upload your company policies and employment contracts. Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.
     </p>
   </section>
-
-  <!-- Mode Tabs: Rewrite / Reply - only shown on the Paste Text panel (see setAnalyserTab) -->
-  <div id="text-tab-switcher" class="flex justify-center hidden">
-    <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1">
-      <button data-tab="rewrite" class="tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
-        <span class="hidden sm:inline">Rewrite </span>Mine
-      </button>
-      <button data-tab="reply" class="tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">
-        <span class="hidden sm:inline">Reply to </span>This
-      </button>
-    </div>
-  </div>
 
   <!-- App Card -->
   <section class="bg-white rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-3xl mx-auto">
 
-    <!-- Sprint 2 fix pass: analyser switcher at the TOP of the analyser.
-         Screenshot Thread is the default - the uploader no longer sits
-         buried below the text box. Paste Text keeps the existing text
-         analyser intact (lanes, goal, draft toggle, Check/Reply, history). -->
-    <div class="flex justify-center mb-6">
-      <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1" role="tablist" aria-label="Choose how to analyse">
-        <button type="button" data-analyser="thread" class="analyser-tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Screenshot Thread</button>
-        <button type="button" data-analyser="text" class="analyser-tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Paste Text</button>
-      </div>
-    </div>
-
-    <div id="panel-screenshots">
-    <!-- Sprint 2: Screenshot thread — paste / drag / pick up to 5 screenshots
-         of one thread, in order, and analyse them with the vision model.
-         Images live in memory only (threadImages below) and are never
-         written to history or the cloud — see addHistory call in the
-         thread handler, which stores only a text label + the result. -->
-    <div id="thread-section" class="mt-5 pt-4 border-t border-slate-200">
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Screenshot thread</h3>
-      <p class="text-sm text-slate-600 mb-4">Paste or drop screenshots of one conversation — iMessage, WhatsApp or Slack — in order, and get the subtext, the trap, and the exact reply.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
-        <button type="button" data-mode="career" class="thread-mode-btn active p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
-        </button>
-        <button type="button" data-mode="negotiation" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
-        </button>
-        <button type="button" data-mode="high_conflict" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
-        </button>
-        <button type="button" data-mode="boundaries" class="thread-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
-        </button>
-      </div>
-      <div id="thread-dropzone" tabindex="0" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center mb-2">
-        <p class="text-sm font-bold text-slate-700 mb-1">Paste screenshots here (Ctrl+V / Cmd+V), drag them in, or choose photos</p>
-        <p class="text-sm text-slate-500 mb-3">Up to 5 screenshots, in the order they happened.</p>
-        <button id="thread-file-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Choose photos</button>
-        <input id="thread-file-input" type="file" accept="image/*" multiple class="hidden">
-      </div>
-      <p class="text-xs text-slate-500 mb-4">Screenshots are processed in memory and never stored.</p>
-      <div id="thread-thumbs" class="flex flex-wrap gap-2 mb-2"></div>
-      <div class="flex justify-between items-center px-1 mb-4">
-        <span id="thread-count" class="text-sm text-slate-500">0 of 5 screenshots</span>
-        <button id="thread-clear-btn" type="button" class="text-sm font-bold text-slate-600 hover:text-slate-900">Clear screenshots</button>
-      </div>
-      <div class="space-y-3 mb-6">
-        <div>
-          <label for="thread-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact goal here? <span class="font-normal text-slate-500">(required)</span></label>
-          <input id="thread-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-        </div>
-        <div>
-          <button id="thread-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
-          <div id="thread-draft-box" class="hidden mt-2">
-            <textarea id="thread-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="thread-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
-          </div>
-        </div>
-        <span id="thread-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-        <div id="thread-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
-        <button id="thread-analyze-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-          <span id="thread-btn-text">Add a screenshot and your goal first</span>
-          <span id="thread-loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <span id="thread-loading-text">Reading your screenshots...</span>
-          </span>
-        </button>
-        <p id="thread-status" class="text-sm text-slate-500" role="status"></p>
-      </div>
-    </div>
-    </div>
-
-    <div id="panel-text" class="hidden">
-    <!-- Phase 1 your-week: gentle welcome back — one short line, never a popup -->
-    <p id="welcome-back" class="hidden mb-6 p-4 bg-amber-50 rounded-2xl border border-amber-100 text-sm text-slate-700" role="status"></p>
-
-    <!-- Phase 1 contexts+styles: Who is this for? Shared by both tabs. -->
-    <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-      <label for="context-select" class="block text-sm font-bold text-slate-700 mb-2">Who is this for? <span class="font-normal text-slate-500">(optional)</span></label>
-      <div class="flex flex-col sm:flex-row gap-2">
-        <select id="context-select" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-          <option value="">No one in particular</option>
-        </select>
-        <button id="context-manage-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Manage people</button>
-      </div>
-      <p id="context-note-line" class="text-xs text-slate-500 mt-2"></p>
-      <!-- Batch 6 polish: add / manage people right here, where the picker is —
-           no more jumping down the page to the Your people section. -->
-      <div id="context-inline-panel" class="hidden mt-3 p-4 bg-white rounded-2xl border border-slate-200">
-        <p id="context-inline-title" class="text-sm font-bold text-slate-700 mb-2">Add a person</p>
-        <div class="space-y-3">
-          <input id="context-inline-name" type="text" maxlength="50" placeholder="Name — e.g. My manager" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-          <input id="context-inline-note" type="text" maxlength="200" placeholder="How do you want to sound with them? (optional)" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-          <div class="flex flex-col sm:flex-row gap-2">
-            <button id="context-inline-save-btn" type="button" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Save person</button>
-            <button id="context-inline-cancel-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Cancel</button>
-          </div>
-          <p id="context-inline-status" class="text-sm text-slate-500" role="status"></p>
-          <div id="context-inline-list" class="space-y-3"></div>
-          <button id="context-inline-done-btn" type="button" class="w-full px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Done</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Phase 1 ratings+moments: daily moments — tap one to load it into the message box -->
+    <!-- B2B HR Firewall V1: jurisdiction first. Australia is the only
+         supported jurisdiction for now — the United States and United
+         Kingdom are shown disabled with Coming Soon badges and can
+         never be selected. -->
     <div class="mb-6">
-      <p class="text-sm font-bold text-slate-700 mb-2">Try one today</p>
-      <p class="text-xs text-slate-500 mb-3">Tap one to load it into the message box — edit it however you like before you analyse.</p>
-      <div id="daily-moments" class="flex flex-wrap gap-2">
-        <button type="button" data-moment="0" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Push back on a Friday deadline</button>
-        <button type="button" data-moment="1" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Push back on scope creep</button>
-        <button type="button" data-moment="2" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Reply to a heated message</button>
-        <button type="button" data-moment="3" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Say no to family</button>
+      <p class="text-sm font-bold text-slate-700 mb-2">Jurisdiction</p>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Jurisdiction">
+        <button type="button" data-jurisdiction="australia" class="jurisdiction-btn active px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Australia — Fair Work Act &amp; NES</button>
+        <button type="button" data-jurisdiction="united-states" disabled class="px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed">United States <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Coming Soon</span></button>
+        <button type="button" data-jurisdiction="united-kingdom" disabled class="px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed">United Kingdom <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Coming Soon</span></button>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">Australia is the only supported jurisdiction for now.</p>
+    </div>
+
+    <!-- B2B dashboard tabs -->
+    <div class="flex justify-center mb-6">
+      <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1" role="tablist" aria-label="Choose a check">
+        <button type="button" data-b2b-tab="guardrail" class="b2b-tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Pre-Send Manager Guardrail</button>
+        <button type="button" data-b2b-tab="audit" class="b2b-tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Contract &amp; Policy Auditor</button>
       </div>
     </div>
 
-    <!-- Rewrite Tab -->
-    <div id="tab-rewrite" class="tab-content">
-      <!-- Mode Selector -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
-        <button data-mode="career" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
-        </button>
-        <button data-mode="negotiation" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
-        </button>
-        <button data-mode="high_conflict" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
-        </button>
-        <button data-mode="boundaries" class="mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
-        </button>
-      </div>
-
-      <!-- Message Input -->
+    <!-- Tab 1: Pre-Send Manager Guardrail (default) -->
+    <div id="panel-guardrail">
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Pre-Send Manager Guardrail</h3>
+      <p class="text-sm text-slate-600 mb-4">Paste the draft email, warning or message a manager is about to send. We check it against your Company Vault documents and Fair Work compliance before it goes out.</p>
       <div class="space-y-3 mb-6">
-        <textarea
-          id="message"
-          placeholder="Paste your message here... e.g. 'Why didn't you reply?'"
-          rows="4"
-          maxlength="1000"
-          class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"
-        ></textarea>
         <div>
-          <label for="goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact outcome/goal? <span class="font-normal text-slate-500">(optional)</span></label>
-          <input id="goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+          <label for="hr-draft" class="block text-sm font-bold text-slate-700 mb-1">Manager&rsquo;s draft</label>
+          <textarea id="hr-draft" placeholder="Paste the draft email or message here…" rows="6" maxlength="5000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+          <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="hr-draft-char-count">0</span><span class="text-slate-500"> / 5000</span></span></div>
         </div>
         <div>
-          <button id="draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
-          <div id="draft-box" class="hidden mt-2">
-            <textarea id="draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
-          </div>
+          <label for="hr-scenario" class="block text-sm font-bold text-slate-700 mb-1">Scenario</label>
+          <select id="hr-scenario" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+            <option value="performance">Performance &amp; Warnings</option>
+            <option value="leave">Leave &amp; Roster Changes</option>
+            <option value="termination">Termination &amp; Redundancy</option>
+            <option value="contractor">Contractor &amp; Client Scope</option>
+          </select>
         </div>
-        <div class="flex justify-between items-center px-1">
-          <span id="error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-          <div class="ml-auto text-sm font-medium">
-            <span id="char-count">0</span><span class="text-slate-500"> / 1000</span>
-          </div>
-        </div>
-
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
-
-        <button
-          id="analyze-btn"
-          class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled
-        >
-          <span id="btn-text">Choose a lane first</span>
-          <span id="loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span id="loading-text">Reading your message...</span>
+        <span id="hr-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+        <div id="hr-guardrail-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+        <button id="hr-check-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <span id="hr-btn-text">Paste a draft first</span>
+          <span id="hr-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span id="hr-loading-text">Checking your draft...</span>
           </span>
         </button>
+        <p id="hr-status" class="text-sm text-slate-500" role="status"></p>
+      </div>
+
+      <!-- Guardrail results -->
+      <div id="hr-guardrail-results" class="hidden space-y-5 fade-in">
+        <div id="hr-risk-card" class="p-5 rounded-2xl border">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-lg">Compliance Risk</h3>
+            <span id="hr-risk-badge" class="px-3 py-1 rounded-full text-xs font-bold">Medium</span>
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed">Risk level for sending this draft as written.</p>
+        </div>
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Policy &amp; Fair Work Conflicts</p>
+          <div id="hr-conflicts-list" class="space-y-3"></div>
+        </div>
+        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+          <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Biggest Trap</p>
+          <p id="hr-trap-warning" class="text-slate-800 leading-relaxed"></p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Firm &amp; Formal Rewrite</p>
+          <div class="relative p-5 bg-slate-900 rounded-2xl text-white">
+            <p id="hr-rewrite-firm" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
+            <button onclick="copyText('hr-rewrite-firm', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Constructive &amp; Neutral Rewrite</p>
+          <div class="relative p-4 bg-white rounded-xl border border-slate-200">
+            <p id="hr-rewrite-constructive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
+            <button onclick="copyText('hr-rewrite-constructive', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 leading-relaxed">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button id="hr-new-check" type="button" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">New Check</button>
+        </div>
       </div>
     </div>
 
-    <!-- Reply Tab -->
-    <div id="tab-reply" class="tab-content hidden">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
-        <button data-mode="career" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Career &amp; Boss</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Pushback, raises, HR cover</span>
-        </button>
-        <button data-mode="negotiation" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Client &amp; Negotiation</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Scope creep, pricing, closing</span>
-        </button>
-        <button data-mode="high_conflict" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">High-Conflict / Legal</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">BIFF: brief, factual, firm</span>
-        </button>
-        <button data-mode="boundaries" class="reply-mode-btn p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-400 transition-all duration-200 text-left">
-          <span class="block font-bold text-sm sm:text-base">Personal Boundaries</span>
-          <span class="lane-desc block text-xs text-slate-500 mt-0.5">Say no without the fallout</span>
-        </button>
-      </div>
-
+    <!-- Tab 2: Contract & Policy Auditor -->
+    <div id="panel-audit" class="hidden">
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Contract &amp; Policy Auditor</h3>
+      <p class="text-sm text-slate-600 mb-4">Upload a contract or policy document, or paste its text. We cross-check it against your Company Vault documents and the National Employment Standards.</p>
       <div class="space-y-3 mb-6">
-        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Paste the message you received:</p>
-        <textarea
-          id="reply-message"
-          placeholder="e.g. 'I think we need to talk about your performance lately...'"
-          rows="4"
-          maxlength="1000"
-          class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"
-        ></textarea>
         <div>
-          <label for="reply-goal-input" class="block text-sm font-bold text-slate-700 mb-1">What is your exact outcome/goal? <span class="font-normal text-slate-500">(optional)</span></label>
-          <input id="reply-goal-input" type="text" maxlength="200" placeholder="e.g., Decline this weekend shift without looking uncommitted" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+          <label for="hr-audit-file" class="block text-sm font-bold text-slate-700 mb-1">Document file <span class="font-normal text-slate-500">(optional — PDF or DOCX, 10MB max)</span></label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="hr-audit-file" type="file" accept=".pdf,.docx" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+            <button id="hr-audit-file-clear-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Clear file</button>
+          </div>
+          <p id="hr-audit-file-name" class="text-sm text-slate-500 mt-2"></p>
         </div>
         <div>
-          <button id="reply-draft-toggle" type="button" aria-expanded="false" class="text-sm font-bold text-slate-700 hover:text-slate-900">I already drafted a reply (show)</button>
-          <div id="reply-draft-box" class="hidden mt-2">
-            <textarea id="reply-draft-input" placeholder="Paste your draft reply here — the AI will grade it and fix it." rows="3" maxlength="1000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-            <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="reply-draft-char-count">0</span><span class="text-slate-500"> / 1000</span></span></div>
-          </div>
+          <label for="hr-audit-text" class="block text-sm font-bold text-slate-700 mb-1">Or paste the document text</label>
+          <textarea id="hr-audit-text" placeholder="Paste the contract or policy text here…" rows="6" maxlength="20000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
+          <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="hr-audit-char-count">0</span><span class="text-slate-500"> / 20000</span></span></div>
         </div>
-        <div class="flex justify-between items-center px-1">
-          <span id="reply-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-          <div class="ml-auto text-sm font-medium">
-            <span id="reply-char-count">0</span><span class="text-slate-500"> / 1000</span>
-          </div>
-        </div>
-
-        <div class="cf-turnstile-reply cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
-
-        <button
-          id="reply-btn"
-          class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled
-        >
-          <span id="reply-btn-text">Choose a lane first</span>
-          <span id="reply-loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span id="reply-loading-text">Analyzing the message...</span>
+        <span id="hr-audit-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
+        <div id="hr-audit-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+        <button id="hr-audit-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <span id="hr-audit-btn-text">Add a file or paste text first</span>
+          <span id="hr-audit-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span id="hr-audit-loading-text">Auditing your document...</span>
           </span>
         </button>
+        <p id="hr-audit-status" class="text-sm text-slate-500" role="status"></p>
       </div>
-    </div>
+
+      <!-- Audit results -->
+      <div id="hr-audit-results" class="hidden space-y-5 fade-in">
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Missing Mandatory Clauses</p>
+          <div id="hr-audit-missing-list" class="space-y-3"></div>
+        </div>
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Contradictions With Your Existing Policy</p>
+          <div id="hr-audit-contradictions-list" class="space-y-3"></div>
+        </div>
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Suggested Clause Rewrites</p>
+          <div id="hr-audit-rewrites-list" class="space-y-3"></div>
+        </div>
+        <p class="text-xs text-slate-500 leading-relaxed">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button id="hr-new-audit" type="button" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">New Audit</button>
+        </div>
+      </div>
     </div>
 
     <!-- Skeleton Loader -->
@@ -382,325 +246,67 @@
       <div class="h-24 bg-slate-100 rounded-2xl animate-pulse"></div>
     </div>
 
-    <!-- Rewrite Results -->
-    <div id="results" class="hidden space-y-5 fade-in">
-
-      <!-- Original -->
-      <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Original Message</p>
-        <p id="original-message" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
-      </div>
-
-      <!-- Risk + Scores -->
-      <div class="grid md:grid-cols-2 gap-4">
-        <div id="risk-card" class="p-5 rounded-2xl border">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <h3 class="font-bold text-lg">Risk Level</h3>
-            </div>
-            <span id="risk-badge" class="px-3 py-1 rounded-full text-xs font-bold">Medium</span>
-          </div>
-          <p id="risk-text" class="text-sm text-slate-700 leading-relaxed mb-3"></p>
-          <span id="should-send" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-white border border-current"></span>
-        </div>
-
-        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-200">
-          <h3 class="font-bold text-lg mb-4 text-emerald-800">Scores</h3>
-          <div class="space-y-3">
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span>Clarity</span><span id="score-clarity" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-clarity" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span>Confidence</span><span id="score-confidence" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-confidence" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span>Emotional Control</span><span id="score-emotional" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-emotional" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span>Effectiveness</span><span id="score-effectiveness" class="font-bold text-emerald-700">—</span></div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden"><div id="bar-effectiveness" class="h-2 bg-emerald-500 rounded-full score-bar" style="width:0%"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tone + Intent -->
-      <div class="grid md:grid-cols-2 gap-4">
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Tone Detected</p>
-          <p id="tone-detected" class="text-slate-800 font-medium text-lg"></p>
-        </div>
-        <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
-          <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Your Intent</p>
-          <p id="intent-guess" class="text-slate-800 font-medium text-lg"></p>
-        </div>
-      </div>
-
-      <!-- Best Version -->
-      <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Best Version</p>
-        <div class="relative p-5 bg-slate-900 rounded-2xl text-white">
-          <p id="better-version" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
-          <button onclick="copyText('better-version', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-        </div>
-      </div>
-
-      <!-- Softer + Stronger -->
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <p class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">Softer Version</p>
-          <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
-            <p id="softer-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-            <button onclick="copyText('softer-version', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-          </div>
-        </div>
-        <div>
-          <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">Stronger Version</p>
-          <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
-            <p id="stronger-version" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-            <button onclick="copyText('stronger-version', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Coach Note -->
-      <div class="p-5 bg-slate-900 rounded-2xl text-white">
-        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">Coach Note</p>
-        <p id="coach-note" class="leading-relaxed"></p>
-      </div>
-
-      <!-- Sprint 1: 4-part AI output — Power Dynamic, Emotional Trap, Draft Critique, Tactical Replies -->
-      <div id="power-dynamic-box" class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Power Dynamic</p>
-        <p id="power-dynamic" class="text-slate-800 leading-relaxed"></p>
-      </div>
-      <div id="emotional-trap-box" class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Emotional Trap</p>
-        <p id="emotional-trap" class="text-slate-800 leading-relaxed"></p>
-      </div>
-      <div id="draft-critique-box" class="hidden p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Draft Critique</p>
-        <p class="text-slate-800 leading-relaxed"><span id="draft-critique-score" class="font-bold"></span> <span id="draft-critique-flaw"></span></p>
-      </div>
-      <div id="tactical-replies-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">3 Tactical Replies</p>
-        <div class="space-y-3">
-          <div>
-            <p id="tactical-0-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Hold the Line (Firm)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="tactical-0-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('tactical-0-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="tactical-0-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-          <div>
-            <p id="tactical-1-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">De-escalate (Neutral)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="tactical-1-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('tactical-1-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="tactical-1-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-          <div>
-            <p id="tactical-2-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Strategic Pivot (Reframe)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="tactical-2-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('tactical-2-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="tactical-2-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Phase 1 contexts+styles: try another style (same message, new rewrite) -->
-      <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Try another style</p>
-        <p class="text-xs text-slate-500 mb-2">Same message, new rewrite — no retyping. If it asks, tick the human check above first, then tap a style.</p>
-        <div id="style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
-        </div>
-        <p id="style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
-      </div>
-
-      <!-- Phase 1 ratings+moments: rate this rewrite -->
-      <div id="rating-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Did this help?</p>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Didn&apos;t help</button>
-        </div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">No, didn&apos;t send</button>
-        </div>
-        <p id="rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
-      </div>
-
-      <!-- Actions -->
-      <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button id="new-analysis" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">
-          New Analysis
-        </button>
-        <button id="copy-all" class="px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition-all duration-200">
-          Copy All
-        </button>
-        <button id="share-result" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">
-          Share
-        </button>
-      </div>
-    </div>
-
-    <!-- Reply Results -->
-    <div id="reply-results" class="hidden space-y-5 fade-in">
-      <div class="p-5 bg-blue-50 rounded-2xl border border-blue-200">
-        <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Their Message</p>
-        <p id="reply-original" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
-      </div>
-
+    <!-- Legacy viewer: history items saved before the HR update (old
+         consumer checks) open here, from their stored text — the old
+         analyser UI is gone, so there is nowhere else to show them. -->
+    <div id="legacy-result" class="hidden space-y-5 fade-in">
       <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Their Tone</p>
-        <p id="reply-tone" class="text-slate-800 font-medium text-lg"></p>
+        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Saved check from before the HR update</p>
+        <p id="legacy-result-text" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
       </div>
-
-      <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">What to Watch Out For</p>
-        <p id="reply-watch" class="text-slate-800 leading-relaxed"></p>
-      </div>
-
-      <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Suggested Replies</p>
-        <div class="space-y-3">
-          <div>
-            <p class="text-xs font-semibold text-emerald-600 mb-1.5">Calm &amp; Clear</p>
-            <div class="relative p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-              <p id="reply-calm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-calm', this)" class="copy-btn absolute top-3 right-3 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-          </div>
-          <div>
-            <p class="text-xs font-semibold text-orange-600 mb-1.5">Assertive</p>
-            <div class="relative p-4 bg-orange-50 rounded-xl border border-orange-200">
-              <p id="reply-assertive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-assertive', this)" class="copy-btn absolute top-3 right-3 bg-orange-200 hover:bg-orange-300 text-orange-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-          </div>
-          <div>
-            <p class="text-xs font-semibold text-rose-600 mb-1.5">Warm &amp; Open</p>
-            <div class="relative p-4 bg-rose-50 rounded-xl border border-rose-200">
-              <p id="reply-warm" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-warm', this)" class="copy-btn absolute top-3 right-3 bg-rose-200 hover:bg-rose-300 text-rose-800 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-5 bg-slate-900 rounded-2xl text-white">
-        <p class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2">Coach Note</p>
-        <p id="reply-coach-note" class="leading-relaxed"></p>
-      </div>
-
-      <!-- Sprint 1: 4-part AI output — Power Dynamic, Emotional Trap, Draft Critique, Tactical Replies -->
-      <div id="reply-power-dynamic-box" class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Power Dynamic</p>
-        <p id="reply-power-dynamic" class="text-slate-800 leading-relaxed"></p>
-      </div>
-      <div id="reply-emotional-trap-box" class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Emotional Trap</p>
-        <p id="reply-emotional-trap" class="text-slate-800 leading-relaxed"></p>
-      </div>
-      <div id="reply-draft-critique-box" class="hidden p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Draft Critique</p>
-        <p class="text-slate-800 leading-relaxed"><span id="reply-draft-critique-score" class="font-bold"></span> <span id="reply-draft-critique-flaw"></span></p>
-      </div>
-      <div id="reply-tactical-replies-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">3 Tactical Replies</p>
-        <div class="space-y-3">
-          <div>
-            <p id="reply-tactical-0-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Hold the Line (Firm)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="reply-tactical-0-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-tactical-0-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="reply-tactical-0-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-          <div>
-            <p id="reply-tactical-1-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">De-escalate (Neutral)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="reply-tactical-1-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-tactical-1-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="reply-tactical-1-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-          <div>
-            <p id="reply-tactical-2-strategy" class="text-xs font-semibold text-slate-700 mb-1.5">Strategic Pivot (Reframe)</p>
-            <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-              <p id="reply-tactical-2-message" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-              <button onclick="copyText('reply-tactical-2-message', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
-            </div>
-            <p id="reply-tactical-2-why" class="text-xs text-slate-500 mt-1"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Phase 1 contexts+styles: try another style (same message, new replies) -->
-      <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Try another style</p>
-        <p class="text-xs text-slate-500 mb-2">Same message, new replies — no retyping. If it asks, tick the human check above first, then tap a style.</p>
-        <div id="reply-style-buttons" class="flex flex-wrap gap-2">
-          <button type="button" data-style="" class="style-btn active px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Original</button>
-          <button type="button" data-style="shorter" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Shorter</button>
-          <button type="button" data-style="warmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Warmer</button>
-          <button type="button" data-style="firmer" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Firmer</button>
-          <button type="button" data-style="funnier" class="style-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Funnier</button>
-        </div>
-        <p id="reply-style-status" class="text-sm text-slate-500 mt-2" role="status"></p>
-      </div>
-
-      <!-- Phase 1 ratings+moments: rate these replies -->
-      <div id="reply-rating-box">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Did this help?</p>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-helpful="up" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Helped</button>
-          <button type="button" data-rating-helpful="down" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Didn&apos;t help</button>
-        </div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-3 mb-2">Did you send it?</p>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-rating-sent="yes" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Yes, sent it</button>
-          <button type="button" data-rating-sent="not-yet" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">Not yet</button>
-          <button type="button" data-rating-sent="no" class="rating-btn px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700">No, didn&apos;t send</button>
-        </div>
-        <p id="reply-rating-status" class="text-sm text-slate-500 mt-2" role="status"></p>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button id="new-reply" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">
-          New Analysis
-        </button>
-        <button id="copy-all-reply" class="px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition-all duration-200">
-          Copy All
-        </button>
-        <button id="share-reply" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">
-          Share
-        </button>
-      </div>
+      <p id="legacy-result-best" class="hidden text-sm text-slate-600 leading-relaxed"></p>
+      <button id="legacy-result-close" type="button" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">Close</button>
     </div>
 
     <!-- Empty State -->
     <div id="empty-state" class="text-center py-16 space-y-4">
       <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl bg-slate-900 text-white font-bold text-4xl" aria-hidden="true">B</span>
-      <h3 class="text-xl font-bold text-slate-900">Ready to analyze</h3>
-      <p class="text-slate-500 max-w-sm mx-auto">Paste a message, pick a lane, and get the subtext, the trap, and the exact reply before you send.</p>
+      <h3 class="text-xl font-bold text-slate-900">Ready to check</h3>
+      <p class="text-slate-500 max-w-sm mx-auto">Upload your company policies to the Company Vault, then paste a manager&rsquo;s draft or a contract to check it against your rules and Fair Work compliance.</p>
     </div>
   </section>
+
+
+  <!-- Company Vault -->
+  <section id="vault-section" data-sidebar-tab="vault" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Company Vault</h3>
+    <p class="text-sm text-slate-600 mb-4">Upload your company policies, handbooks and employment contracts. Guardrail checks and audits are measured against these documents as well as the Fair Work minimums.</p>
+    <div id="vault-onboarding" class="hidden mb-4 p-4 bg-amber-50 rounded-2xl border border-amber-200">
+      <p class="text-sm font-bold text-slate-800 mb-1">Add your first document</p>
+      <p class="text-sm text-slate-600">Upload your first company policy or employment contract so checks can be measured against your own rules — not just the Fair Work minimums.</p>
+    </div>
+    <p id="vault-guest-msg" class="hidden text-sm text-slate-600 mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">Sign in to upload company documents.</p>
+    <div class="space-y-3">
+      <div>
+        <label for="vault-file-input" class="block text-sm font-bold text-slate-700 mb-1">Choose a document <span class="font-normal text-slate-500">(PDF, DOCX or TXT — 10MB max)</span></label>
+        <input id="vault-file-input" type="file" accept=".pdf,.docx,.txt" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+        <p id="vault-selected-file" class="text-sm text-slate-500 mt-2"></p>
+      </div>
+      <div>
+        <label for="vault-doc-type" class="block text-sm font-bold text-slate-700 mb-1">Document type</label>
+        <select id="vault-doc-type" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
+          <option value="handbook">Handbook</option>
+          <option value="contract">Contract</option>
+          <option value="policy">Policy</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <button id="vault-upload-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow disabled:opacity-50 disabled:cursor-not-allowed">Upload to vault</button>
+      </div>
+      <p id="vault-status" class="text-sm text-slate-500" role="status"></p>
+      <p class="text-xs text-slate-500 leading-relaxed">Vault documents are stored in your own account to power these checks. Screenshots were never stored — company documents are different: they have to be stored to be checked against.</p>
+      <div class="pt-4 border-t border-slate-200">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-sm font-bold text-slate-900">Your documents</h4>
+          <span id="vault-count" class="text-sm text-slate-500">0 of 10 documents</span>
+        </div>
+        <p id="vault-empty" class="text-sm text-slate-500">No documents yet. Upload your first one above.</p>
+        <div id="vault-list" class="space-y-3"></div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- Phase 0: Account, Tone Profile and History -->
   <section id="account-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
@@ -776,10 +382,7 @@
         <div><label for="profile-formality" class="block text-sm font-semibold text-slate-700 mb-1">Formality: <span id="profile-formality-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-formality" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
         <div><label for="profile-playfulness" class="block text-sm font-semibold text-slate-700 mb-1">Playfulness: <span id="profile-playfulness-value" class="font-bold text-slate-900">3</span> / 5</label><input id="profile-playfulness" type="range" min="1" max="5" step="1" value="3" class="w-full accent-slate-900"></div>
       </div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div><label for="profile-default-mode" class="block text-sm font-semibold text-slate-700 mb-1">Usual mode</label><select id="profile-default-mode" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white"><option value="career">Career &amp; Boss</option><option value="negotiation">Client &amp; Negotiation</option><option value="high_conflict">High-Conflict / Legal &amp; Co-Parenting</option><option value="boundaries">Hard Personal Boundaries</option></select></div>
-        <div><label for="profile-default-reply" class="block text-sm font-semibold text-slate-700 mb-1">Usual reply style</label><select id="profile-default-reply" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white"><option value="balanced">Balanced</option><option value="calm">Calm &amp; clear</option><option value="assertive">Assertive</option><option value="warm">Warm &amp; open</option></select></div>
-      </div>
+      <div><label for="profile-default-reply" class="block text-sm font-semibold text-slate-700 mb-1">Usual reply style</label><select id="profile-default-reply" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white"><option value="balanced">Balanced</option><option value="calm">Calm &amp; clear</option><option value="assertive">Assertive</option><option value="warm">Warm &amp; open</option></select></div>
       <div class="flex flex-col sm:flex-row gap-2">
         <button id="save-profile-btn" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Save my tone</button>
         <button id="reset-profile-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Reset</button>
@@ -849,18 +452,18 @@
     <div class="grid sm:grid-cols-3 gap-4">
       <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">1</div>
-        <h4 class="font-bold mb-1">Paste your message</h4>
-        <p class="text-sm text-slate-500">Type or paste the message you want to send or received</p>
+        <h4 class="font-bold mb-1">Upload your policies</h4>
+        <p class="text-sm text-slate-500">Add handbooks, contracts and policies to your Company Vault</p>
       </div>
       <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">2</div>
-        <h4 class="font-bold mb-1">Pick a lane</h4>
-        <p class="text-sm text-slate-500">Career, negotiation, high-conflict, or boundaries</p>
+        <h4 class="font-bold mb-1">Check before you send</h4>
+        <p class="text-sm text-slate-500">Paste a manager&rsquo;s draft or a contract — pick the scenario</p>
       </div>
       <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">3</div>
-        <h4 class="font-bold mb-1">Get the exact reply</h4>
-        <p class="text-sm text-slate-500">The subtext, the trap, and a reply you can send as-is</p>
+        <h4 class="font-bold mb-1">Get the compliant version</h4>
+        <p class="text-sm text-slate-500">Conflicts, the biggest trap, and rewrites you can send</p>
       </div>
     </div>
   </section>
@@ -868,36 +471,10 @@
 </main>
 
 <footer class="text-center text-slate-500 text-sm py-10 mt-4">
+  <p class="mb-2">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
+  <p class="mb-2">Questions? <a href="mailto:hello@beforeyousay.com" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">hello@beforeyousay.com</a></p>
   <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-slate-900 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
-<!-- Email Capture -->
-<div class="flex flex-col items-center gap-3 py-8 px-4">
- <p class="text-sm font-medium text-slate-600">Get notified when Pro features drop</p>
-  <form
-    action="https://beforeyousay.us7.list-manage.com/subscribe/post?u=e055c297a8cc1fa582ba02c5e&id=e2aca1b6bf&f_id=0034a0e0f0"
-    method="POST"
-    target="_blank"
-    class="flex gap-2 w-full max-w-sm"
-  >
-   <input
-  type="email"
-  name="EMAIL"
-  placeholder="your@email.com"
-  required
-  class="flex-1 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-slate-900"
-/>
-    <!-- Mailchimp bot protection — do not remove -->
-    <div style="position:absolute;left:-5000px" aria-hidden="true">
-      <input type="text" name="b_e055c297a8cc1fa582ba02c5e_e2aca1b6bf" tabindex="-1" value="">
-    </div>
-    <button
-      type="submit"
-      class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:opacity-90 transition"
-    >
-      Notify me
-    </button>
-  </form>
-</div>
 <!-- BeforeYouSay config — Supabase (Sydney project beforeyousay-au) and the
      backend URL. The anon key below is safe to be public; the service-role
      key must never appear here. -->
@@ -944,6 +521,11 @@
   const VALID_TABS = ["rewrite", "reply"];
   const VALID_MODES = ["career", "negotiation", "high_conflict", "boundaries"];
   const MODE_LABELS = { career: "Career & Boss", negotiation: "Client & Negotiation", high_conflict: "High-Conflict / Legal & Co-Parenting", boundaries: "Hard Personal Boundaries" };
+  /* B2B HR Firewall V1: scenario labels + the exact disclaimer string
+     (footer AND below every AI output — copy character-for-character).
+     MODE_LABELS stays for old stored history/profile rows only. */
+  const HR_SCENARIO_LABELS = { performance: "Performance & Warnings", leave: "Leave & Roster Changes", termination: "Termination & Redundancy", contractor: "Contractor & Client Scope" };
+  const HR_DISCLAIMER = "For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.";
   /* Sprint 1 lanes: the old ids still exist in saved profiles, saved
      history and old prefill links — map them to the lane they became, so
      nothing a user saved before the redesign breaks. */
@@ -969,7 +551,8 @@
     const byKey = {};
     rows.forEach(function (r) { byKey[(r.input || "") + "\u0000" + (r.created_at || "").slice(0, 19)] = r; });
     const merged = rows.map(function (r) {
-      return { id: "cloud_" + r.id, cloudId: r.id, createdAt: r.created_at, tab: r.tab, mode: r.mode, input: r.input, result: r.result || null, toneProfile: r.tone_profile || null };
+      const isHr = r.tab === "hr-guardrail" || r.tab === "hr-audit";
+      return { id: "cloud_" + r.id, cloudId: r.id, createdAt: r.created_at, tab: r.tab, mode: r.mode, input: r.input, result: r.result || null, toneProfile: r.tone_profile || null, type: isHr ? r.tab : undefined, scenario: isHr ? (r.mode === "general" ? undefined : r.mode) : undefined };
     });
     const toUpload = [];
     (Array.isArray(localItems) ? localItems : []).forEach(function (it) {
@@ -983,6 +566,16 @@
     return { merged: merged.slice(0, HISTORY_MAX), toUpload: toUpload };
   }
   function historyItemToCloudRow(item, userId) {
+    /* B2B HR Firewall V1: HR checks sync through the same path. Their
+       tab is the check type and their mode is the scenario (guardrail)
+       or "general" (audit). NOTE: the shipped schema.sql still checks
+       tab in ('rewrite','reply') — if the live table still has that
+       check, this insert fails and syncHistoryItemToCloud reports
+       "cloud sync will retry" (local save is unaffected). The live
+       table needs its tab/mode checks widened for HR rows to land. */
+    if (item.type === "hr-guardrail" || item.type === "hr-audit") {
+      return { user_id: userId, tab: item.type, mode: item.scenario || "general", input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
+    }
     const mode = migrateMode(item.mode);
     if (!VALID_TABS.includes(item.tab) || !mode) return null;
     return { user_id: userId, tab: item.tab, mode: mode, input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
@@ -1291,7 +884,10 @@
         + '<button type="button" data-context-inline-delete="' + escapeHtml(c.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></div>';
     }).join("");
   }
-  document.getElementById("context-select").addEventListener("change", function (e) {
+  /* B2B HR Firewall V1: the inline picker lived in the old analyser card,
+     which is gone — attach these listeners only when their elements exist. */
+  function on(id, ev, fn) { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); }
+  on("context-select", "change", function (e) {
     if (e.target.value === "__add__") {
       /* Back to the previous pick, then open the add form right here —
          the list is only a picker, adding happens in the panel. */
@@ -1307,21 +903,21 @@
      picker box. It used to yank the page down to the Your people section
      and pop the keyboard open. The full section is still below for
      anyone who scrolls there. */
-  document.getElementById("context-manage-btn").addEventListener("click", function () {
+  on("context-manage-btn", "click", function () {
     const panel = document.getElementById("context-inline-panel");
     if (panel && panel.classList.contains("hidden")) { resetContextForms(); openContextInlinePanel("Your people"); }
     else closeContextInlinePanel();
   });
-  document.getElementById("context-inline-save-btn").addEventListener("click", async function () {
+  on("context-inline-save-btn", "click", async function () {
     const clean = sanitiseContextInput(document.getElementById("context-inline-name").value, document.getElementById("context-inline-note").value);
     const st = document.getElementById("context-inline-status");
     if (!clean) { if (st) st.textContent = "Please give the person a name first."; return; }
     const saved = await saveContextItem(clean, st);
     if (saved) { resetContextForms(); renderInlineContextList(); if (st) st.textContent = "Saved — writing for " + saved.name + "."; }
   });
-  document.getElementById("context-inline-cancel-btn").addEventListener("click", function () { resetContextForms(); closeContextInlinePanel(); });
-  document.getElementById("context-inline-done-btn").addEventListener("click", function () { resetContextForms(); closeContextInlinePanel(); });
-  document.getElementById("context-inline-list").addEventListener("click", function (e) {
+  on("context-inline-cancel-btn", "click", function () { resetContextForms(); closeContextInlinePanel(); });
+  on("context-inline-done-btn", "click", function () { resetContextForms(); closeContextInlinePanel(); });
+  on("context-inline-list", "click", function (e) {
     const editBtn = e.target.closest("[data-context-inline-edit]");
     const delBtn = e.target.closest("[data-context-inline-delete]");
     if (editBtn) {
@@ -1367,62 +963,6 @@
     }
     if (delBtn) deleteContext(delBtn.getAttribute("data-context-delete"));
   });
-
-  /* ---------- Phase 1 contexts+styles: rewrite styles ---------- */
-  /* A style re-run sends the SAME message, mode and context to /analyze
-     again, with a style field the backend actually uses in its prompt.
-     It updates the result on screen in place and updates the latest
-     matching history item instead of adding a new one, so tapping four
-     styles does not fill history with four copies. Turnstile is checked
-     once per /analyze call by the backend, so a style re-run needs a
-     fresh human check — the button says so if there is no token yet. */
-  function markStyleButtons() {
-    document.querySelectorAll(".style-btn").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-style") === selectedStyle); });
-  }
-  function setStyleStatus(tab, msg) { const el = document.getElementById(tab === "reply" ? "reply-style-status" : "style-status"); if (el) el.textContent = msg || ""; }
-  function updateLatestHistory(result, style) {
-    if (!lastAnalysis) return;
-    const items = loadHistory();
-    const found = items.find(function (x) { return x.tab === lastAnalysis.tab && x.mode === lastAnalysis.mode && x.input === lastAnalysis.message; });
-    if (!found) { const created = addHistory({ tab: lastAnalysis.tab, mode: lastAnalysis.mode, input: lastAnalysis.message, result: result, style: style || "", goal: lastAnalysis.goal || null, draft: lastAnalysis.draft || null }); currentHistoryId = created.id; return; }
-    currentHistoryId = found.id;
-    const keepRating = getRating(found.result);
-    found.result = result; if (keepRating) found.result.rating = keepRating; found.style = style || ""; saveHistory(items); renderHistory();
-    if (found.cloudId && isSignedIn() && supabaseClient) {
-      supabaseClient.from("history").update({ result: result, tone_profile: found.toneProfile || null }).eq("id", found.cloudId).eq("user_id", supabaseSession.user.id).catch(function () { setSyncStatus("Saved on this device — cloud sync will retry."); });
-    }
-  }
-  async function runStyleAnalysis(style, tab) {
-    selectedStyle = style || "";
-    markStyleButtons();
-    if (!lastAnalysis || lastAnalysis.tab !== tab) { setStyleStatus(tab, "Run an analysis first, then pick a style."); return; }
-    const token = document.querySelector(tab === "reply" ? '#tab-reply [name="cf-turnstile-response"]' : '#tab-rewrite [name="cf-turnstile-response"]')?.value;
-    if (!token) {
-      setStyleStatus(tab, turnstileReady(tab) ? "Please complete the verification first — tick the human check above, then tap a style again." : "The human check didn't load — please refresh the page, then try the style again.");
-      document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile").scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-    /* Batch 3 money: a style re-run is a fresh /analyze call, so at the daily limit it is blocked like any other check. */
-    if (!canCheckToday()) { setStyleStatus(tab, limitMessageFor(isSignedIn())); return; }
-    setStyleStatus(tab, style ? ("Rewriting in " + style + " style…") : "Rewriting in the original style…");
-    try {
-      const response = await postAnalyze({ message: lastAnalysis.message, mode: lastAnalysis.mode, turnstileToken: token, replyMode: tab === "reply", toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: lastAnalysis.goal || null, draft: lastAnalysis.draft || null });
-      const data = await safeJson(response);
-      if (!response.ok) { setStyleStatus(tab, (data && data.code === LIMIT_HIT_CODE && data.error) ? data.error : "That style didn't work — showing your original result."); return; }
-      currentData = data;
-      if (tab === "reply") displayReplyResults(data, lastAnalysis.message); else displayResults(data);
-      updateLatestHistory(data, selectedStyle);
-      requestCount++;
-      document.getElementById("request-count").textContent = requestCount;
-      setStyleStatus(tab, style ? ("Showing the " + style + " version.") : "Showing the original version.");
-    } catch (e) {
-      setStyleStatus(tab, "That style didn't work — your message and original result are still here, please try again.");
-    } finally {
-      if (window.turnstile) window.turnstile.reset();
-    }
-  }
-  document.querySelectorAll("#style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "rewrite"); }); });
-  document.querySelectorAll("#reply-style-buttons .style-btn").forEach(function (b) { b.addEventListener("click", function () { runStyleAnalysis(b.getAttribute("data-style") || "", "reply"); }); });
 
   /* ---------- Phase 1 ratings+moments: rate a rewrite + daily moments ---------- */
   /* A rating is { helpful: "up" | "down" | null, sent: "yes" | "not-yet" |
@@ -1508,30 +1048,6 @@
   wireRatingButtons("rating-box", "rewrite");
   wireRatingButtons("reply-rating-box", "reply");
 
-  /* Daily moments: six short, useful starting messages. Tapping one
-     loads it into the Rewrite box, pre-selects its mode, and leaves the
-     text editable — nothing is analysed until the user taps Analyse. */
-  const DAILY_MOMENTS = [
-    { mode: "career", text: "Hi — I saw the Friday 5pm deadline come through. I can't turn this around by then without dropping the client work due Thursday. Can we agree on Monday morning, or reprioritise the Thursday piece?" },
-    { mode: "negotiation", text: "Hi — happy to take this on. Just flagging this sits outside the scope we agreed, so I'd need to adjust the fee to cover the extra work. Can we confirm that before I start?" },
-    { mode: "high_conflict", text: "You never stick to the plan and the kids always suffer because of you. I'm done rearranging my life around you." },
-    { mode: "boundaries", text: "I won't be able to lend the money this time — I need to keep things steady on my end. I hope you understand." }
-  ];
-  document.querySelectorAll("[data-moment]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      const m = DAILY_MOMENTS[Number(b.getAttribute("data-moment"))];
-      if (!m) return;
-      document.querySelector('[data-tab="rewrite"]').click();
-      const box = document.getElementById("message");
-      box.value = m.text;
-      document.getElementById("char-count").textContent = m.text.length;
-      setMode(m.mode); /* fill the message first, so the button enables */
-      box.focus();
-      box.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  });
-
-
   /* ---------- Phase 1 your-week: your week + gentle welcome back ---------- */
   /* No new data collection and no new table: every number comes from the
      history already on this device / in the cloud (loadHistory), and the
@@ -1578,7 +1094,7 @@
     const weekItems = itemsInWeek(items, range.start, range.end);
     let sent = 0; let helped = 0;
     weekItems.forEach(function (it) { const r = getRating(it.result); if (r && r.sent === "yes") sent++; if (r && r.helpful === "up") helped++; });
-    const mode = mostUsed(weekItems, function (it) { return modeDisplayLabel(it.mode) || null; });
+    const mode = mostUsed(weekItems, function (it) { return (it.type && String(it.type).indexOf("hr-") === 0) ? null : (modeDisplayLabel(it.mode) || null); });
     const person = mostUsed(weekItems, function (it) { return it.context && it.context.name ? String(it.context.name) : null; });
     return { total: weekItems.length, sent: sent, helped: helped, streak: computeStreak(items, now || new Date()), mode: mode ? mode.value : null, modeCount: mode ? mode.count : 0, person: person ? person.value : null, personCount: person ? person.count : 0, hasHistory: (items || []).length > 0, start: range.start, end: range.end };
   }
@@ -1631,7 +1147,7 @@
       warmth: clampScore(document.getElementById("profile-warmth").value),
       formality: clampScore(document.getElementById("profile-formality").value),
       playfulness: clampScore(document.getElementById("profile-playfulness").value),
-      defaultMode: document.getElementById("profile-default-mode").value,
+      defaultMode: (function () { const el = document.getElementById("profile-default-mode"); return el ? el.value : "career"; })(),
       defaultReplyStyle: document.getElementById("profile-default-reply").value
     };
   }
@@ -1641,14 +1157,12 @@
       document.getElementById("profile-" + k).value = p[k];
       document.getElementById("profile-" + k + "-value").textContent = p[k];
     });
-    document.getElementById("profile-default-mode").value = p.defaultMode;
+    const dmEl = document.getElementById("profile-default-mode"); if (dmEl) dmEl.value = p.defaultMode;
     document.getElementById("profile-default-reply").value = p.defaultReplyStyle;
   }
   function applyProfile() {
     const p = loadProfile();
     fillProfileForm(p);
-    // Pre-select the usual mode in both tabs, so the Analyse button is ready.
-    setMode(p.defaultMode);
   }
   function getToneProfileForApi() { return loadProfile(); }
   ["directness", "warmth", "formality", "playfulness"].forEach(function (k) {
@@ -1686,6 +1200,22 @@
     syncHistoryItemToCloud(saved);
     return saved;
   }
+  function hrHistorySummary(it) {
+    if (it.type === "hr-guardrail") {
+      const risk = it.result && it.result.compliance_risk_level ? String(it.result.compliance_risk_level) : "—";
+      return "Risk: " + risk;
+    }
+    if (it.type === "hr-audit") {
+      const n = it.result && Array.isArray(it.result.missing_mandatory_clauses) ? it.result.missing_mandatory_clauses.length : 0;
+      return n + " missing clause" + (n === 1 ? "" : "s");
+    }
+    return null;
+  }
+  function hrHistoryLabel(it) {
+    if (it.type === "hr-guardrail") return "HR Guardrail · " + (HR_SCENARIO_LABELS[it.scenario] || "Manager check");
+    if (it.type === "hr-audit") return "HR Audit";
+    return null;
+  }
   function renderHistory() {
     const items = loadHistory();
     document.getElementById("history-count").textContent = items.length;
@@ -1693,12 +1223,18 @@
     const list = document.getElementById("history-list");
     list.innerHTML = items.map(function (it) {
       const when = new Date(it.createdAt).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+      const hrLabel = hrHistoryLabel(it);
+      const hrSummary = hrHistorySummary(it);
+      /* Old consumer items (pre-HR-update) still render from their
+         stored text — never crash on a missing mode, tab or result. */
       const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
+      const label = hrLabel || (escapeHtml(modeDisplayLabel(it.mode)) + " · " + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite"));
+      const summary = hrSummary || ((it.input || "").slice(0, 140) + ((it.input || "").length > 140 ? "…" : ""));
       return '<article class="p-4 bg-white rounded-2xl border border-slate-200">'
-        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-slate-600">' + escapeHtml(modeDisplayLabel(it.mode)) + ' · ' + escapeHtml(it.tab === "reply" ? "Reply" : "Rewrite") + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
-        + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml((it.input || "").slice(0, 140)) + ((it.input || "").length > 140 ? "…" : "") + '</p>'
+        + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-slate-600">' + label + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
+        + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml(summary) + '</p>'
         + (it.goal ? '<p class="text-xs text-slate-500 leading-relaxed mb-2">Goal: ' + escapeHtml(it.goal) + '</p>' : '')
-        + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
+        + (!hrLabel && best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
         + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
         + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Open</button>'
         + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
@@ -1707,6 +1243,7 @@
     renderWeek(); /* Phase 1 your-week: history changed, so the week numbers change too */
     renderPlan(); /* Batch 3 money: a check was added, cleared or deleted, so today's remaining checks changed too */
   }
+
   document.getElementById("history-list").addEventListener("click", function (e) {
     const viewBtn = e.target.closest("[data-history-view]");
     const copyBtn = e.target.closest("[data-history-copy]");
@@ -1714,7 +1251,12 @@
     if (viewBtn) { openHistoryItem(viewBtn.getAttribute("data-history-view")); return; }
     if (copyBtn) {
       const it = loadHistory().find(function (x) { return x.id === copyBtn.getAttribute("data-history-copy"); });
-      const text = it && it.result ? (it.result.better_version || it.result.softer_version || "") : "";
+      let text = "";
+      if (it && it.result) {
+        if (it.type === "hr-guardrail") text = (it.result.rewrites && it.result.rewrites.firm_formal) || "";
+        else if (it.type === "hr-audit") text = (it.result.suggested_clause_rewrites && it.result.suggested_clause_rewrites[0] && it.result.suggested_clause_rewrites[0].rewrite) || "";
+        else text = it.result.better_version || it.result.softer_version || "";
+      }
       if (text) navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000); });
       return;
     }
@@ -1749,52 +1291,36 @@
     const it = loadHistory().find(function (x) { return x.id === id; });
     if (!it || !it.result) return;
     currentHistoryId = id;
-    /* Sprint 1: restore the goal and draft this analysis was run with. */
-    const goalEl = document.getElementById(it.tab === "reply" ? "reply-goal-input" : "goal-input");
-    if (goalEl) goalEl.value = it.goal || "";
-    const draftBoxEl = document.getElementById(it.tab === "reply" ? "reply-draft-box" : "draft-box");
-    const draftEl = document.getElementById(it.tab === "reply" ? "reply-draft-input" : "draft-input");
-    const draftToggleEl = document.getElementById(it.tab === "reply" ? "reply-draft-toggle" : "draft-toggle");
-    if (draftEl) { draftEl.value = it.draft || ""; updateCharCounter(draftEl.id, it.tab === "reply" ? "reply-draft-char-count" : "draft-char-count"); }
-    if (draftBoxEl && draftToggleEl) { const open = Boolean(it.draft); draftBoxEl.classList.toggle("hidden", !open); draftToggleEl.setAttribute("aria-expanded", open ? "true" : "false"); draftToggleEl.textContent = open ? "I already drafted a reply (hide)" : "I already drafted a reply (show)"; }
-    if (it.context && it.context.id) {
-      const ctx = loadContexts().find(function (x) { return x.id === it.context.id; });
-      selectedContextId = ctx ? ctx.id : "";
-      const sel = document.getElementById("context-select");
-      if (sel) sel.value = selectedContextId;
-      renderContextNoteLine();
-    }
-    if (it.thread) {
-      /* Sprint 2: a thread item stores no message text and no images —
-         only a label, goal, draft and result. Show the result, restore
-         the thread goal/draft, and do not fill the text box. */
-      const tg = document.getElementById("thread-goal-input"); if (tg) tg.value = it.goal || "";
-      const td = document.getElementById("thread-draft-input"); if (td) { td.value = it.draft || ""; updateCharCounter("thread-draft-input", "thread-draft-char-count"); }
-      setMode(migrateMode(it.mode) || it.mode);
-      setThreadMode(migrateMode(it.mode) || it.mode);
-      setAnalyserTab("thread");
-      document.querySelector('[data-tab="rewrite"]').click();
-      currentData = it.result; displayResults(it.result);
+    if (it.type === "hr-guardrail") {
+      setB2bTab("guardrail");
+      const draftEl = document.getElementById("hr-draft");
+      if (draftEl) { draftEl.value = it.input || ""; updateCharCounter("hr-draft", "hr-draft-char-count"); updateHrCheckButton(); }
+      const scEl = document.getElementById("hr-scenario");
+      if (scEl && it.scenario) scEl.value = it.scenario;
+      displayHrGuardrail(it.result);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (it.tab === "reply") {
-      document.getElementById("reply-message").value = it.input || "";
-      document.getElementById("reply-char-count").textContent = (it.input || "").length;
-      setMode(migrateMode(it.mode) || it.mode);
-      setAnalyserTab("text");
-      document.querySelector('[data-tab="reply"]').click();
-      displayReplyResults(it.result, it.input || "");
-    } else {
-      document.getElementById("message").value = it.input || "";
-      document.getElementById("char-count").textContent = (it.input || "").length;
-      setMode(migrateMode(it.mode) || it.mode);
-      setAnalyserTab("text");
-      document.querySelector('[data-tab="rewrite"]').click();
-      currentData = it.result; displayResults(it.result);
+    if (it.type === "hr-audit") {
+      setB2bTab("audit");
+      displayHrAudit(it.result);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    /* Old consumer item: the analyser UI is gone, so show its stored
+       text and best version in the legacy viewer instead of crashing. */
+    const box = document.getElementById("legacy-result");
+    const textEl = document.getElementById("legacy-result-text");
+    const bestEl = document.getElementById("legacy-result-best");
+    if (!box || !textEl) return;
+    textEl.textContent = it.input || "";
+    const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
+    if (bestEl) { bestEl.textContent = best ? ("Best version: " + best) : ""; bestEl.classList.toggle("hidden", !best); }
+    box.classList.remove("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
 
   /* ---------- Batch 3 money: Free/Pro plans (Batch 8: payments exist) ----------
      Free: guests 5 checks a day, signed-in free users 10 checks a day.
@@ -2113,6 +1639,7 @@
     document.getElementById("auth-signout-btn").classList.toggle("hidden", !signedIn);
     document.getElementById("auth-form").classList.toggle("hidden", signedIn);
     if (signedIn) setAuthStatus("Signed in as " + (supabaseSession.user.email || "your account") + ".");
+    refreshVaultAuth(); /* B2B HR Firewall V1: sign-in state gates the vault uploader */
   }
   /* Batch 6 polish: a failed sign-in used to land back here with the
      reason hidden in the address bar (?error=...) and the page just
@@ -2259,67 +1786,6 @@
   document.getElementById("request-count").textContent = requestCount;
 
 
-  // Tab switching
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeTab = btn.dataset.tab;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-rewrite').classList.toggle('hidden', activeTab !== 'rewrite');
-      document.getElementById('tab-reply').classList.toggle('hidden', activeTab !== 'reply');
-      document.getElementById('results').classList.add('hidden');
-      document.getElementById('reply-results').classList.add('hidden');
-      document.getElementById('empty-state').classList.remove('hidden');
-    });
-  });
-
-  /* Batch 6 polish: one mode for both tabs. It used to be per-tab, so
-     picking Workplace, switching to Reply and back meant picking it all
-     over again — and the Reply tab started with no mode at all. */
-  function setMode(mode) {
-    if (!VALID_MODES.includes(mode)) return;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-    document.querySelectorAll('.reply-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-    document.getElementById('analyze-btn').disabled = document.getElementById('message').value.trim().length === 0;
-    document.getElementById('btn-text').textContent = 'Analyze Message';
-    document.getElementById('reply-btn').disabled = document.getElementById('reply-message').value.trim().length === 0;
-    document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
-  }
-
-  // Rewrite + Reply mode buttons — one shared mode, both tabs stay in sync.
-  document.querySelectorAll('.mode-btn').forEach(btn => {
-    btn.addEventListener('click', () => setMode(btn.dataset.mode));
-  });
-  document.querySelectorAll('.reply-mode-btn').forEach(btn => {
-    btn.addEventListener('click', () => setMode(btn.dataset.mode));
-  });
-
-  // Char counters
-  document.getElementById('message').addEventListener('input', () => {
-    const len = document.getElementById('message').value.length;
-    const el = document.getElementById('char-count');
-    el.textContent = len;
-    el.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
-    if (document.querySelector('.mode-btn.active')) {
-      document.getElementById('analyze-btn').disabled = len === 0;
-    }
-  });
-
-  document.getElementById('reply-message').addEventListener('input', () => {
-    const len = document.getElementById('reply-message').value.length;
-    const el = document.getElementById('reply-char-count');
-    el.textContent = len;
-    el.className = len > 900 ? 'text-red-500 font-bold' : len > 700 ? 'text-amber-500 font-bold' : 'text-slate-600';
-    if (document.querySelector('.reply-mode-btn.active')) {
-      document.getElementById('reply-btn').disabled = len === 0;
-    }
-  });
-
-  updateCharCounter("message", "char-count"); /* Batch 3: counter fix — re-sync now the listeners above exist, in case the box was pre-filled */
-  updateCharCounter("reply-message", "reply-char-count");
-  wireDraftToggle("draft-toggle", "draft-box", "draft-input", "draft-char-count");
-  wireDraftToggle("reply-draft-toggle", "reply-draft-box", "reply-draft-input", "reply-draft-char-count");
-
   function startLoadingMessages(textId) {
     let i = 0;
     document.getElementById(textId).textContent = loadingMessages[0];
@@ -2340,374 +1806,45 @@
     setTimeout(() => el.classList.add('hidden'), 6000);
   }
 
-  function setScoreBar(id, barId, val) {
-    document.getElementById(id).textContent = val;
-    setTimeout(() => {
-      document.getElementById(barId).style.width = (val * 10) + '%';
-    }, 200);
-  }
-
-  // Analyze (Rewrite) 
-  /* Sprint 1: goal + draft — optional inputs, sent with every /analyze
-     call (Rewrite, Reply, style re-run) and stored on the history item.
-     Goal is a single line (max 200 chars); draft is a reply the user
-     already wrote (max 1000 chars) for the AI to grade and fix. */
-  function getGoal(tab) { const el = document.getElementById(tab === "reply" ? "reply-goal-input" : "goal-input"); const v = el ? el.value.trim().slice(0, 200) : ""; return v || null; }
-  function getDraft(tab) { const el = document.getElementById(tab === "reply" ? "reply-draft-input" : "draft-input"); const v = el ? el.value.trim().slice(0, 1000) : ""; return v || null; }
-  function wireDraftToggle(toggleId, boxId, inputId, countId) {
-    const toggle = document.getElementById(toggleId); const box = document.getElementById(boxId);
-    if (!toggle || !box) return;
-    toggle.addEventListener("click", function () {
-      const hidden = box.classList.toggle("hidden");
-      const open = !hidden;
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      toggle.textContent = open ? "I already drafted a reply (hide)" : "I already drafted a reply (show)";
-      if (open) { const inp = document.getElementById(inputId); if (inp) inp.focus(); }
-    });
-    const input = document.getElementById(inputId);
-    if (input) input.addEventListener("input", function () { updateCharCounter(inputId, countId); });
-  }
-  /* Sprint 1: the 4-part AI output. tacticalReplies falls back to the
-     existing versions in order (Hold the Line <- better, De-escalate <-
-     softer, Strategic Pivot <- stronger) so old history items without
-     a replies array still show 3 copy-pasteable replies. */
-  const TACTICAL_STRATEGIES = ["Hold the Line (Firm)", "De-escalate (Neutral)", "Strategic Pivot (Reframe)"];
-  function tacticalReplies(data) {
-    const given = data && Array.isArray(data.replies) ? data.replies : [];
-    const fallbacks = [data && data.better_version, data && data.softer_version, data && data.stronger_version];
-    return TACTICAL_STRATEGIES.map(function (strategy, i) {
-      const r = given[i];
-      const message = r && typeof r.message === "string" && r.message.trim() ? r.message.trim() : (fallbacks[i] || "");
-      const why = r && typeof r.why_it_works === "string" && r.why_it_works.trim() ? r.why_it_works.trim() : "";
-      return { strategy: strategy, message: message, why_it_works: why };
-    });
-  }
-  function renderFourPart(data, prefix) {
-    const pd = document.getElementById(prefix + "power-dynamic"); if (pd) pd.textContent = data.power_dynamic || "";
-    const et = document.getElementById(prefix + "emotional-trap"); if (et) et.textContent = data.emotional_trap || "";
-    const box = document.getElementById(prefix + "draft-critique-box");
-    if (box) {
-      const c = data.draft_critique;
-      const show = Boolean(c && typeof c === "object" && (c.flaw || c.score !== undefined));
-      box.classList.toggle("hidden", !show);
-      if (show) {
-        document.getElementById(prefix + "draft-critique-score").textContent = "Score: " + c.score + "/100";
-        document.getElementById(prefix + "draft-critique-flaw").textContent = c.flaw || "";
-      }
-    }
-    const replies = tacticalReplies(data);
-    const tbox = document.getElementById(prefix + "tactical-replies-box");
-    if (tbox) tbox.classList.toggle("hidden", !replies.some(function (r) { return r.message; }));
-    replies.forEach(function (r, i) {
-      const sEl = document.getElementById(prefix + "tactical-" + i + "-strategy"); if (sEl) sEl.textContent = r.strategy;
-      const mEl = document.getElementById(prefix + "tactical-" + i + "-message"); if (mEl) mEl.textContent = r.message || "—";
-      const wEl = document.getElementById(prefix + "tactical-" + i + "-why"); if (wEl) wEl.textContent = r.why_it_works || "";
-    });
-  }
-  function fourPartCopyText(data) {
-    let extra = "";
-    if (data.power_dynamic) extra += "\n\nPower Dynamic:\n" + data.power_dynamic;
-    if (data.emotional_trap) extra += "\n\nEmotional Trap:\n" + data.emotional_trap;
-    const tr = tacticalReplies(data);
-    if (tr.some(function (r) { return r.message; })) {
-      extra += "\n\nTactical Replies:\n" + tr.map(function (r) { return r.strategy + ": " + r.message + (r.why_it_works ? " (" + r.why_it_works + ")" : ""); }).join("\n");
-    }
-    return extra;
-  }
-
-  /* ---------- Batch 4 quality+speed: one shared /analyze caller ----------
-     Every check (Rewrite, Reply, style re-run) goes through here.
-     - 45-second timeout: a check that hangs says so instead of spinning forever.
-     - One automatic retry, but ONLY on a network failure or timeout — in that case the
-       Turnstile token never reached the server, so it is safe to send the same token
-       again. HTTP errors (429 limit, 403 verification, 500) are NOT retried: the
-       token was already spent and the user should see the real error.
-     - The user's typed message is never cleared here, so a failed check never loses it.
-     - Batch 13: the sign-in token is fetched fresh before each attempt
-       (see freshAuthHeaders), so a tab left open for a while does not
-       send a stale token. */
-  const ANALYZE_TIMEOUT_MS = 45000;
-  async function postAnalyze(payload) {
-    let lastError = null;
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const controller = new AbortController();
-      const timer = setTimeout(function () { controller.abort(); }, ANALYZE_TIMEOUT_MS);
-      try {
-        const response = await fetch(BYS_API_URL, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload), signal: controller.signal });
-        clearTimeout(timer);
-        return response;
-      } catch (e) { clearTimeout(timer); lastError = e; /* network failure or timeout: retry once */ }
-    }
-    throw lastError || new Error("Network error");
-  }
   /* A server error page is HTML, not JSON — parsing it must not turn a server
      error into a confusing "network error". */
   async function safeJson(response) { try { return await response.json(); } catch (e) { return {}; } }
 
-  /* Batch 6 polish: tell a missing human check apart from an un-ticked
-     one — when Turnstile never loaded (slow network, blocker), the old
-     message blamed the user for not ticking a box that was never there. */
+  /* B2B HR Firewall V1: one Turnstile widget per B2B tab (fix-pass
+     lesson — render when the tab is first shown; never depend on a
+     hidden tab's widget). The guardrail panel is visible by default,
+     so Turnstile auto-renders its widget on load; the audit widget
+     is rendered here the first time the Audit tab opens. */
+  var b2bTab = "guardrail";
+  var hrAuditTurnstileRendered = false;
+  function hrTurnstileWidget(tab) {
+    return document.getElementById(tab === "audit" ? "hr-audit-turnstile" : "hr-guardrail-turnstile");
+  }
   function turnstileReady(tab) {
-    /* Sprint 2 fix pass: "thread" checks the thread panel's own widget -
-       the text widgets start hidden, so the thread must not depend on them. */
-    const widget = tab === "thread" ? document.getElementById("thread-turnstile")
-      : document.querySelector(tab === "reply" ? "#tab-reply .cf-turnstile" : "#tab-rewrite .cf-turnstile");
+    const widget = hrTurnstileWidget(tab);
     return Boolean(widget && widget.querySelector("iframe"));
   }
-
-  /* Sprint 2 fix pass: analyser switcher - Screenshot Thread (default) vs
-     Paste Text. The text panel's Turnstile widgets start hidden behind the
-     thread panel; if one never rendered while hidden, render it now that
-     its panel is visible. Already-rendered widgets are left alone. */
-  var analyserTab = "thread";
-  function ensureTurnstileWidgets() {
+  function ensureHrTurnstile(tab) {
+    if (tab !== "audit" || hrAuditTurnstileRendered) return;
     if (!window.turnstile || typeof window.turnstile.render !== "function") return;
-    document.querySelectorAll("#panel-text .cf-turnstile").forEach(function (el) {
-      if (!el.querySelector("iframe")) {
-        try { window.turnstile.render(el, { sitekey: el.getAttribute("data-sitekey") }); } catch (e) { /* the handlers below still show the refresh message */ }
-      }
-    });
+    const el = document.getElementById("hr-audit-turnstile");
+    if (!el || el.querySelector("iframe")) { hrAuditTurnstileRendered = true; return; }
+    try { window.turnstile.render(el, { sitekey: el.getAttribute("data-sitekey") }); hrAuditTurnstileRendered = true; } catch (e) { /* the handlers below still show the refresh message */ }
   }
-  function setAnalyserTab(which) {
-    if (which !== "thread" && which !== "text") return;
-    analyserTab = which;
-    document.querySelectorAll(".analyser-tab-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.analyser === which); });
-    var shot = document.getElementById("panel-screenshots");
-    var text = document.getElementById("panel-text");
-    if (shot) shot.classList.toggle("hidden", which !== "thread");
-    if (text) text.classList.toggle("hidden", which !== "text");
-    var outer = document.getElementById("text-tab-switcher");
-    if (outer) outer.classList.toggle("hidden", which !== "text");
-    if (which === "text") ensureTurnstileWidgets();
+  function setB2bTab(which) {
+    if (which !== "guardrail" && which !== "audit") return;
+    b2bTab = which;
+    document.querySelectorAll(".b2b-tab-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.b2bTab === which); });
+    const g = document.getElementById("panel-guardrail");
+    const a = document.getElementById("panel-audit");
+    if (g) g.classList.toggle("hidden", which !== "guardrail");
+    if (a) a.classList.toggle("hidden", which !== "audit");
+    if (which === "audit") ensureHrTurnstile("audit");
   }
-  document.querySelectorAll(".analyser-tab-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () { setAnalyserTab(btn.dataset.analyser); });
+  document.querySelectorAll(".b2b-tab-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () { setB2bTab(btn.dataset.b2bTab); });
   });
 
-  document.getElementById('analyze-btn').addEventListener('click', async () => {
-    const message = document.getElementById('message').value.trim();
-    const mode = document.querySelector('.mode-btn.active')?.dataset.mode;
-    const turnstileToken = document.querySelector('#tab-rewrite [name="cf-turnstile-response"]')?.value;
-
-    if (!message || !mode) return;
-
-    if (!turnstileToken) {
-      showError(turnstileReady("rewrite") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.");
-      return;
-    }
-
-    /* Batch 3 money: at the daily limit, do not run the check at all — no Turnstile token spent, no AI call, nothing counted. */
-    if (!canCheckToday()) {
-      showError(limitMessageFor(isSignedIn()));
-      document.getElementById('empty-state').classList.remove('hidden');
-      return;
-    }
-
-    const btn = document.getElementById('analyze-btn');
-    const btnText = document.getElementById('btn-text');
-    const spinner = document.getElementById('loading-spinner');
-
-    btn.disabled = true;
-    btnText.classList.add('hidden');
-    spinner.classList.remove('hidden');
-    spinner.classList.add('inline-flex');
-    document.getElementById('skeleton').classList.remove('hidden');
-    document.getElementById('results').classList.add('hidden');
-    document.getElementById('empty-state').classList.add('hidden');
-    document.getElementById('skeleton').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    startLoadingMessages('loading-text');
-
-    try {
-      const response = await postAnalyze({ message, mode, turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: getGoal("rewrite"), draft: getDraft("rewrite") });
-
-      const data = await safeJson(response);
-
-      if (response.ok) {
-        currentData = data;
-        lastAnalysis = { tab: 'rewrite', mode: mode, message: message, goal: getGoal("rewrite"), draft: getDraft("rewrite") };
-        const savedHistory = addHistory({ tab: 'rewrite', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle, goal: getGoal("rewrite"), draft: getDraft("rewrite") });
-        currentHistoryId = savedHistory.id;
-        displayResults(data);
-        requestCount++;
-        document.getElementById('request-count').textContent = requestCount;
-      } else {
-        showError(data.error || 'Something went wrong.');
-        document.getElementById('empty-state').classList.remove('hidden');
-      }
-    } catch (error) {
-      showError(error && error.name === 'AbortError' ? 'That check timed out — your message is still here, please try again.' : 'Network error — your message is still here, please try again.');
-      document.getElementById('empty-state').classList.remove('hidden');
-    } finally {
-      btn.disabled = false;
-      btnText.classList.remove('hidden');
-      spinner.classList.add('hidden');
-      spinner.classList.remove('inline-flex');
-      btnText.textContent = 'Analyze Again';
-      document.getElementById('skeleton').classList.add('hidden');
-      stopLoadingMessages();
-      if (window.turnstile) window.turnstile.reset();
-    }
-  });
-
-  function displayResults(data) {
-    document.getElementById('original-message').textContent = data.original_message;
-
-    const riskMap = {
-      low: { color: 'bg-emerald-50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-800', text: 'Low Risk' },
-      medium: { color: 'bg-amber-50 border-amber-200', badge: 'bg-amber-100 text-amber-800', text: 'Medium Risk' },
-      high: { color: 'bg-red-50 border-red-200', badge: 'bg-red-100 text-red-800', text: 'High Risk' }
-    };
-    const risk = riskMap[data.risk_level] || riskMap.medium;
-    const card = document.getElementById('risk-card');
-    card.className = `p-5 rounded-2xl border ${risk.color}`;
-    document.getElementById('risk-badge').textContent = risk.text;
-    document.getElementById('risk-badge').className = `px-3 py-1 rounded-full text-xs font-bold ${risk.badge}`;
-    document.getElementById('risk-text').textContent = data.why_it_might_land_badly;
-
-    const sendMap = { yes: 'Send As Is', edit_first: 'Edit First', no: 'Don\'t Send' };
-    document.getElementById('should-send').textContent = sendMap[data.should_send] || 'Edit First';
-
-    setScoreBar('score-clarity', 'bar-clarity', data.scores.clarity);
-    setScoreBar('score-confidence', 'bar-confidence', data.scores.confidence);
-    setScoreBar('score-emotional', 'bar-emotional', data.scores.emotional_control);
-    setScoreBar('score-effectiveness', 'bar-effectiveness', data.scores.effectiveness);
-
-    document.getElementById('tone-detected').textContent = data.tone_detected;
-    document.getElementById('intent-guess').textContent = data.intent_guess;
-    document.getElementById('better-version').textContent = data.better_version;
-    document.getElementById('softer-version').textContent = data.softer_version;
-    document.getElementById('stronger-version').textContent = data.stronger_version;
-    document.getElementById('coach-note').textContent = data.coach_note;
-    renderFourPart(data, "");
-
-    document.getElementById('results').classList.remove('hidden');
-    document.getElementById('empty-state').classList.add('hidden');
-    renderRating('rewrite');
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Reply to This
-  document.getElementById('reply-btn').addEventListener('click', async () => {
-    const message = document.getElementById('reply-message').value.trim();
-    const mode = document.querySelector('.reply-mode-btn.active')?.dataset.mode;
-    const turnstileToken = document.querySelector('#tab-reply [name="cf-turnstile-response"]')?.value;
-
-    if (!message || !mode) return;
-
-    if (!turnstileToken) {
-      showError(turnstileReady("reply") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", 'reply-error-msg');
-      return;
-    }
-
-    /* Batch 3 money: at the daily limit, do not run the check at all — no Turnstile token spent, no AI call, nothing counted. */
-    if (!canCheckToday()) {
-      showError(limitMessageFor(isSignedIn()), 'reply-error-msg');
-      document.getElementById('empty-state').classList.remove('hidden');
-      return;
-    }
-
-    const btn = document.getElementById('reply-btn');
-    const btnText = document.getElementById('reply-btn-text');
-    const spinner = document.getElementById('reply-loading-spinner');
-
-    btn.disabled = true;
-    btnText.classList.add('hidden');
-    spinner.classList.remove('hidden');
-    spinner.classList.add('inline-flex');
-    document.getElementById('skeleton').classList.remove('hidden');
-    document.getElementById('reply-results').classList.add('hidden');
-    document.getElementById('empty-state').classList.add('hidden');
-    document.getElementById('skeleton').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    startLoadingMessages('reply-loading-text');
-
-    try {
-      const response = await postAnalyze({ message, mode, turnstileToken, replyMode: true, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi(), style: selectedStyle, goal: getGoal("reply"), draft: getDraft("reply") });
-
-      const data = await safeJson(response);
-
-      if (response.ok) {
-        lastAnalysis = { tab: 'reply', mode: mode, message: message, goal: getGoal("reply"), draft: getDraft("reply") };
-        const savedHistory = addHistory({ tab: 'reply', mode: mode, input: message, result: data, context: getSelectedContext(), style: selectedStyle, goal: getGoal("reply"), draft: getDraft("reply") });
-        currentHistoryId = savedHistory.id;
-        displayReplyResults(data, message);
-        requestCount++;
-        document.getElementById('request-count').textContent = requestCount;
-      } else {
-        showError(data.error || 'Something went wrong.', 'reply-error-msg');
-        document.getElementById('empty-state').classList.remove('hidden');
-      }
-    } catch (error) {
-      showError(error && error.name === 'AbortError' ? 'That check timed out — your message is still here, please try again.' : 'Network error — your message is still here, please try again.', 'reply-error-msg');
-      document.getElementById('empty-state').classList.remove('hidden');
-    } finally {
-      btn.disabled = false;
-      btnText.classList.remove('hidden');
-      spinner.classList.add('hidden');
-      spinner.classList.remove('inline-flex');
-      btnText.textContent = 'Suggest Replies';
-      document.getElementById('skeleton').classList.add('hidden');
-      stopLoadingMessages();
-      if (window.turnstile) window.turnstile.reset();
-    }
-  });
-
-  function displayReplyResults(data, originalMsg) {
-    document.getElementById('reply-original').textContent = originalMsg;
-    document.getElementById('reply-tone').textContent = data.tone_detected || '—';
-    document.getElementById('reply-watch').textContent = data.why_it_might_land_badly || '—';
-    document.getElementById('reply-calm').textContent = data.softer_version || data.better_version || '—';
-    document.getElementById('reply-assertive').textContent = data.stronger_version || '—';
-    document.getElementById('reply-warm').textContent = data.better_version || '—';
-    document.getElementById('reply-coach-note').textContent = data.coach_note || '—';
-    renderFourPart(data, "reply-");
-
-    document.getElementById('reply-results').classList.remove('hidden');
-    document.getElementById('empty-state').classList.add('hidden');
-    renderRating('reply');
-    document.getElementById('reply-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // New Analysis
-  document.getElementById('new-analysis').addEventListener('click', () => {
-    document.getElementById('message').value = '';
-    document.getElementById('char-count').textContent = '0';
-    document.getElementById('char-count').className = '';
-    document.getElementById('goal-input').value = '';
-    document.getElementById('draft-input').value = '';
-    document.getElementById('draft-box').classList.add('hidden');
-    document.getElementById('draft-toggle').setAttribute('aria-expanded', 'false');
-    document.getElementById('draft-toggle').textContent = 'I already drafted a reply (show)';
-    document.getElementById('draft-char-count').textContent = '0';
-    document.getElementById('results').classList.add('hidden');
-    document.getElementById('empty-state').classList.remove('hidden');
-    /* Batch 6 polish: keep the mode you picked — starting a new message
-       should not make you pick it again. */
-    lastAnalysis = null; currentHistoryId = null; selectedStyle = ""; markStyleButtons();
-    document.getElementById('analyze-btn').disabled = true;
-    document.getElementById('btn-text').textContent = 'Analyze Message';
-    if (window.turnstile) window.turnstile.reset();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  document.getElementById('new-reply').addEventListener('click', () => {
-    document.getElementById('reply-message').value = '';
-    document.getElementById('reply-char-count').textContent = '0';
-    document.getElementById('reply-char-count').className = '';
-    document.getElementById('reply-goal-input').value = '';
-    document.getElementById('reply-draft-input').value = '';
-    document.getElementById('reply-draft-box').classList.add('hidden');
-    document.getElementById('reply-draft-toggle').setAttribute('aria-expanded', 'false');
-    document.getElementById('reply-draft-toggle').textContent = 'I already drafted a reply (show)';
-    document.getElementById('reply-draft-char-count').textContent = '0';
-    document.getElementById('reply-results').classList.add('hidden');
-    document.getElementById('empty-state').classList.remove('hidden');
-    /* Batch 6 polish: keep the mode you picked, as above. */
-    lastAnalysis = null; currentHistoryId = null; selectedStyle = ""; markStyleButtons();
-    document.getElementById('reply-btn').disabled = true;
-    document.getElementById('reply-btn-text').textContent = 'Suggest Replies';
-    if (window.turnstile) window.turnstile.reset();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
 
   // Copy text
   function copyText(id, btn) {
@@ -2719,288 +1856,350 @@
     });
   }
 
-  // Copy all
-  document.getElementById('copy-all').addEventListener('click', () => {
-    if (!currentData) return;
-    const text = `BeforeYouSay Analysis\n\nOriginal: ${currentData.original_message}\nTone: ${currentData.tone_detected}\nRisk: ${currentData.risk_level}\n\nBest Version:\n${currentData.better_version}\n\nSofter Version:\n${currentData.softer_version}\n\nStronger Version:\n${currentData.stronger_version}\n\nCoach Note:\n${currentData.coach_note}` + fourPartCopyText(currentData);
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copy-all');
-      btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = 'Copy All', 2000);
+  /* ---------- B2B HR Firewall V1: guardrail, auditor, vault ----------
+     HR results save through the existing history-save path (addHistory:
+     local first, cloud for signed-in users), so the signed-in daily
+     limit counts them. Item shape: { type: 'hr-guardrail' | 'hr-audit',
+     scenario?, created_at, result }. The old consumer analyser,
+     lanes, thread engine and extension prefill are gone — see the
+     contract (API_CONTRACT.md). No new external scripts. */
+  const HR_MAX_DRAFT = 5000;
+  const HR_MAX_AUDIT_TEXT = 20000;
+  const HR_MAX_FILE_BYTES = 10 * 1024 * 1024;
+  const VAULT_MAX_DOCS = 10;
+  const VAULT_MIME_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+  const HR_RISK_STYLES = {
+    low: { badge: "bg-emerald-100 text-emerald-800", card: "bg-emerald-50 border-emerald-200", text: "Low Risk" },
+    medium: { badge: "bg-amber-100 text-amber-800", card: "bg-amber-50 border-amber-200", text: "Medium Risk" },
+    high: { badge: "bg-red-100 text-red-800", card: "bg-red-50 border-red-200", text: "High Risk" }
+  };
+  var vaultDocs = [];
+  var selectedJurisdiction = "australia";
+  var hrAuditFile = null; /* { name, mime, dataBase64 } — audit file only, never stored */
+
+  function hrApiBase() { return BYS_API_URL.replace(/\/analyze$/, ""); }
+  function hrFriendlyError(status, data) {
+    const serverMsg = data && typeof data.error === "string" && data.error ? data.error : "";
+    if (status === 401) return "Sign in to continue — your session may have expired. Sign in again below and try once more.";
+    if (status === 403) return "The human check didn't pass — please tick the verification box and try again.";
+    if (status === 409 || status === 413) return serverMsg || "That file can't be used — check the size and try again.";
+    if (status === 429) return serverMsg || limitMessageFor(isSignedIn());
+    if (status === 503) return serverMsg || "The check is unavailable right now — please try again in a moment.";
+    return serverMsg || "Something went wrong — please try again.";
+  }
+  async function postHr(path, payload) {
+    return fetchBackendWithRetry(hrApiBase() + path, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) }, function () {
+      const st = document.getElementById(path === "/hr-audit" ? "hr-audit-status" : "hr-status");
+      if (st) st.textContent = "Connection dropped — trying again…";
     });
-  });
-
-  /* Batch 6 polish: Share used to share the website address, not the
-     rewrite — so the person receiving it got a link, not the words. */
-  function shareTextOrCopy(text, btn, doneLabel, idleLabel) {
-    if (navigator.share) {
-      navigator.share({ title: 'BeforeYouSay', text: text }).catch(function () { /* user cancelled the share sheet */ });
-    } else {
-      navigator.clipboard.writeText(text).then(() => {
-        const orig = btn.textContent; btn.textContent = doneLabel;
-        setTimeout(() => btn.textContent = orig || idleLabel, 2000);
-      });
-    }
   }
-  function replyTextsJoined() {
-    const calm = document.getElementById('reply-calm').textContent || '';
-    const assertive = document.getElementById('reply-assertive').textContent || '';
-    const warm = document.getElementById('reply-warm').textContent || '';
-    return { calm: calm, assertive: assertive, warm: warm };
+  function hrTurnstileToken(tab) {
+    const widget = document.getElementById(tab === "audit" ? "hr-audit-turnstile" : "hr-guardrail-turnstile");
+    const input = widget ? widget.querySelector('[name="cf-turnstile-response"]') : null;
+    return input ? input.value : "";
   }
-
-  // Share
-  document.getElementById('share-result').addEventListener('click', () => {
-    if (!currentData) return;
-    shareTextOrCopy('BeforeYouSay rewrite:\n\n' + (currentData.better_version || ''), document.getElementById('share-result'), '✓ Copied!', 'Share');
-  });
-
-  document.getElementById('copy-all-reply').addEventListener('click', () => {
-    const t = replyTextsJoined();
-    const text = 'BeforeYouSay replies\n\nCalm & clear:\n' + t.calm + '\n\nAssertive:\n' + t.assertive + '\n\nWarm & open:\n' + t.warm;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copy-all-reply');
-      btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = 'Copy All', 2000);
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () { const s = String(reader.result || ""); resolve(s.indexOf(",") >= 0 ? s.slice(s.indexOf(",") + 1) : s); };
+      reader.onerror = function () { reject(new Error("read failed")); };
+      reader.readAsDataURL(file);
     });
-  });
-
-  document.getElementById('share-reply').addEventListener('click', () => {
-    const t = replyTextsJoined();
-    shareTextOrCopy('BeforeYouSay replies:\n\nCalm & clear: ' + t.calm + '\n\nAssertive: ' + t.assertive + '\n\nWarm & open: ' + t.warm, document.getElementById('share-reply'), '✓ Copied!', 'Share');
-  });
-
-  /* ---------- Sprint 2: Screenshot Thread Engine ----------
-     Images live ONLY in `threadImages` (Base64 data URLs, downscaled
-     client-side to max 1024px, JPEG ~0.8) and are sent once to
-     POST /analyze-thread. They are never written to history, localStorage
-     or the cloud: the history item stores a text label, the lane, goal,
-     draft and result only (pattern_summary rides in result, for Sprint 3).
-     A thread counts as one check: addHistory adds one history row, so
-     the existing guest/signed-in daily-limit counting counts it once.
-     No Sprint 4 paywall here — guests run a thread under the same Free
-     limits as a text check. */
-  const THREAD_MAX_IMAGES = 5;
-  const THREAD_MAX_DIM = 1024;
-  const BYS_THREAD_URL = BYS_API_URL.replace(/\/analyze$/, "") + "/analyze-thread";
-  let threadImages = []; /* [{ dataUrl }] in chronological order */
-  let threadMode = "career";
-  let threadDragIndex = null;
-  function threadGoal() { const el = document.getElementById("thread-goal-input"); const v = el ? el.value.trim().slice(0, 200) : ""; return v || null; }
-  function threadDraft() { const el = document.getElementById("thread-draft-input"); const v = el ? el.value.trim().slice(0, 1000) : ""; return v || null; }
-  function setThreadMode(mode) {
-    if (!VALID_MODES.includes(mode)) return;
-    threadMode = mode;
-    document.querySelectorAll(".thread-mode-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.mode === mode); });
-    updateThreadButton();
   }
-  function threadError(msg) { const el = document.getElementById("thread-error-msg"); if (!el) return; if (!msg) { el.classList.add("hidden"); el.textContent = ""; return; } el.textContent = msg; el.classList.remove("hidden"); setTimeout(function () { el.classList.add("hidden"); }, 6000); }
-  function updateThreadButton() {
-    const btn = document.getElementById("thread-analyze-btn"); const txt = document.getElementById("thread-btn-text");
+  function updateHrCheckButton() {
+    const btn = document.getElementById("hr-check-btn"); const txt = document.getElementById("hr-btn-text");
     if (!btn || !txt) return;
-    const ready = threadImages.length >= 1 && Boolean(threadGoal());
+    const ready = document.getElementById("hr-draft").value.trim().length > 0;
     btn.disabled = !ready;
-    txt.textContent = ready ? "Analyse thread" : (threadImages.length === 0 ? "Add a screenshot and your goal first" : "Add your goal to analyse the thread");
-    const count = document.getElementById("thread-count"); if (count) count.textContent = threadImages.length + " of 5 screenshots";
+    txt.textContent = ready ? "Check this draft" : "Paste a draft first";
   }
-  function addThreadImageDataUrl(dataUrl) {
-    if (typeof dataUrl !== "string" || !/^data:image\/(jpeg|png|webp);base64,/.test(dataUrl)) return { ok: false, error: "That file is not a JPEG, PNG or WebP image." };
-    if (threadImages.length >= THREAD_MAX_IMAGES) return { ok: false, error: "You can upload up to 5 screenshots in a thread." };
-    threadImages.push({ dataUrl: dataUrl });
-    renderThreadThumbs(); updateThreadButton();
-    return { ok: true };
+  function updateHrAuditButton() {
+    const btn = document.getElementById("hr-audit-btn"); const txt = document.getElementById("hr-audit-btn-text");
+    if (!btn || !txt) return;
+    const hasText = document.getElementById("hr-audit-text").value.trim().length > 0;
+    const ready = Boolean(hrAuditFile) || hasText;
+    btn.disabled = !ready;
+    txt.textContent = ready ? "Audit this document" : "Add a file or paste text first";
   }
-  function removeThreadImage(index) {
-    if (index < 0 || index >= threadImages.length) return;
-    threadImages.splice(index, 1); renderThreadThumbs(); updateThreadButton();
-  }
-  function moveThreadImage(from, to) {
-    if (from < 0 || from >= threadImages.length || to < 0 || to >= threadImages.length || from === to) return;
-    const item = threadImages.splice(from, 1)[0]; threadImages.splice(to, 0, item);
-    renderThreadThumbs(); updateThreadButton();
-  }
-  function renderThreadThumbs() {
-    const box = document.getElementById("thread-thumbs"); if (!box) return;
-    box.innerHTML = threadImages.map(function (img, i) {
-      return '<div class="relative p-1 bg-white rounded-xl border border-slate-200" draggable="true" data-thread-index="' + i + '">'
-        + '<span class="absolute top-3 right-3 bg-slate-900 text-white text-xs font-bold px-3 py-2.5 rounded-lg">' + (i + 1) + '</span>'
-        + '<img src="' + img.dataUrl + '" alt="Screenshot ' + (i + 1) + '" style="width:80px;height:80px;object-fit:cover;display:block;border-radius:8px;">'
-        + '<div class="flex gap-2 mt-1"><button type="button" data-thread-move="' + i + '" data-dir="-1" aria-label="Move screenshot ' + (i + 1) + ' left" class="thread-thumb-btn px-3 py-3 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">← Move left</button>'
-        + '<button type="button" data-thread-move="' + i + '" data-dir="1" aria-label="Move screenshot ' + (i + 1) + ' right" class="thread-thumb-btn px-3 py-3 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Move right →</button>'
-        + '<button type="button" data-thread-remove="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" class="thread-thumb-btn px-3 py-3 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Remove</button></div>'
-        + '<p class="text-xs text-slate-500 mt-1">Drag to reorder</p></div>';
-    }).join("");
-  }
-  function downscaleImageFile(file) {
-    return new Promise(function (resolve) {
-      try {
-        if (typeof FileReader === "undefined" || typeof Image === "undefined" || typeof document === "undefined" || !document.createElement("canvas")) { resolve(null); return; }
-        const reader = new FileReader();
-        reader.onload = function () {
-          const img = new Image();
-          img.onload = function () {
-            try {
-              const scale = Math.min(1, THREAD_MAX_DIM / Math.max(img.width, img.height));
-              const canvas = document.createElement("canvas");
-              canvas.width = Math.max(1, Math.round(img.width * scale));
-              canvas.height = Math.max(1, Math.round(img.height * scale));
-              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-              resolve(canvas.toDataURL("image/jpeg", 0.8));
-            } catch (e) { resolve(typeof reader.result === "string" ? reader.result : null); }
-          };
-          img.onerror = function () { resolve(typeof reader.result === "string" ? reader.result : null); };
-          img.src = reader.result;
-        };
-        reader.onerror = function () { resolve(null); };
-        reader.readAsDataURL(file);
-      } catch (e) { resolve(null); }
-    });
-  }
-  async function addThreadFiles(files) {
-    const list = Array.prototype.slice.call(files || []);
-    for (const file of list) {
-      if (threadImages.length >= THREAD_MAX_IMAGES) { threadError("You can upload up to 5 screenshots in a thread."); return; }
-      if (!file || !file.type || file.type.indexOf("image/") !== 0) { threadError("That file is not an image — add a screenshot (JPEG, PNG or WebP)."); continue; }
-      threadError("");
-      const dataUrl = await downscaleImageFile(file);
-      if (!dataUrl) { threadError("That screenshot could not be read — try a different image."); continue; }
-      const added = addThreadImageDataUrl(dataUrl);
-      if (!added.ok) threadError(added.error);
+
+  /* ---------- Pre-Send Manager Guardrail ---------- */
+  function displayHrGuardrail(data) {
+    const level = String((data && data.compliance_risk_level) || "Medium").toLowerCase();
+    const style = HR_RISK_STYLES[level] || HR_RISK_STYLES.medium;
+    const card = document.getElementById("hr-risk-card");
+    if (card) card.className = "p-5 rounded-2xl border " + style.card;
+    const badge = document.getElementById("hr-risk-badge");
+    if (badge) { badge.textContent = style.text; badge.className = "px-3 py-1 rounded-full text-xs font-bold " + style.badge; }
+    const conflicts = (data && Array.isArray(data.policy_and_fair_work_conflicts)) ? data.policy_and_fair_work_conflicts : [];
+    const list = document.getElementById("hr-conflicts-list");
+    if (list) {
+      list.innerHTML = conflicts.length ? conflicts.map(function (c) {
+        const sourceLabel = c.source === "company_policy" ? "Company policy" : (c.source === "fair_work_nes" ? "Fair Work — NES" : (c.source === "fair_work_act" ? "Fair Work Act" : String(c.source || "")));
+        return '<div class="p-4 bg-white rounded-xl border border-slate-200">'
+          + '<p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.clause || "") + '</p>'
+          + (sourceLabel ? '<p class="text-xs font-bold text-slate-500 uppercase tracking-wide mt-1">' + escapeHtml(sourceLabel) + '</p>' : '')
+          + '<p class="text-sm text-slate-600 leading-relaxed mt-1">' + escapeHtml(c.detail || "") + '</p></div>';
+      }).join("") : '<p class="text-sm text-slate-600">No conflicts found — nothing in this draft clashes with your vault documents or the Fair Work minimums.</p>';
     }
+    const trap = document.getElementById("hr-trap-warning");
+    if (trap) trap.textContent = (data && data.legal_hr_trap_warning) || "No single biggest trap stood out in this draft.";
+    const rw = (data && data.rewrites) || {};
+    const firm = document.getElementById("hr-rewrite-firm"); if (firm) firm.textContent = rw.firm_formal || "—";
+    const cons = document.getElementById("hr-rewrite-constructive"); if (cons) cons.textContent = rw.constructive_neutral || "—";
+    document.getElementById("hr-guardrail-results").classList.remove("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    document.getElementById("hr-guardrail-results").scrollIntoView({ behavior: "smooth", block: "start" });
   }
-  async function postThreadAnalyze(payload) {
-    return fetchBackendWithRetry(BYS_THREAD_URL, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) }, function () {
-      const st = document.getElementById("thread-status"); if (st) st.textContent = "Connection dropped — trying again…";
-    });
-  }
-  document.querySelectorAll(".thread-mode-btn").forEach(function (btn) { btn.addEventListener("click", function () { setThreadMode(btn.dataset.mode); }); });
-  document.getElementById("thread-goal-input").addEventListener("input", updateThreadButton);
-  wireDraftToggle("thread-draft-toggle", "thread-draft-box", "thread-draft-input", "thread-draft-char-count");
-  document.getElementById("thread-file-btn").addEventListener("click", function () { document.getElementById("thread-file-input").click(); });
-  document.getElementById("thread-file-input").addEventListener("change", function (e) { addThreadFiles(e.target.files); e.target.value = ""; });
-  document.getElementById("thread-clear-btn").addEventListener("click", function () { threadImages = []; renderThreadThumbs(); updateThreadButton(); });
-  (function () {
-    const dz = document.getElementById("thread-dropzone"); if (!dz) return;
-    dz.addEventListener("dragover", function (e) { e.preventDefault(); });
-    dz.addEventListener("drop", function (e) { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files) addThreadFiles(e.dataTransfer.files); });
-    dz.addEventListener("paste", function (e) { if (e.clipboardData) addThreadFiles(Array.prototype.slice.call(e.clipboardData.files || [])); });
-    dz.addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") { /* paste is handled by the document listener below */ } });
-  })();
-  document.addEventListener("paste", function (e) {
-    const t = e.target;
-    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return; /* pasting text into a box stays text */
-    if (!e.clipboardData) return;
-    const files = Array.prototype.slice.call(e.clipboardData.files || []);
-    const images = files.filter(function (f) { return f.type && f.type.indexOf("image/") === 0; });
-    if (images.length) { e.preventDefault(); addThreadFiles(images); }
-  });
-  document.getElementById("thread-thumbs").addEventListener("click", function (e) {
-    const rm = e.target.closest("[data-thread-remove]");
-    if (rm) { removeThreadImage(Number(rm.getAttribute("data-thread-remove"))); return; }
-    const mv = e.target.closest("[data-thread-move]");
-    if (mv) { moveThreadImage(Number(mv.getAttribute("data-thread-move")), Number(mv.getAttribute("data-thread-move")) + Number(mv.getAttribute("data-dir"))); return; }
-  });
-  document.getElementById("thread-thumbs").addEventListener("dragstart", function (e) {
-    const card = e.target.closest("[data-thread-index]"); if (!card) return;
-    threadDragIndex = Number(card.getAttribute("data-thread-index"));
-    if (e.dataTransfer) { e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", String(threadDragIndex)); } catch (err) { /* drag still works without the payload */ } }
-  });
-  document.getElementById("thread-thumbs").addEventListener("dragover", function (e) { if (e.target.closest("[data-thread-index]")) e.preventDefault(); });
-  document.getElementById("thread-thumbs").addEventListener("drop", function (e) {
-    const card = e.target.closest("[data-thread-index]"); if (!card) return;
-    e.preventDefault();
-    const to = Number(card.getAttribute("data-thread-index"));
-    const from = threadDragIndex !== null ? threadDragIndex : Number(e.dataTransfer ? e.dataTransfer.getData("text/plain") : NaN);
-    threadDragIndex = null;
-    if (Number.isFinite(from)) moveThreadImage(from, to);
-  });
-  document.getElementById("thread-analyze-btn").addEventListener("click", async function () {
-    const goal = threadGoal(); const draft = threadDraft();
-    if (threadImages.length === 0 || !goal) { threadError("Add at least 1 screenshot and your goal first."); return; }
-    const turnstileToken = (document.querySelector('#thread-turnstile [name="cf-turnstile-response"]') || document.querySelector('#tab-rewrite [name="cf-turnstile-response"]') || document.querySelector('[name="cf-turnstile-response"]') || {}).value;
-    if (!turnstileToken) { threadError(turnstileReady("thread") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again."); return; }
-    if (!canCheckToday()) { threadError(limitMessageFor(isSignedIn())); return; }
-    const btn = document.getElementById("thread-analyze-btn"); const btnText = document.getElementById("thread-btn-text");
-    const spinner = document.getElementById("thread-loading-spinner"); const status = document.getElementById("thread-status");
+  document.getElementById("hr-draft").addEventListener("input", function () { updateCharCounter("hr-draft", "hr-draft-char-count"); updateHrCheckButton(); });
+  document.getElementById("hr-check-btn").addEventListener("click", async function () {
+    const draft = document.getElementById("hr-draft").value.trim().slice(0, HR_MAX_DRAFT);
+    const scenario = document.getElementById("hr-scenario").value;
+    if (!draft) return;
+    const token = hrTurnstileToken("guardrail");
+    if (!token) { showError(turnstileReady("guardrail") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", "hr-error-msg"); return; }
+    if (!canCheckToday()) { showError(limitMessageFor(isSignedIn()), "hr-error-msg"); return; }
+    const btn = document.getElementById("hr-check-btn"); const btnText = document.getElementById("hr-btn-text");
+    const spinner = document.getElementById("hr-loading-spinner"); const status = document.getElementById("hr-status");
     btn.disabled = true; btnText.classList.add("hidden"); spinner.classList.remove("hidden"); spinner.classList.add("inline-flex");
     document.getElementById("skeleton").classList.remove("hidden");
-    document.getElementById("results").classList.add("hidden"); document.getElementById("reply-results").classList.add("hidden");
+    document.getElementById("hr-guardrail-results").classList.add("hidden");
     document.getElementById("empty-state").classList.add("hidden");
-    startLoadingMessages("thread-loading-text");
+    startLoadingMessages("hr-loading-text");
     try {
-      const response = await postThreadAnalyze({ images: threadImages.map(function (x) { return x.dataUrl; }), mode: threadMode, goal: goal, draft: draft, turnstileToken: turnstileToken, toneProfile: getToneProfileForApi(), context: getSelectedContextForApi() });
+      const response = await postHr("/hr-guardrail", { draft: draft, scenario: scenario, jurisdiction: "australia", turnstileToken: token });
       const data = await safeJson(response);
       if (response.ok) {
-        currentData = data;
-        const label = "Screenshot thread (" + threadImages.length + " image" + (threadImages.length === 1 ? "" : "s") + ") — Goal: " + goal;
-        lastAnalysis = { tab: "rewrite", mode: threadMode, message: label, goal: goal, draft: draft };
-        const savedHistory = addHistory({ tab: "rewrite", mode: threadMode, input: label, result: data, context: getSelectedContext(), style: "", goal: goal, draft: draft, thread: true, imageCount: threadImages.length });
+        const savedHistory = addHistory({ type: "hr-guardrail", scenario: scenario, input: draft, result: data });
         currentHistoryId = savedHistory.id;
-        displayResults(data);
+        displayHrGuardrail(data);
         requestCount++; document.getElementById("request-count").textContent = requestCount;
         if (status) status.textContent = "";
       } else {
-        threadError(data.error || "Something went wrong.");
+        showError(hrFriendlyError(response.status, data), "hr-error-msg");
         document.getElementById("empty-state").classList.remove("hidden");
       }
     } catch (error) {
-      threadError(error && error.name === "AbortError" ? "That check timed out — your screenshots are still here, please try again." : "Network error — your screenshots are still here, please try again.");
+      showError(error && error.name === "AbortError" ? "That check timed out — your draft is still here, please try again." : "Network error — your draft is still here, please try again.", "hr-error-msg");
       document.getElementById("empty-state").classList.remove("hidden");
     } finally {
       btn.disabled = false; btnText.classList.remove("hidden"); spinner.classList.add("hidden"); spinner.classList.remove("inline-flex");
-      btnText.textContent = "Analyse thread";
+      btnText.textContent = "Check this draft";
       document.getElementById("skeleton").classList.add("hidden"); stopLoadingMessages();
-      updateThreadButton();
+      updateHrCheckButton();
       if (window.turnstile) window.turnstile.reset();
     }
   });
-  updateThreadButton();
+  document.getElementById("hr-new-check").addEventListener("click", function () {
+    document.getElementById("hr-draft").value = ""; updateCharCounter("hr-draft", "hr-draft-char-count");
+    document.getElementById("hr-guardrail-results").classList.add("hidden");
+    document.getElementById("empty-state").classList.remove("hidden");
+    updateHrCheckButton();
+    if (window.turnstile) window.turnstile.reset();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-  /* ---------- Batch 2 extension: open a message on the site, pre-filled ----------
-     This block MUST stay at the end of the script: it clicks a mode
-     button and a tab button, and those clicks only work once their
-     listeners (attached above) exist. Before Sprint 1 it sat above
-     them, so ?mode= and ?reply=1 links silently did nothing — the
-     message still landed in the box, which is why nobody noticed.
-     The extension's "Open on the site" button links here with
-     ?message=...&mode=career&reply=1 (and &from=extension). Only the
-     message box, the mode and the tab are filled in — nothing is analysed
-     until the user taps Analyse, and the text stays editable. Values are
-     capped at 1000 characters and the mode must be one of the four lanes
-     (old workplace/relationship links are mapped to their lane); anything
-     else is ignored. */
-  (function prefillFromExtensionLink() {
+  /* ---------- Contract & Policy Auditor ---------- */
+  function displayHrAudit(data) {
+    const missing = (data && Array.isArray(data.missing_mandatory_clauses)) ? data.missing_mandatory_clauses : [];
+    const ml = document.getElementById("hr-audit-missing-list");
+    if (ml) ml.innerHTML = missing.length ? missing.map(function (m) { return '<p class="text-sm text-slate-700 leading-relaxed p-3 bg-white rounded-xl border border-slate-200">' + escapeHtml(m) + '</p>'; }).join("") : '<p class="text-sm text-slate-600">No missing mandatory clauses found.</p>';
+    const contradictions = (data && Array.isArray(data.contradictions_with_existing_policy)) ? data.contradictions_with_existing_policy : [];
+    const cl = document.getElementById("hr-audit-contradictions-list");
+    if (cl) cl.innerHTML = contradictions.length ? contradictions.map(function (c) {
+      return '<div class="p-4 bg-white rounded-xl border border-slate-200"><p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.clause || "") + '</p>'
+        + (c.vault_source ? '<p class="text-xs font-bold text-slate-500 uppercase tracking-wide mt-1">Vault: ' + escapeHtml(c.vault_source) + '</p>' : '')
+        + '<p class="text-sm text-slate-600 leading-relaxed mt-1">' + escapeHtml(c.detail || "") + '</p></div>';
+    }).join("") : '<p class="text-sm text-slate-600">No contradictions with your existing policy found.</p>';
+    const rewrites = (data && Array.isArray(data.suggested_clause_rewrites)) ? data.suggested_clause_rewrites : [];
+    const rl = document.getElementById("hr-audit-rewrites-list");
+    if (rl) rl.innerHTML = rewrites.length ? rewrites.map(function (r) {
+      return '<div class="p-4 bg-white rounded-xl border border-slate-200"><p class="text-sm text-slate-600 leading-relaxed"><span class="font-bold text-slate-800">Original: </span>' + escapeHtml(r.original || "") + '</p>'
+        + '<p class="text-sm text-slate-800 leading-relaxed mt-1"><span class="font-bold">Rewrite: </span>' + escapeHtml(r.rewrite || "") + '</p>'
+        + (r.reason ? '<p class="text-sm text-slate-500 leading-relaxed mt-1">' + escapeHtml(r.reason) + '</p>' : '') + '</div>';
+    }).join("") : '<p class="text-sm text-slate-600">No rewrites suggested.</p>';
+    document.getElementById("hr-audit-results").classList.remove("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    document.getElementById("hr-audit-results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  document.getElementById("hr-audit-text").addEventListener("input", function () { updateCharCounter("hr-audit-text", "hr-audit-char-count"); updateHrAuditButton(); });
+  document.getElementById("hr-audit-file").addEventListener("change", async function (e) {
+    const file = e.target.files && e.target.files[0];
+    const nameEl = document.getElementById("hr-audit-file-name");
+    hrAuditFile = null;
+    if (!file) { if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
+    const lower = (file.name || "").toLowerCase();
+    const mime = lower.endsWith(".pdf") ? "application/pdf" : (lower.endsWith(".docx") ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "");
+    if (!mime) { showError("Please upload a PDF or DOCX file.", "hr-audit-error-msg"); e.target.value = ""; if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
+    if (file.size > HR_MAX_FILE_BYTES) { showError("That file is too large — 10MB max per document.", "hr-audit-error-msg"); e.target.value = ""; if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
     try {
-      var params = new URLSearchParams(window.location.search);
-      var prefill = (params.get("message") || "").trim().slice(0, 1000);
-      var mode = params.get("mode") || "";
-      var reply = params.get("reply") === "1";
-      if (!prefill && !mode && !reply) return;
-      setAnalyserTab("text"); /* Sprint 2 fix pass: a prefilled message lives on the Paste Text panel */
-      if (reply) {
-        var replyTab = document.querySelector('.tab-btn[data-tab="reply"]');
-        if (replyTab) replyTab.click();
-        var replyBox = document.getElementById("reply-message");
-        if (replyBox && prefill) {
-          replyBox.value = prefill;
-          updateCharCounter("reply-message", "reply-char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
-          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      } else if (prefill) {
-        var box = document.getElementById("message");
-        box.value = prefill;
-        updateCharCounter("message", "char-count"); /* Batch 3: counter fix — the input listener below is not attached yet */
-        box.dispatchEvent(new Event("input", { bubbles: true }));
+      const dataBase64 = await fileToBase64(file);
+      hrAuditFile = { name: file.name, mime: mime, dataBase64: dataBase64 };
+      if (nameEl) nameEl.textContent = "Selected: " + file.name;
+    } catch (err) { showError("That file could not be read — please try a different file.", "hr-audit-error-msg"); e.target.value = ""; }
+    updateHrAuditButton();
+  });
+  document.getElementById("hr-audit-file-clear-btn").addEventListener("click", function () {
+    hrAuditFile = null;
+    const input = document.getElementById("hr-audit-file"); if (input) input.value = "";
+    const nameEl = document.getElementById("hr-audit-file-name"); if (nameEl) nameEl.textContent = "";
+    updateHrAuditButton();
+  });
+  document.getElementById("hr-audit-btn").addEventListener("click", async function () {
+    const text = document.getElementById("hr-audit-text").value.trim().slice(0, HR_MAX_AUDIT_TEXT);
+    if (!hrAuditFile && !text) return;
+    const token = hrTurnstileToken("audit");
+    if (!token) { showError(turnstileReady("audit") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", "hr-audit-error-msg"); return; }
+    if (!canCheckToday()) { showError(limitMessageFor(isSignedIn()), "hr-audit-error-msg"); return; }
+    const btn = document.getElementById("hr-audit-btn"); const btnText = document.getElementById("hr-audit-btn-text");
+    const spinner = document.getElementById("hr-audit-loading-spinner"); const status = document.getElementById("hr-audit-status");
+    btn.disabled = true; btnText.classList.add("hidden"); spinner.classList.remove("hidden"); spinner.classList.add("inline-flex");
+    document.getElementById("skeleton").classList.remove("hidden");
+    document.getElementById("hr-audit-results").classList.add("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    startLoadingMessages("hr-audit-loading-text");
+    try {
+      const payload = hrAuditFile
+        ? { file: { file_name: hrAuditFile.name, mime: hrAuditFile.mime, data_base64: hrAuditFile.dataBase64 }, turnstileToken: token }
+        : { document_text: text, turnstileToken: token };
+      const response = await postHr("/hr-audit", payload);
+      const data = await safeJson(response);
+      if (response.ok) {
+        const input = hrAuditFile ? ("Audited file: " + hrAuditFile.name) : text;
+        const savedHistory = addHistory({ type: "hr-audit", input: input, result: data });
+        currentHistoryId = savedHistory.id;
+        displayHrAudit(data);
+        requestCount++; document.getElementById("request-count").textContent = requestCount;
+        if (status) status.textContent = "";
+      } else {
+        showError(hrFriendlyError(response.status, data), "hr-audit-error-msg");
+        document.getElementById("empty-state").classList.remove("hidden");
       }
-      var mappedMode = migrateMode(mode);
-      if (mappedMode) {
-        var btn = document.querySelector((reply ? ".reply-mode-btn" : ".mode-btn") + '[data-mode="' + mappedMode + '"]');
-        if (btn) btn.click();
-      }
-      var appCard = document.querySelector(".tab-btn");
-      if (appCard) appCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (e) { /* a bad link must never break the page */ }
-  })();
+    } catch (error) {
+      showError(error && error.name === "AbortError" ? "That audit timed out — your document is still here, please try again." : "Network error — your document is still here, please try again.", "hr-audit-error-msg");
+      document.getElementById("empty-state").classList.remove("hidden");
+    } finally {
+      btn.disabled = false; btnText.classList.remove("hidden"); spinner.classList.add("hidden"); spinner.classList.remove("inline-flex");
+      btnText.textContent = "Audit this document";
+      document.getElementById("skeleton").classList.add("hidden"); stopLoadingMessages();
+      updateHrAuditButton();
+      if (window.turnstile) window.turnstile.reset();
+    }
+  });
+  document.getElementById("hr-new-audit").addEventListener("click", function () {
+    hrAuditFile = null;
+    const input = document.getElementById("hr-audit-file"); if (input) input.value = "";
+    const nameEl = document.getElementById("hr-audit-file-name"); if (nameEl) nameEl.textContent = "";
+    document.getElementById("hr-audit-text").value = ""; updateCharCounter("hr-audit-text", "hr-audit-char-count");
+    document.getElementById("hr-audit-results").classList.add("hidden");
+    document.getElementById("empty-state").classList.remove("hidden");
+    updateHrAuditButton();
+    if (window.turnstile) window.turnstile.reset();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ---------- Company Vault ---------- */
+  function vaultMimeFor(file) {
+    if (file.type && VAULT_MIME_TYPES.indexOf(file.type) !== -1) return file.type;
+    const name = (file.name || "").toLowerCase();
+    if (name.endsWith(".pdf")) return "application/pdf";
+    if (name.endsWith(".docx")) return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    if (name.endsWith(".txt")) return "text/plain";
+    return "";
+  }
+  function setVaultStatus(msg) { const el = document.getElementById("vault-status"); if (el) el.textContent = msg || ""; }
+  function renderVaultList() {
+    const docs = Array.isArray(vaultDocs) ? vaultDocs : [];
+    const count = document.getElementById("vault-count");
+    if (count) count.textContent = docs.length + " of 10 documents";
+    const empty = document.getElementById("vault-empty");
+    if (empty) empty.classList.toggle("hidden", docs.length > 0);
+    const list = document.getElementById("vault-list");
+    if (list) {
+      list.innerHTML = docs.map(function (d) {
+        const when = d.created_at ? new Date(d.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) : "";
+        const typeLabel = { handbook: "Handbook", contract: "Contract", policy: "Policy", other: "Other" }[d.doc_type] || d.doc_type || "";
+        return '<article class="p-4 bg-white rounded-2xl border border-slate-200"><div class="flex items-center justify-between gap-2"><div><p class="font-bold text-slate-800 text-sm">' + escapeHtml(d.file_name) + '</p><p class="text-xs text-slate-500">' + escapeHtml(typeLabel) + (when ? " · " + escapeHtml(when) : "") + '</p></div><button type="button" data-vault-delete="' + escapeHtml(d.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
+      }).join("");
+    }
+    const banner = document.getElementById("vault-onboarding");
+    if (banner) banner.classList.toggle("hidden", !(isSignedIn() && docs.length === 0));
+  }
+  function refreshVaultAuth() {
+    const signedIn = isSignedIn();
+    const guestMsg = document.getElementById("vault-guest-msg");
+    if (guestMsg) guestMsg.classList.toggle("hidden", signedIn);
+    ["vault-file-input", "vault-doc-type", "vault-upload-btn"].forEach(function (id) { const el = document.getElementById(id); if (el) el.disabled = !signedIn; });
+    if (signedIn) { loadVault(); } else { vaultDocs = []; renderVaultList(); }
+  }
+  async function loadVault() {
+    try {
+      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/list", { headers: await freshAuthHeaders() }, function () { setVaultStatus("Connection dropped — trying again…"); });
+      const data = await safeJson(res);
+      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); vaultDocs = []; renderVaultList(); return; }
+      vaultDocs = Array.isArray(data.documents) ? data.documents : [];
+      setVaultStatus("");
+      renderVaultList();
+    } catch (e) { setVaultStatus("Your vault couldn't load right now — please try again."); }
+  }
+  document.getElementById("vault-upload-btn").addEventListener("click", async function () {
+    if (!isSignedIn()) { setVaultStatus("Sign in to upload company documents."); return; }
+    const input = document.getElementById("vault-file-input");
+    const file = input && input.files && input.files[0];
+    if (!file) { setVaultStatus("Choose a file first — PDF, DOCX or TXT, 10MB max."); return; }
+    const mime = vaultMimeFor(file);
+    if (!mime) { setVaultStatus("Please upload a PDF, DOCX or TXT file."); return; }
+    if (file.size > HR_MAX_FILE_BYTES) { setVaultStatus("That file is too large — 10MB max per document."); return; }
+    if (vaultDocs.length >= VAULT_MAX_DOCS) { setVaultStatus("Your Company Vault is full (10 documents max)."); return; }
+    const docType = document.getElementById("vault-doc-type").value || "other";
+    const btn = document.getElementById("vault-upload-btn");
+    btn.disabled = true; setVaultStatus("Uploading…");
+    try {
+      const dataBase64 = await fileToBase64(file);
+      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/upload", { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify({ file_name: file.name, doc_type: docType, mime: mime, data_base64: dataBase64 }) }, function () { setVaultStatus("Connection dropped — trying again…"); });
+      const data = await safeJson(res);
+      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); return; }
+      input.value = "";
+      const sel = document.getElementById("vault-selected-file"); if (sel) sel.textContent = "";
+      await loadVault(); /* reload first: loadVault clears the status line on success */
+      setVaultStatus("Uploaded — " + (data.file_name || file.name) + " is now in your vault.");
+    } catch (e) { setVaultStatus("Upload couldn't finish — please check your connection and try again."); }
+    finally { btn.disabled = !isSignedIn(); }
+  });
+  document.getElementById("vault-file-input").addEventListener("change", function (e) {
+    const file = e.target.files && e.target.files[0];
+    const sel = document.getElementById("vault-selected-file");
+    if (sel) sel.textContent = file ? ("Selected: " + file.name) : "";
+  });
+  document.getElementById("vault-list").addEventListener("click", async function (e) {
+    const btn = e.target.closest("[data-vault-delete]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-vault-delete");
+    btn.disabled = true;
+    try {
+      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/delete", { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify({ id: id }) }, function () { setVaultStatus("Connection dropped — trying again…"); });
+      const data = await safeJson(res);
+      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); return; }
+      await loadVault();
+      setVaultStatus("Deleted.");
+    } catch (err) { setVaultStatus("Delete couldn't finish — please try again."); }
+  });
+
+  /* ---------- Jurisdiction + legacy viewer ---------- */
+  document.querySelectorAll("[data-jurisdiction]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (b.disabled) return;
+      selectedJurisdiction = b.getAttribute("data-jurisdiction");
+      document.querySelectorAll("[data-jurisdiction]").forEach(function (x) { x.classList.toggle("active", x === b); });
+    });
+  });
+  document.getElementById("legacy-result-close").addEventListener("click", function () {
+    document.getElementById("legacy-result").classList.add("hidden");
+    document.getElementById("empty-state").classList.remove("hidden");
+  });
+  updateHrCheckButton();
+  updateHrAuditButton();
+  refreshVaultAuth();
+
 
   document.getElementById('empty-state').classList.remove('hidden');
 </script>
