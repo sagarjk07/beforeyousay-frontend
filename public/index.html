@@ -878,8 +878,19 @@
        "check your connection" error at once. `fetchBackendWithRetry`
        gives them a 45-second timeout and ONE automatic retry, only on
        a network failure or timeout. HTTP errors are NOT retried: the
-       server already answered, so the user should see the real error. */
+       server already answered, so the user should see the real error.
+     - HR calls wait 90 seconds instead of 45: the AI answer takes
+       longer than a vault call. And a retry of a Turnstile-protected
+       call first resets the human-check widget and waits for a FRESH
+       single-use token — resending the spent token is rejected by
+       Cloudflare as a duplicate, which used to surface as a failed
+       human check after a dropped connection (22 Nov 2026 phone
+       test: two Guardrail attempts failed exactly that way). If no
+       fresh token appears within 10 seconds, the retry is abandoned
+       and the user taps again with the reset widget. */
   const BACKEND_TIMEOUT_MS = 45000;
+  const HR_TIMEOUT_MS = 90000;
+  var HR_TOKEN_WAIT_MS = 10000;
   async function freshAuthHeaders() {
     try {
       if (supabaseClient) {
@@ -889,12 +900,21 @@
     } catch (e) { /* keep the saved token and carry on */ }
     return getAuthHeaders();
   }
-  async function fetchBackendWithRetry(url, opts, onRetry) {
+  async function fetchBackendWithRetry(url, opts, onRetry, extra) {
+    const timeoutMs = (extra && extra.timeoutMs) || BACKEND_TIMEOUT_MS;
+    const beforeRetry = extra && extra.beforeRetry;
     let lastError = null;
     for (let attempt = 0; attempt < 2; attempt++) {
-      if (attempt === 1 && onRetry) { try { onRetry(); } catch (e) { /* never break the retry */ } }
+      if (attempt === 1) {
+        if (onRetry) { try { onRetry(); } catch (e) { /* never break the retry */ } }
+        if (beforeRetry) {
+          let ok = true;
+          try { ok = await beforeRetry(); } catch (e) { ok = false; }
+          if (ok === false) throw lastError || new Error("Network error");
+        }
+      }
       const controller = new AbortController();
-      const timer = setTimeout(function () { controller.abort(); }, BACKEND_TIMEOUT_MS);
+      const timer = setTimeout(function () { controller.abort(); }, timeoutMs);
       try {
         const response = await fetch(url, Object.assign({}, opts, { signal: controller.signal }));
         clearTimeout(timer);
@@ -1219,10 +1239,37 @@
     if (status === 503) return serverMsg || "The check is unavailable right now — please try again in a moment.";
     return serverMsg || "Something went wrong — please try again.";
   }
-  async function postHr(path, payload) {
-    return fetchBackendWithRetry(hrApiBase() + path, { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) }, function () {
+  /* Turnstile tokens are single-use: once the server has verified one,
+     Cloudflare rejects it as a duplicate. A retry that resends the same
+     token therefore comes back 403 ("human check didn't pass") even when
+     the first attempt only failed on the network. Before retrying an HR
+     call, reset the widget and wait for a fresh token, then resend with
+     that token. If no fresh token appears within HR_TOKEN_WAIT_MS, give
+     up the retry — the widget is already reset, so the next tap starts
+     fresh. */
+  async function freshHrToken(tab) {
+    if (window.turnstile) { try { window.turnstile.reset(); } catch (e) { /* keep the old token */ } }
+    const deadline = Date.now() + HR_TOKEN_WAIT_MS;
+    while (Date.now() < deadline) {
+      const token = hrTurnstileToken(tab);
+      if (token) return token;
+      await new Promise(function (r) { setTimeout(r, 250); });
+    }
+    return "";
+  }
+  async function postHr(path, payload, tab) {
+    const opts = { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) };
+    return fetchBackendWithRetry(hrApiBase() + path, opts, function () {
       const st = document.getElementById(path === "/hr-audit" ? "hr-audit-status" : "hr-status");
       if (st) st.textContent = "Connection dropped — trying again…";
+    }, {
+      timeoutMs: HR_TIMEOUT_MS,
+      beforeRetry: async function () {
+        const fresh = await freshHrToken(tab);
+        if (!fresh) return false;
+        opts.body = JSON.stringify(Object.assign({}, payload, { turnstileToken: fresh }));
+        return true;
+      },
     });
   }
   function hrTurnstileToken(tab) {
@@ -1298,7 +1345,7 @@
     document.getElementById("empty-state").classList.add("hidden");
     startLoadingMessages("hr-loading-text");
     try {
-      const response = await postHr("/hr-guardrail", { draft: draft, scenario: scenario, jurisdiction: "australia", turnstileToken: token });
+      const response = await postHr("/hr-guardrail", { draft: draft, scenario: scenario, jurisdiction: "australia", turnstileToken: token }, "guardrail");
       const data = await safeJson(response);
       if (response.ok) {
         const savedHistory = addHistory({ type: "hr-guardrail", scenario: scenario, input: draft, result: data });
@@ -1393,7 +1440,7 @@
       const payload = hrAuditFile
         ? { file: { file_name: hrAuditFile.name, mime: hrAuditFile.mime, data_base64: hrAuditFile.dataBase64 }, turnstileToken: token }
         : { document_text: text, turnstileToken: token };
-      const response = await postHr("/hr-audit", payload);
+      const response = await postHr("/hr-audit", payload, "audit");
       const data = await safeJson(response);
       if (response.ok) {
         const input = hrAuditFile ? ("Audited file: " + hrAuditFile.name) : text;
