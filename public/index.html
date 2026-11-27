@@ -5,28 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>BeforeYouSay — HR & Policy Compliance Firewall for Australian Businesses</title>
-  <meta name="description" content="Upload your company policies and employment contracts. Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.">
-  <meta name="keywords" content="HR compliance, Fair Work Act, National Employment Standards, NES, employment contract audit, HR email check, Australian small business HR">
+  <title>BeforeYouSay — Rizz Check: rate your DM before you send it</title>
+  <meta name="description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — smooth and funny — before you hit send.">
+  <meta name="keywords" content="rizz check, rizz score, DM checker, texting, Gen Z, roast my text, better replies">
   <link rel="canonical" href="https://beforeyousay.com/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="BeforeYouSay — HR & Policy Compliance Firewall">
-  <meta property="og:description" content="Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.">
+  <meta property="og:title" content="BeforeYouSay — Rizz Check">
+  <meta property="og:description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — before you hit send.">
   <meta property="og:url" content="https://beforeyousay.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BeforeYouSay — HR & Policy Compliance Firewall">
-  <meta name="twitter:description" content="Check manager emails and contracts against your internal rules and Fair Work compliance before you hit send.">
+  <meta name="twitter:title" content="BeforeYouSay — Rizz Check">
+  <meta name="twitter:description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — before you hit send.">
   <meta name="twitter:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Favicon -->
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#160a2e">
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
@@ -41,36 +41,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .b2b-tab-btn.active { background: #0f172a; color: white; }
-    .jurisdiction-btn.active { border-color: #0f172a; background: #0f172a; color: white; }
+    .rizz-body { background: linear-gradient(180deg, #160a2e 0%, #1e0b3d 45%, #12081f 100%); }
+    .rizz-hero-word { background: linear-gradient(90deg, #d4ff3f, #ff2e88); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .rizz-score-ring { background: conic-gradient(#d4ff3f calc(var(--score, 0) * 1%), rgba(255,255,255,0.12) 0); }
     .copy-btn { transition: all 0.2s; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .fade-in { animation: fadeIn 0.35s ease forwards; }
+    .rizz-input:focus { border-color: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,0.1); }
+    .rizz-input::placeholder { color: rgba(255,255,255,0.4); }
+    .rizz-ghost { background: rgba(255,255,255,0.1); }
+    .rizz-ghost:hover { background: rgba(255,255,255,0.2); }
+    .rizz-muted-danger { color: rgba(255,255,255,0.8); }
+    .rizz-muted-danger:hover { color: #fca5a5; }
+    .rizz-link-hover:hover { color: #fff; }
     .copy-btn:active { transform: scale(0.95); }
   </style>
 </head>
-<body class="min-h-screen bg-white text-slate-900">
+<body class="min-h-screen rizz-body text-white">
 
 <!-- Header -->
-<header class="bg-white sticky top-0 z-50 border-b border-slate-200">
+<header class="sticky top-0 z-50 border-b" style="background: rgba(22,10,46,0.9); backdrop-filter: blur(8px);border-color: rgba(255,255,255,0.1)">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-lg leading-none" aria-hidden="true">B</span>
+        <span class="flex items-center justify-center w-10 h-10 rounded-xl font-bold text-lg leading-none" style="background: #d4ff3f; color: #160a2e;" aria-hidden="true">B</span>
         <div>
-          <h1 class="text-xl font-bold text-slate-900">BeforeYouSay</h1>
-          <p class="text-xs text-slate-500 font-medium hidden sm:block">HR &amp; Policy Compliance Firewall</p>
+          <h1 class="text-xl font-bold text-white">BeforeYouSay</h1>
+          <p class="text-xs font-medium hidden sm:block" style="color: #d4ff3f;">Rizz Check</p>
         </div>
       </div>
       <div class="flex items-center space-x-4">
-        <div class="text-sm text-slate-500">
-          <span id="request-count" class="font-bold text-slate-900">0</span>
+        <div class="text-sm" style="color: rgba(255,255,255,0.7)">
+          <span id="request-count" class="font-bold text-white">0</span>
           <span class="hidden sm:inline"> checks today</span>
         </div>
         <div id="auth-area" class="flex items-center gap-2">
-          <span id="auth-state" class="hidden sm:inline text-sm text-slate-500">Not signed in</span>
-          <button id="auth-open-btn" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Sign in</button>
-          <button id="auth-signout-btn" class="hidden px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-white transition">Sign out</button>
+          <span id="auth-state" class="hidden sm:inline text-sm" style="color: rgba(255,255,255,0.7)">Not signed in</span>
+          <button id="auth-open-btn" class="px-3 py-2.5 rounded-xl text-sm font-semibold transition" style="background: #d4ff3f; color: #160a2e;">Sign in</button>
+          <button id="auth-signout-btn" class="hidden px-3 py-2.5 rounded-xl rizz-ghost border text-sm font-semibold text-white transition" style="border-color: rgba(255,255,255,0.2)">Sign out</button>
         </div>
       </div>
     </div>
@@ -81,317 +89,196 @@
 
   <!-- Hero -->
   <section class="text-center space-y-4">
-    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight">
-      Never send an HR email or contract that puts your business at risk.
+    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+      Check your <span class="rizz-hero-word">rizz</span> before you send it.
     </h2>
-    <p class="text-lg sm:text-xl text-slate-600 max-w-lg mx-auto leading-relaxed">
-      Upload your company policies and employment contracts. Check manager emails, warnings, and policy drafts against your internal rules and Fair Work compliance before you hit send.
+    <p class="text-lg sm:text-xl max-w-lg mx-auto leading-relaxed" style="color: rgba(255,255,255,0.75);">
+      Paste the DM. Get your rizz score, a roast, and two better replies — in seconds.
     </p>
   </section>
 
   <!-- App Card -->
-  <section class="bg-white rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-3xl mx-auto">
+  <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
-    <!-- B2B HR Firewall V1: jurisdiction first. Australia is the only
-         supported jurisdiction for now — the United States and United
-         Kingdom are shown disabled with Coming Soon badges and can
-         never be selected. -->
-    <div class="mb-6">
-      <p class="text-sm font-bold text-slate-700 mb-2">Jurisdiction</p>
-      <div class="flex flex-wrap gap-2" role="group" aria-label="Jurisdiction">
-        <button type="button" data-jurisdiction="australia" class="jurisdiction-btn active px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Australia — Fair Work Act &amp; NES</button>
-        <button type="button" data-jurisdiction="united-states" disabled class="px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed">United States <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Coming Soon</span></button>
-        <button type="button" data-jurisdiction="united-kingdom" disabled class="px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed">United Kingdom <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Coming Soon</span></button>
-      </div>
-      <p class="text-xs text-slate-500 mt-2">Australia is the only supported jurisdiction for now.</p>
-    </div>
-
-    <!-- B2B dashboard tabs -->
-    <div class="flex justify-center mb-6">
-      <div class="bg-white rounded-xl p-1 border border-slate-200 inline-flex gap-1" role="tablist" aria-label="Choose a check">
-        <button type="button" data-b2b-tab="guardrail" class="b2b-tab-btn active px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Pre-Send Manager Guardrail</button>
-        <button type="button" data-b2b-tab="audit" class="b2b-tab-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all duration-200">Contract &amp; Policy Auditor</button>
-      </div>
-    </div>
-
-    <!-- Tab 1: Pre-Send Manager Guardrail (default) -->
-    <div id="panel-guardrail">
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Pre-Send Manager Guardrail</h3>
-      <p class="text-sm text-slate-600 mb-4">Paste the draft email, warning or message a manager is about to send. We check it against your Company Vault documents and Fair Work compliance before it goes out.</p>
+    <!-- Rizz Check -->
+    <div id="panel-rizz">
+      <h3 class="text-lg font-bold text-white mb-1">Rizz Check</h3>
+      <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Paste the DM or text you're about to send. We score the rizz, roast it (gently), and write you two better replies.</p>
       <div class="space-y-3 mb-6">
         <div>
-          <label for="hr-draft" class="block text-sm font-bold text-slate-700 mb-1">Manager&rsquo;s draft</label>
-          <textarea id="hr-draft" placeholder="Paste the draft email or message here…" rows="6" maxlength="5000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-          <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="hr-draft-char-count">0</span><span class="text-slate-500"> / 5000</span></span></div>
+          <label for="rizz-text" class="block text-sm font-bold text-white mb-1">Your DM</label>
+          <textarea id="rizz-text" placeholder="Paste the text here… e.g. hey, what are you up to" rows="4" maxlength="500" class="w-full p-5 rounded-2xl border rizz-input focus:outline-none focus:ring-4 resize-none font-medium text-base transition-all duration-200 text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
+          <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="rizz-text-char-count">0</span><span style="color: rgba(255,255,255,0.5);"> / 500</span></span></div>
         </div>
-        <div>
-          <label for="hr-scenario" class="block text-sm font-bold text-slate-700 mb-1">Scenario</label>
-          <select id="hr-scenario" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-            <option value="performance">Performance &amp; Warnings</option>
-            <option value="leave">Leave &amp; Roster Changes</option>
-            <option value="termination">Termination &amp; Redundancy</option>
-            <option value="contractor">Contractor &amp; Client Scope</option>
-          </select>
-        </div>
-        <span id="hr-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-        <div id="hr-guardrail-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
-        <button id="hr-check-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-          <span id="hr-btn-text">Paste a draft first</span>
-          <span id="hr-loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <span id="hr-loading-text">Checking your draft...</span>
+        <span id="rizz-error-msg" class="hidden text-sm font-medium border px-4 py-2 rounded-xl" style="color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)"></span>
+        <div id="rizz-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
+        <button id="rizz-check-btn" type="button" class="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;" disabled>
+          <span id="rizz-btn-text">Paste a DM first</span>
+          <span id="rizz-loading-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span id="rizz-loading-text">Checking your rizz...</span>
           </span>
         </button>
-        <p id="hr-status" class="text-sm text-slate-500" role="status"></p>
+        <p id="rizz-status" class="text-sm" style="color: rgba(255,255,255,0.6);" role="status"></p>
       </div>
 
-      <!-- Guardrail results -->
-      <div id="hr-guardrail-results" class="hidden space-y-5 fade-in">
-        <div id="hr-risk-card" class="p-5 rounded-2xl border">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold text-lg">Compliance Risk</h3>
-            <span id="hr-risk-badge" class="px-3 py-1 rounded-full text-xs font-bold">Medium</span>
+      <!-- Rizz results -->
+      <div id="rizz-results" class="hidden space-y-5 fade-in">
+        <div class="p-6 rounded-2xl border text-center" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">
+          <div class="rizz-score-ring mx-auto rounded-full" id="rizz-score-ring" style="--score: 0; width: 9rem; height: 9rem;padding: 0.5rem">
+            <div class="w-full rounded-full flex flex-col items-center justify-center" style="background: #1e0b3d;height: 100%">
+              <span id="rizz-score" class="font-bold text-white leading-none" style="font-size: 3rem;">0</span>
+              <span class="text-xs font-bold uppercase tracking-wider" style="color: rgba(255,255,255,0.6);">/ 100</span>
+            </div>
           </div>
-          <p class="text-sm text-slate-700 leading-relaxed">Risk level for sending this draft as written.</p>
+          <p id="rizz-label" class="mt-4 inline-block px-4 py-2 rounded-full text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Smooth</p>
         </div>
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Policy &amp; Fair Work Conflicts</p>
-          <div id="hr-conflicts-list" class="space-y-3"></div>
+        <div class="p-5 rounded-2xl border" style="background: rgba(255,46,136,0.12);border-color: rgba(255,255,255,0.1)">
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #ff7ab8;">The roast</p>
+          <p id="rizz-roast" class="text-white leading-relaxed"></p>
         </div>
-        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-          <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Biggest Trap</p>
-          <p id="hr-trap-warning" class="text-slate-800 leading-relaxed"></p>
+        <div class="p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">What it actually signals</p>
+          <p id="rizz-signal" class="text-white leading-relaxed"></p>
         </div>
         <div>
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Firm &amp; Formal Rewrite</p>
-          <div class="relative p-5 bg-slate-900 rounded-2xl text-white">
-            <p id="hr-rewrite-firm" class="whitespace-pre-wrap leading-relaxed text-base pr-16"></p>
-            <button onclick="copyText('hr-rewrite-firm', this)" class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/35 text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Smooth reply</p>
+          <div class="relative p-5 rounded-2xl" style="background: #d4ff3f; color: #160a2e;">
+            <p id="rizz-reply-smooth" class="whitespace-pre-wrap leading-relaxed text-base pr-16 font-medium"></p>
+            <button onclick="copyText('rizz-reply-smooth', this)" class="copy-btn absolute top-3 right-3 text-xs font-bold px-3 py-2.5 rounded-lg" style="background: rgba(22,10,46,0.15); color: #160a2e;">Copy</button>
           </div>
         </div>
         <div>
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Constructive &amp; Neutral Rewrite</p>
-          <div class="relative p-4 bg-white rounded-xl border border-slate-200">
-            <p id="hr-rewrite-constructive" class="whitespace-pre-wrap leading-relaxed text-sm pr-14"></p>
-            <button onclick="copyText('hr-rewrite-constructive', this)" class="copy-btn absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Funny reply</p>
+          <div class="relative p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+            <p id="rizz-reply-funny" class="whitespace-pre-wrap leading-relaxed text-base pr-16 text-white"></p>
+            <button onclick="copyText('rizz-reply-funny', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
-        <p class="text-xs text-slate-500 leading-relaxed">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
         <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          <button id="hr-new-check" type="button" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">New Check</button>
+          <button id="rizz-copy-result-btn" type="button" class="flex-1 font-bold py-4 px-6 rounded-2xl transition-all duration-200" style="background: #d4ff3f; color: #160a2e;">Copy result for TikTok</button>
+          <button id="rizz-new-check" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Check another DM</button>
         </div>
-      </div>
-    </div>
-
-    <!-- Tab 2: Contract & Policy Auditor -->
-    <div id="panel-audit" class="hidden">
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Contract &amp; Policy Auditor</h3>
-      <p class="text-sm text-slate-600 mb-4">Upload a contract or policy document, or paste its text. We cross-check it against your Company Vault documents and the National Employment Standards.</p>
-      <div class="space-y-3 mb-6">
-        <div>
-          <label for="hr-audit-file" class="block text-sm font-bold text-slate-700 mb-1">Document file <span class="font-normal text-slate-500">(optional — PDF or DOCX, 10MB max)</span></label>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input id="hr-audit-file" type="file" accept=".pdf,.docx" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-            <button id="hr-audit-file-clear-btn" type="button" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Clear file</button>
-          </div>
-          <p id="hr-audit-file-name" class="text-sm text-slate-500 mt-2"></p>
-        </div>
-        <div>
-          <label for="hr-audit-text" class="block text-sm font-bold text-slate-700 mb-1">Or paste the document text</label>
-          <textarea id="hr-audit-text" placeholder="Paste the contract or policy text here…" rows="6" maxlength="20000" class="w-full p-5 rounded-2xl border border-slate-200 focus:border-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 resize-none font-medium text-base transition-all duration-200 bg-white"></textarea>
-          <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="hr-audit-char-count">0</span><span class="text-slate-500"> / 20000</span></span></div>
-        </div>
-        <span id="hr-audit-error-msg" class="hidden text-red-600 text-sm font-medium bg-red-50 border border-red-200 px-4 py-2 rounded-xl"></span>
-        <div id="hr-audit-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
-        <button id="hr-audit-btn" type="button" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-          <span id="hr-audit-btn-text">Add a file or paste text first</span>
-          <span id="hr-audit-loading-spinner" class="hidden items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <span id="hr-audit-loading-text">Auditing your document...</span>
-          </span>
-        </button>
-        <p id="hr-audit-status" class="text-sm text-slate-500" role="status"></p>
-      </div>
-
-      <!-- Audit results -->
-      <div id="hr-audit-results" class="hidden space-y-5 fade-in">
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Missing Mandatory Clauses</p>
-          <div id="hr-audit-missing-list" class="space-y-3"></div>
-        </div>
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Contradictions With Your Existing Policy</p>
-          <div id="hr-audit-contradictions-list" class="space-y-3"></div>
-        </div>
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-          <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Suggested Clause Rewrites</p>
-          <div id="hr-audit-rewrites-list" class="space-y-3"></div>
-        </div>
-        <p class="text-xs text-slate-500 leading-relaxed">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          <button id="hr-new-audit" type="button" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200">New Audit</button>
-        </div>
+        <p id="rizz-copy-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
       </div>
     </div>
 
     <!-- Skeleton Loader -->
     <div id="skeleton" class="hidden space-y-5">
-      <div class="h-20 bg-slate-100 rounded-2xl animate-pulse"></div>
+      <div class="h-20 rounded-2xl animate-pulse" style="background: rgba(255,255,255,0.1)"></div>
       <div class="grid md:grid-cols-2 gap-4">
-        <div class="h-36 bg-slate-100 rounded-2xl animate-pulse"></div>
-        <div class="h-36 bg-slate-100 rounded-2xl animate-pulse"></div>
+        <div class="h-36 rounded-2xl animate-pulse" style="background: rgba(255,255,255,0.1)"></div>
+        <div class="h-36 rounded-2xl animate-pulse" style="background: rgba(255,255,255,0.1)"></div>
       </div>
-      <div class="h-28 bg-slate-100 rounded-2xl animate-pulse"></div>
-      <div class="h-24 bg-slate-100 rounded-2xl animate-pulse"></div>
+      <div class="h-28 rounded-2xl animate-pulse" style="background: rgba(255,255,255,0.1)"></div>
+      <div class="h-24 rounded-2xl animate-pulse" style="background: rgba(255,255,255,0.1)"></div>
     </div>
 
-    <!-- Legacy viewer: history items saved before the HR update (old
-         consumer checks) open here, from their stored text — the old
-         analyser UI is gone, so there is nowhere else to show them. -->
+    <!-- Legacy viewer: history items saved before the Rizz update (old
+         consumer checks and HR checks) open here, from their stored text
+         — their old UIs are gone, so there is nowhere else to show them. -->
     <div id="legacy-result" class="hidden space-y-5 fade-in">
-      <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Saved check from before the HR update</p>
-        <p id="legacy-result-text" class="text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
+      <div class="p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+        <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Saved check from before the Rizz update</p>
+        <p id="legacy-result-text" class="text-white leading-relaxed whitespace-pre-wrap"></p>
       </div>
-      <p id="legacy-result-best" class="hidden text-sm text-slate-600 leading-relaxed"></p>
-      <button id="legacy-result-close" type="button" class="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl transition-all duration-200">Close</button>
+      <p id="legacy-result-best" class="hidden text-sm leading-relaxed" style="color: rgba(255,255,255,0.7);"></p>
+      <button id="legacy-result-close" type="button" class="px-6 py-4 border text-white font-bold rounded-2xl transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Close</button>
     </div>
 
     <!-- Empty State -->
     <div id="empty-state" class="text-center py-16 space-y-4">
-      <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl bg-slate-900 text-white font-bold text-4xl" aria-hidden="true">B</span>
-      <h3 class="text-xl font-bold text-slate-900">Ready to check</h3>
-      <p class="text-slate-500 max-w-sm mx-auto">Upload your company policies to the Company Vault, then paste a manager&rsquo;s draft or a contract to check it against your rules and Fair Work compliance.</p>
-    </div>
-  </section>
-
-
-  <!-- Company Vault -->
-  <section id="vault-section" data-sidebar-tab="vault" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
-    <h3 class="text-lg font-bold text-slate-900 mb-2">Company Vault</h3>
-    <p class="text-sm text-slate-600 mb-4">Upload your company policies, handbooks and employment contracts. Guardrail checks and audits are measured against these documents as well as the Fair Work minimums.</p>
-    <div id="vault-onboarding" class="hidden mb-4 p-4 bg-amber-50 rounded-2xl border border-amber-200">
-      <p class="text-sm font-bold text-slate-800 mb-1">Add your first document</p>
-      <p class="text-sm text-slate-600">Upload your first company policy or employment contract so checks can be measured against your own rules — not just the Fair Work minimums.</p>
-    </div>
-    <p id="vault-guest-msg" class="hidden text-sm text-slate-600 mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">Sign in to upload company documents.</p>
-    <div class="space-y-3">
-      <div>
-        <label for="vault-file-input" class="block text-sm font-bold text-slate-700 mb-1">Choose a document <span class="font-normal text-slate-500">(PDF, DOCX or TXT — 10MB max)</span></label>
-        <input id="vault-file-input" type="file" accept=".pdf,.docx,.txt" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-        <p id="vault-selected-file" class="text-sm text-slate-500 mt-2"></p>
-      </div>
-      <div>
-        <label for="vault-doc-type" class="block text-sm font-bold text-slate-700 mb-1">Document type</label>
-        <select id="vault-doc-type" class="w-full p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-          <option value="handbook">Handbook</option>
-          <option value="contract">Contract</option>
-          <option value="policy">Policy</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div>
-        <button id="vault-upload-btn" type="button" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow disabled:opacity-50 disabled:cursor-not-allowed">Upload to vault</button>
-      </div>
-      <p id="vault-status" class="text-sm text-slate-500" role="status"></p>
-      <p class="text-xs text-slate-500 leading-relaxed">Documents are encrypted and isolated to your account to power your guardrail checks and audits.</p>
-      <div class="pt-4 border-t border-slate-200">
-        <div class="flex items-center justify-between mb-2">
-          <h4 class="text-sm font-bold text-slate-900">Your documents</h4>
-          <span id="vault-count" class="text-sm text-slate-500">0 of 10 documents</span>
-        </div>
-        <p id="vault-empty" class="text-sm text-slate-500">No documents yet. Upload your first one above.</p>
-        <div id="vault-list" class="space-y-3"></div>
-      </div>
+      <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl font-bold text-4xl" style="background: #d4ff3f; color: #160a2e;" aria-hidden="true">B</span>
+      <h3 class="text-xl font-bold text-white">Ready to check</h3>
+      <p class="max-w-sm mx-auto" style="color: rgba(255,255,255,0.7);">Paste the DM you're about to send — we'll score it, roast it, and write you two better replies.</p>
     </div>
   </section>
 
 
   <!-- Account and History -->
-  <section id="account-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
-    <h3 class="text-lg font-bold text-slate-900 mb-2">Your account</h3>
-    <p class="text-sm text-slate-600 mb-4">Sign-in is optional. Your compliance check history still works on this device without an account.</p>
-    <p id="auth-status" class="text-sm text-slate-500 mb-4">Loading sign-in…</p>
+  <section id="account-section" class="rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <h3 class="text-lg font-bold text-white mb-2">Your account</h3>
+    <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Sign-in is optional. Your rizz check history still works on this device without an account.</p>
+    <p id="auth-status" class="text-sm mb-4" style="color: rgba(255,255,255,0.6);">Loading sign-in…</p>
     <div id="auth-form" class="flex flex-col sm:flex-row gap-2">
-      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border border-slate-200 focus:border-slate-900 focus:outline-none text-sm bg-white">
-      <button id="auth-magic-btn" class="px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Email me a sign-in link</button>
-      <button id="auth-google-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Sign in with Google</button>
+      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" class="flex-1 p-3 rounded-xl border rizz-input focus:outline-none text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
+      <button id="auth-magic-btn" class="px-4 py-3 rounded-xl text-sm font-bold shadow" style="background: #d4ff3f; color: #160a2e;">Email me a sign-in link</button>
+      <button id="auth-google-btn" class="px-4 py-3 rounded-xl rizz-ghost border text-sm font-bold text-white" style="border-color: rgba(255,255,255,0.2)">Sign in with Google</button>
     </div>
-    <p class="text-xs text-slate-500 mt-3">We only use your email to sign you in. No password is stored here.</p>
-    <!-- B2B cleanup: consumer pricing removed — Early Access Pilot -->
-    <div class="mt-5 pt-4 border-t border-slate-200">
-      <h4 class="text-sm font-bold text-slate-900 mb-1">Your plan</h4>
-      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-        <p class="text-sm font-bold text-slate-900 mb-1">Early Access Pilot — Free during onboarding</p>
-        <p class="text-sm text-slate-600 mb-3">You&rsquo;re on the pilot while we onboard early teams. For team onboarding, talk to us.</p>
-        <a href="mailto:hello@beforeyousay.com" class="inline-block px-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow">Contact us for team onboarding</a>
+    <p class="text-xs mt-3" style="color: rgba(255,255,255,0.5);">We only use your email to sign you in. No password is stored here.</p>
+    <!-- Pivot 3: free plan, no prices -->
+    <div class="mt-5 pt-4 border-t" style="border-color: rgba(255,255,255,0.1)">
+      <h4 class="text-sm font-bold text-white mb-1">Your plan</h4>
+      <div class="p-4 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+        <p class="text-sm font-bold text-white mb-1">Free</p>
+        <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">5 checks a day as a guest, 10 a day when you sign in.</p>
       </div>
-      <p id="plan-line" class="text-sm text-slate-600 mt-3" role="status">Loading your checks for today…</p>
+      <p id="plan-line" class="text-sm mt-3" style="color: rgba(255,255,255,0.7);" role="status">Loading your checks for today…</p>
     </div>
     <!-- Batch 1 trust+control: export your data -->
-    <div class="mt-5 pt-4 border-t border-slate-200">
-      <h4 class="text-sm font-bold text-slate-900 mb-1">Your data</h4>
-      <p class="text-sm text-slate-600 mb-3">Download everything BeforeYouSay has for you — your Company Vault documents and your compliance check history — as one file. It is made on this device; nothing is sent anywhere.</p>
-      <button id="export-data-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400">Download my data</button>
-      <p id="export-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+    <div class="mt-5 pt-4 border-t" style="border-color: rgba(255,255,255,0.1)">
+      <h4 class="text-sm font-bold text-white mb-1">Your data</h4>
+      <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">Download everything BeforeYouSay has for you — your rizz check history — as one file. It is made on this device; nothing is sent anywhere.</p>
+      <button id="export-data-btn" class="px-4 py-3 rounded-xl rizz-ghost border text-sm font-bold text-white" style="border-color: rgba(255,255,255,0.2)">Download my data</button>
+      <p id="export-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
     </div>
     <!-- Batch 1 trust+control: delete your account -->
-    <div class="mt-5 pt-4 border-t border-slate-200">
-      <h4 class="text-sm font-bold text-slate-900 mb-1">Delete my account</h4>
-      <p id="delete-account-note" class="text-sm text-slate-600 mb-3">This deletes your Company Vault documents and compliance check history — from the cloud and from this device — and removes your sign-in account. It cannot be undone. You need to be signed in to delete an account.</p>
-      <button id="delete-account-btn" class="px-4 py-3 rounded-xl bg-white border border-red-200 text-sm font-bold text-red-600 hover:border-red-400">Delete my account</button>
-      <div id="delete-confirm-box" class="hidden mt-3 p-4 bg-red-50 rounded-2xl border border-red-200">
-        <p class="text-sm font-bold text-red-800 mb-1">Are you sure? This cannot be undone.</p>
-        <p class="text-sm text-red-700 mb-3">Type <span class="font-bold">DELETE</span> below, then confirm. Your Company Vault documents and compliance check history will be deleted from the cloud and this device, and your sign-in account will be removed.</p>
-        <input id="delete-confirm-input" type="text" maxlength="10" placeholder="Type DELETE" autocomplete="off" class="w-full p-3 rounded-xl border border-red-200 focus:border-red-400 focus:outline-none text-sm bg-white">
+    <div class="mt-5 pt-4 border-t" style="border-color: rgba(255,255,255,0.1)">
+      <h4 class="text-sm font-bold text-white mb-1">Delete my account</h4>
+      <p id="delete-account-note" class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">This deletes your rizz check history — from the cloud and from this device — and removes your sign-in account. It cannot be undone. You need to be signed in to delete an account.</p>
+      <button id="delete-account-btn" class="px-4 py-3 rounded-xl border text-sm font-bold hover:border-red-400" style="background: rgba(255,255,255,0.1); border-color: rgba(248,113,113,0.4); color: #fca5a5">Delete my account</button>
+      <div id="delete-confirm-box" class="hidden mt-3 p-4 rounded-2xl border" style="background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)">
+        <p class="text-sm font-bold mb-1" style="color: #fecaca">Are you sure? This cannot be undone.</p>
+        <p class="text-sm mb-3" style="color: rgba(254,202,202,0.8)">Type <span class="font-bold">DELETE</span> below, then confirm. Your rizz check history will be deleted from the cloud and this device, and your sign-in account will be removed.</p>
+        <input id="delete-confirm-input" type="text" maxlength="10" placeholder="Type DELETE" autocomplete="off" class="w-full p-3 rounded-xl border focus:border-red-400 focus:outline-none text-sm text-white rizz-input" style="background: rgba(0,0,0,0.3);border-color: rgba(248,113,113,0.4)">
         <div class="flex flex-col sm:flex-row gap-2 mt-3">
           <button id="delete-confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, delete everything</button>
-          <button id="delete-cancel-btn" class="px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600">Keep my account</button>
+          <button id="delete-cancel-btn" class="px-4 py-3 rounded-xl border text-sm font-bold" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8)">Keep my account</button>
         </div>
       </div>
-      <p id="delete-status" class="text-sm text-slate-500 mt-2" role="status"></p>
+      <p id="delete-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
     </div>
   </section>
 
-  <section id="history-section" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 max-w-3xl mx-auto">
+  <section id="history-section" class="rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
     <div class="flex items-center justify-between mb-2">
-      <h3 class="text-lg font-bold text-slate-900">Your history</h3>
-      <button id="clear-history-btn" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:border-red-300 hover:text-red-600">Clear all</button>
+      <h3 class="text-lg font-bold text-white">Your history</h3>
+      <button id="clear-history-btn" class="px-3 py-2.5 rounded-xl border text-xs font-bold hover:border-red-400 rizz-muted-danger" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Clear all</button>
     </div>
-    <p class="text-sm text-slate-600 mb-4"><span id="history-count">0</span> saved <span id="history-location">on this device</span>. Tap one to open it again.</p>
-    <p id="sync-status" class="text-sm text-slate-500 mb-4" role="status"></p>
-    <p id="history-empty" class="text-sm text-slate-500">No history yet. Your next analysis will appear here.</p>
+    <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);"><span id="history-count">0</span> saved <span id="history-location">on this device</span>. Tap one to open it again.</p>
+    <p id="sync-status" class="text-sm mb-4" style="color: rgba(255,255,255,0.6);" role="status"></p>
+    <p id="history-empty" class="text-sm" style="color: rgba(255,255,255,0.6);">No history yet. Your next rizz check will appear here.</p>
     <div id="history-list" class="space-y-3"></div>
   </section>
 
   <!-- How it works -->
   <section class="max-w-3xl mx-auto">
-    <h3 class="text-center text-lg font-bold text-slate-700 mb-6">How it works</h3>
+    <h3 class="text-center text-lg font-bold text-white mb-6">How it works</h3>
     <div class="grid sm:grid-cols-3 gap-4">
-      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
-        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">1</div>
-        <h4 class="font-bold mb-1">Upload your policies</h4>
-        <p class="text-sm text-slate-500">Add handbooks, contracts and policies to your Company Vault</p>
+      <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">1</div>
+        <h4 class="font-bold mb-1 text-white">Paste the DM</h4>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">The text you're about to send — up to 500 characters</p>
       </div>
-      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
-        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">2</div>
-        <h4 class="font-bold mb-1">Check before you send</h4>
-        <p class="text-sm text-slate-500">Paste a manager&rsquo;s draft or a contract — pick the scenario</p>
+      <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">2</div>
+        <h4 class="font-bold mb-1 text-white">Get your score</h4>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Your rizz score, a roast, and what it actually signals</p>
       </div>
-      <div class="bg-white rounded-2xl p-5 text-center border border-slate-200">
-        <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center">3</div>
-        <h4 class="font-bold mb-1">Get the compliant version</h4>
-        <p class="text-sm text-slate-500">Conflicts, the biggest trap, and rewrites you can send</p>
+      <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">3</div>
+        <h4 class="font-bold mb-1 text-white">Copy a better reply</h4>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Two replies — one smooth, one funny — ready to send</p>
       </div>
     </div>
   </section>
 
 </main>
 
-<footer class="text-center text-slate-500 text-sm py-10 mt-4">
-  <p class="mb-2">For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts.</p>
-  <p class="mb-2">Questions? <a href="mailto:hello@beforeyousay.com" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">hello@beforeyousay.com</a></p>
-  <p>Made for better communication · <a href="https://beforeyousay.com" class="text-slate-600 hover:text-slate-900 font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
+<footer class="text-center text-sm py-10 mt-4" style="color: rgba(255,255,255,0.6);">
+  <p class="mb-2">Made for fun — roasts are light-hearted, never mean. Don't send anything you'd regret.</p>
+  <p class="mb-2">Questions? <a href="mailto:hello@beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors">hello@beforeyousay.com</a></p>
+  <p>Made for better communication · <a href="https://beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
 <!-- BeforeYouSay config — Supabase (Sydney project beforeyousay-au) and the
      backend URL. The anon key below is safe to be public; the service-role
@@ -404,17 +291,14 @@
   const BYS_API_URL = "https://beforeyousay-backend.onrender.com/analyze";
 </script>
 <script>
-  let currentData = null;
   let requestCount = 0;
   let loadingInterval = null;
-  let activeTab = 'rewrite';
 
   const loadingMessages = [
-    'Reading your draft...',
-    'Checking your vault documents...',
-    'Checking Fair Work minimums...',
-    'Spotting the biggest trap...',
-    'Preparing compliant rewrites...',
+    'Reading your DM...',
+    'Measuring the rizz...',
+    'Writing the roast...',
+    'Cooking up better replies...',
     'Almost ready...'
   ];
 
@@ -436,13 +320,8 @@
   const GUEST_HISTORY_KEY = "beforeyousay.history.guest.v1";
   const GUEST_PROFILE_KEY = "beforeyousay.profile.guest.v1";
   const DELETED_CLOUD_IDS_KEY = "beforeyousay.history.deletedCloudIds.v1";
-  /* B2B HR Firewall V1: scenario labels + the exact disclaimer string
-     (footer AND below every AI output — copy character-for-character).
-     B2B cleanup: the old consumer lane labels are gone — old history
-     items render generically as a past check, with no lane or mode
-     wording. */
-  const HR_SCENARIO_LABELS = { performance: "Performance & Warnings", leave: "Leave & Roster Changes", termination: "Termination & Redundancy", contractor: "Contractor & Client Scope" };
-  const HR_DISCLAIMER = "For operational policy alignment only—not formal legal advice. Have qualified legal counsel review high-risk terminations or binding contracts."
+  /* Pivot 3: old history items (pre-Rizz) render generically as a
+     past check, with no lane or mode wording. */
   let cloudSyncInProgress = false;
   let cloudSyncedUserId = null;
   function isSignedIn() { return Boolean(supabaseClient && supabaseSession && supabaseSession.user); }
@@ -463,7 +342,8 @@
     rows.forEach(function (r) { byKey[(r.input || "") + "\u0000" + (r.created_at || "").slice(0, 19)] = r; });
     const merged = rows.map(function (r) {
       const isHr = r.tab === "hr-guardrail" || r.tab === "hr-audit";
-      return { id: "cloud_" + r.id, cloudId: r.id, createdAt: r.created_at, tab: r.tab, mode: r.mode, input: r.input, result: r.result || null, toneProfile: r.tone_profile || null, type: isHr ? r.tab : undefined, scenario: isHr ? (r.mode === "general" ? undefined : r.mode) : undefined };
+      const isRizz = r.tab === "rewrite" && r.mode === "rizz";
+      return { id: "cloud_" + r.id, cloudId: r.id, createdAt: r.created_at, tab: r.tab, mode: r.mode, input: r.input, result: r.result || null, toneProfile: r.tone_profile || null, type: isHr ? r.tab : (isRizz ? "rizz" : undefined), scenario: isHr ? (r.mode === "general" ? undefined : r.mode) : undefined };
     });
     const toUpload = [];
     (Array.isArray(localItems) ? localItems : []).forEach(function (it) {
@@ -477,17 +357,14 @@
     return { merged: merged.slice(0, HISTORY_MAX), toUpload: toUpload };
   }
   function historyItemToCloudRow(item, userId) {
-    /* B2B HR Firewall V1: HR checks sync through the same path. Their
-       tab is the check type and their mode is the scenario (guardrail)
-       or "general" (audit). NOTE: the shipped schema.sql still checks
-       tab in ('rewrite','reply') — if the live table still has that
-       check, this insert fails and syncHistoryItemToCloud reports
-       "cloud sync will retry" (local save is unaffected). The live
-       table needs its tab/mode checks widened for HR rows to land. */
-    if (item.type === "hr-guardrail" || item.type === "hr-audit") {
-      return { user_id: userId, tab: item.type, mode: item.scenario || "general", input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
+    /* Pivot 3: rizz checks sync through the same path. Their tab is
+       'rewrite' and their mode is 'rizz' — both already valid in the
+       live table checks (migration 002), so no migration is needed. */
+    if (item.type === "rizz") {
+      return { user_id: userId, tab: "rewrite", mode: "rizz", input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
     }
-    /* B2B cleanup: legacy consumer items are local-only now — never uploaded. */
+    /* Legacy items (old consumer checks and HR checks) are local-only
+       now — never uploaded. */
     return null;
   }
   async function syncHistoryItemToCloud(item) {
@@ -694,21 +571,26 @@
     syncHistoryItemToCloud(saved);
     return saved;
   }
-  function hrHistorySummary(it) {
-    if (it.type === "hr-guardrail") {
-      const risk = it.result && it.result.compliance_risk_level ? String(it.result.compliance_risk_level) : "—";
-      return "Risk: " + risk;
-    }
-    if (it.type === "hr-audit") {
-      const n = it.result && Array.isArray(it.result.missing_mandatory_clauses) ? it.result.missing_mandatory_clauses.length : 0;
-      return n + " missing clause" + (n === 1 ? "" : "s");
+  function rizzHistorySummary(it) {
+    if (it.type === "rizz") {
+      const score = it.result && typeof it.result.score === "number" ? it.result.score : null;
+      const label = it.result && it.result.label ? String(it.result.label) : "";
+      return score === null ? (label || "Rizz check") : score + "/100" + (label ? " — " + label : "");
     }
     return null;
   }
-  function hrHistoryLabel(it) {
-    if (it.type === "hr-guardrail") return "HR Guardrail · " + (HR_SCENARIO_LABELS[it.scenario] || "Manager check");
-    if (it.type === "hr-audit") return "HR Audit";
+  function rizzHistoryLabel(it) {
+    if (it.type === "rizz") return "Rizz Check";
     return null;
+  }
+  function rizzBestReply(it) {
+    if (it.type === "rizz" && it.result && Array.isArray(it.result.replies)) {
+      const smooth = it.result.replies.find(function (r) { return r && r.style === "smooth" && r.text; });
+      if (smooth) return smooth.text;
+      if (it.result.replies[0] && it.result.replies[0].text) return it.result.replies[0].text;
+      return "";
+    }
+    return (it.result && (it.result.better_version || it.result.softer_version)) || "";
   }
   function renderHistory() {
     const items = loadHistory();
@@ -717,18 +599,18 @@
     const list = document.getElementById("history-list");
     list.innerHTML = items.map(function (it) {
       const when = new Date(it.createdAt).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
-      const hrLabel = hrHistoryLabel(it);
-      const hrSummary = hrHistorySummary(it);
+      const rizzLabel = rizzHistoryLabel(it);
+      const rizzSummary = rizzHistorySummary(it);
       /* Old consumer items (pre-HR-update) still render from their
          stored text — never crash on a missing mode, tab or result. */
-      const best = (it.result && (it.result.better_version || it.result.softer_version)) || "";
-      const label = hrLabel || "Past check"; /* B2B cleanup: old consumer items render generically, with no lane or mode wording */
-      const summary = hrSummary || ((it.input || "").slice(0, 140) + ((it.input || "").length > 140 ? "…" : ""));
+      const best = rizzBestReply(it);
+      const label = rizzLabel || "Past check"; /* Pivot 3: old items render generically, with no lane or mode wording */
+      const summary = rizzSummary || ((it.input || "").slice(0, 140) + ((it.input || "").length > 140 ? "…" : ""));
       return '<article class="p-4 bg-white rounded-2xl border border-slate-200">'
         + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-slate-600">' + label + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
         + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml(summary) + '</p>'
         + (it.goal ? '<p class="text-xs text-slate-500 leading-relaxed mb-2">Goal: ' + escapeHtml(it.goal) + '</p>' : '')
-        + (!hrLabel && best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
+        + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
         + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
         + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Open</button>'
         + '<button data-history-copy="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Copy best</button>'
@@ -746,8 +628,7 @@
       const it = loadHistory().find(function (x) { return x.id === copyBtn.getAttribute("data-history-copy"); });
       let text = "";
       if (it && it.result) {
-        if (it.type === "hr-guardrail") text = (it.result.rewrites && it.result.rewrites.firm_formal) || "";
-        else if (it.type === "hr-audit") text = (it.result.suggested_clause_rewrites && it.result.suggested_clause_rewrites[0] && it.result.suggested_clause_rewrites[0].rewrite) || "";
+        if (it.type === "rizz") text = rizzBestReply(it);
         else text = it.result.better_version || it.result.softer_version || "";
       }
       if (text) navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000); });
@@ -784,19 +665,10 @@
     const it = loadHistory().find(function (x) { return x.id === id; });
     if (!it || !it.result) return;
     currentHistoryId = id;
-    if (it.type === "hr-guardrail") {
-      setB2bTab("guardrail");
-      const draftEl = document.getElementById("hr-draft");
-      if (draftEl) { draftEl.value = it.input || ""; updateCharCounter("hr-draft", "hr-draft-char-count"); updateHrCheckButton(); }
-      const scEl = document.getElementById("hr-scenario");
-      if (scEl && it.scenario) scEl.value = it.scenario;
-      displayHrGuardrail(it.result);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-    if (it.type === "hr-audit") {
-      setB2bTab("audit");
-      displayHrAudit(it.result);
+    if (it.type === "rizz") {
+      const textEl = document.getElementById("rizz-text");
+      if (textEl) { textEl.value = it.input || ""; updateCharCounter("rizz-text", "rizz-text-char-count"); updateRizzCheckButton(); }
+      displayRizz(it.result);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -815,15 +687,15 @@
   }
 
 
-  /* ---------- B2B cleanup: consumer pricing removed ----------
-     "Your plan" is now the Early Access Pilot box (free during
-     onboarding) — no prices and no in-app purchase or cancel controls. The
-     daily check limits still apply (guests 5/day, signed-in 10/day,
-     Pro unlimited — the plan is read from the profiles row for the
-     limit only; the backend enforces the signed-in limit server-side).
-     Existing Pro users keep unlimited checks; with no in-app cancel
-     button, cancellation and refunds go through hello@beforeyousay.com
-     (the backend /cancel-subscription endpoint is untouched). */
+  /* ---------- Pivot 3: free plan ----------
+     "Your plan" is the Free box — no prices and no in-app purchase
+     or cancel controls. The daily check limits still apply (guests
+     5/day, signed-in 10/day, Pro unlimited — the plan is read from
+     the profiles row for the limit only; the backend enforces the
+     signed-in limit server-side). Existing Pro users keep unlimited
+     checks; with no in-app cancel button, cancellation and refunds
+     go through hello@beforeyousay.com (the backend
+     /cancel-subscription endpoint is untouched). */
   const FREE_GUEST_DAILY_LIMIT = 5;
   const FREE_SIGNED_IN_DAILY_LIMIT = 10;
   let userPlan = "free"; /* "free" | "pro" — limit only, never shown as a plan name */
@@ -873,24 +745,22 @@
        session right before the call and uses that token. If the lookup
        itself fails, it falls back to the saved token and carries on —
        a refresh failure must never block the user.
-     - HR and vault calls had no timeout and no retry: one network blip,
+     - Rizz calls had no timeout and no retry: one network blip,
        or the free Render instance waking up slowly, showed the
        "check your connection" error at once. `fetchBackendWithRetry`
        gives them a 45-second timeout and ONE automatic retry, only on
        a network failure or timeout. HTTP errors are NOT retried: the
        server already answered, so the user should see the real error.
-     - HR calls wait 90 seconds instead of 45: the AI answer takes
-       longer than a vault call. And a retry of a Turnstile-protected
+     - Rizz calls wait 90 seconds instead of 45: the AI answer takes,
+       longer than a plain fetch. And a retry of a Turnstile-protected,
        call first resets the human-check widget and waits for a FRESH
        single-use token — resending the spent token is rejected by
        Cloudflare as a duplicate, which used to surface as a failed
        human check after a dropped connection (22 Nov 2026 phone
-       test: two Guardrail attempts failed exactly that way). If no
+       test failed exactly that way). If no
        fresh token appears within 10 seconds, the retry is abandoned
        and the user taps again with the reset widget. */
   const BACKEND_TIMEOUT_MS = 45000;
-  const HR_TIMEOUT_MS = 90000;
-  var HR_TOKEN_WAIT_MS = 10000;
   async function freshAuthHeaders() {
     try {
       if (supabaseClient) {
@@ -928,7 +798,7 @@
   /* ---------- Batch 1 trust+control: export my data + delete my account ---------- */
   /* Export: the file is built on this device from the data already here —
      profile (loadProfile), history (loadHistory, ratings ride inside each
-     item's result), contexts (loadContexts) and vault documents (vaultDocs).
+     item's result) and contexts (loadContexts).
      Signed in or not, the
      same file is made; signed in, it holds the cloud copy (which is also
      what is on this device after a sync). No backend call, no new table.
@@ -951,10 +821,6 @@
       profile: loadProfile(),
       history: loadHistory(),
       contexts: loadContexts(),
-      /* B2B cleanup: the export now also lists the Company Vault
-         documents (file name, type, date — metadata only), so the
-         "Your data" copy above is true. */
-      vaultDocuments: (typeof vaultDocs !== "undefined" && Array.isArray(vaultDocs) ? vaultDocs : []).map(function (d) { return { file_name: d.file_name, doc_type: d.doc_type, created_at: d.created_at }; })
     };
   }
   function exportFileName() {
@@ -969,7 +835,7 @@
       a.href = url; a.download = exportFileName(); document.body.appendChild(a); a.click();
       a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
       const who = isSignedIn() ? "Your cloud data" : "Your data on this device";
-      document.getElementById("export-status").textContent = who + " downloaded as " + exportFileName() + " (" + data.history.length + " compliance check" + (data.history.length === 1 ? "" : "s") + ", " + data.vaultDocuments.length + " vault document" + (data.vaultDocuments.length === 1 ? "" : "s") + ").";
+      document.getElementById("export-status").textContent = who + " downloaded as " + exportFileName() + " (" + data.history.length + " rizz check" + (data.history.length === 1 ? "" : "s") + ").";
       return true;
     } catch (e) {
       document.getElementById("export-status").textContent = "Couldn't make the download on this device. Please try again.";
@@ -979,7 +845,7 @@
   function deleteAccountUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/delete-account"; }
   function deleteConfirmValid(value) { return String(value || "").trim() === "DELETE"; }
   function clearAllLocalData() {
-    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, LAST_VISIT_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
+    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
   }
   async function deleteMyAccount() {
     const statusEl = document.getElementById("delete-status");
@@ -996,7 +862,8 @@
         supabaseClient.from("history").delete().eq("user_id", userId),
         supabaseClient.from("contexts").delete().eq("user_id", userId),
         supabaseClient.from("profiles").delete().eq("id", userId),
-        /* B2B cleanup: the delete copy promises Vault documents go too. */
+        /* Pivot 3: the delete also removes any old company-policy rows
+           still in the cloud. */
         supabaseClient.from("company_policies").delete().eq("user_id", userId)
       ]);
       cloudRowsDeleted = results.every(function (r) { return !r.error; });
@@ -1019,9 +886,9 @@
     document.getElementById("delete-confirm-box").classList.add("hidden");
     document.getElementById("delete-confirm-input").value = "";
     if (backendResult && backendResult.deleted) {
-      statusEl.textContent = "Your account is deleted — your Company Vault documents and compliance check history are gone from the cloud and this device.";
+      statusEl.textContent = "Your account is deleted — your rizz check history is gone from the cloud and this device.";
     } else if (cloudRowsDeleted) {
-      statusEl.textContent = "Your Company Vault documents and compliance check history were deleted and you are signed out. Your sign-in account itself could not be removed automatically yet — it holds no data now, and it will be removed once the server is set up (see the note in Your account). You can sign in again with the same email and start fresh.";
+      statusEl.textContent = "Your rizz check history was deleted and you are signed out. Your sign-in account itself could not be removed automatically yet — it holds no data now, and it will be removed once the server is set up (see the note in Your account). You can sign in again with the same email and start fresh.";
     } else {
       statusEl.textContent = "You are signed out and everything on this device is cleared. Your cloud data could not be deleted just now — please try deleting again after signing back in, or contact us and we will remove it.";
     }
@@ -1042,7 +909,7 @@
   document.getElementById("delete-confirm-btn").addEventListener("click", async function () {
     const value = document.getElementById("delete-confirm-input").value;
     if (!deleteConfirmValid(value)) { document.getElementById("delete-status").textContent = "Please type DELETE exactly, in capitals, to confirm."; return; }
-    if (!confirm("This really is the last step — your Company Vault documents, compliance check history and sign-in account will all be deleted and cannot be brought back. Delete everything?")) return;
+    if (!confirm("This really is the last step — your rizz check history and sign-in account will all be deleted and cannot be brought back. Delete everything?")) return;
     document.getElementById("delete-confirm-btn").disabled = true;
     try { await deleteMyAccount(); } finally { document.getElementById("delete-confirm-btn").disabled = false; }
   });
@@ -1057,7 +924,6 @@
     document.getElementById("auth-signout-btn").classList.toggle("hidden", !signedIn);
     document.getElementById("auth-form").classList.toggle("hidden", signedIn);
     if (signedIn) setAuthStatus("Signed in as " + (supabaseSession.user.email || "your account") + ".");
-    refreshVaultAuth(); /* B2B HR Firewall V1: sign-in state gates the vault uploader */
   }
   /* Batch 6 polish: a failed sign-in used to land back here with the
      reason hidden in the address bar (?error=...) and the page just
@@ -1085,7 +951,7 @@
   }
   async function initAuth() {
     updateAuthUI();
-    if (!authConfigured()) { setAuthStatus("Sign-in isn't set up yet. Your compliance check history still works on this device."); return; }
+    if (!authConfigured()) { setAuthStatus("Sign-in isn't set up yet. Your rizz check history still works on this device."); return; }
     try {
       await loadSupabaseScript();
       supabaseClient = window.supabase.createClient(BYS_CONFIG.supabaseUrl, BYS_CONFIG.supabaseAnonKey);
@@ -1099,9 +965,9 @@
         if (!session && wasSignedIn) { restoreGuestData(); }
       });
       updateAuthUI();
-      setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your compliance check history across devices.");
+      setAuthStatus(supabaseSession ? "Signed in." : "Sign in with email or Google to keep your rizz check history across devices.");
       showAuthCallbackError();
-    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your compliance check history still works on this device."); showAuthCallbackError(); }
+    } catch (e) { setAuthStatus("Sign-in couldn't load right now. Your rizz check history still works on this device."); showAuthCallbackError(); }
   }
   function getAuthHeaders() {
     const h = { "Content-Type": "application/json" };
@@ -1112,7 +978,7 @@
   document.getElementById("auth-magic-btn").addEventListener("click", async function () {
     const email = document.getElementById("auth-email").value.trim();
     if (!email) { setAuthStatus("Please enter your email first."); return; }
-    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your compliance check history still works on this device."); return; }
+    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your rizz check history still works on this device."); return; }
     setAuthStatus("Sending your sign-in link…");
     const res = await supabaseClient.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.origin } });
     setAuthStatus(res.error ? ("Couldn't send the link: " + res.error.message) : "Check your email — tap the sign-in link to finish.");
@@ -1122,7 +988,7 @@
      answers with an error here, and we say so plainly instead of doing
      nothing — the old code awaited the call and ignored its result. */
   document.getElementById("auth-google-btn").addEventListener("click", async function () {
-    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your compliance check history still works on this device."); return; }
+    if (!authConfigured() || !supabaseClient) { setAuthStatus("Sign-in isn't set up yet — see the setup guide. Your rizz check history still works on this device."); return; }
     setAuthStatus("Opening Google sign-in…");
     const res = await supabaseClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
     if (res.error) setAuthStatus("Google sign-in didn't work (" + res.error.message + ") — please try again, or use email for now.");
@@ -1162,42 +1028,6 @@
      error into a confusing "network error". */
   async function safeJson(response) { try { return await response.json(); } catch (e) { return {}; } }
 
-  /* B2B HR Firewall V1: one Turnstile widget per B2B tab (fix-pass
-     lesson — render when the tab is first shown; never depend on a
-     hidden tab's widget). The guardrail panel is visible by default,
-     so Turnstile auto-renders its widget on load; the audit widget
-     is rendered here the first time the Audit tab opens. */
-  var b2bTab = "guardrail";
-  var hrAuditTurnstileRendered = false;
-  function hrTurnstileWidget(tab) {
-    return document.getElementById(tab === "audit" ? "hr-audit-turnstile" : "hr-guardrail-turnstile");
-  }
-  function turnstileReady(tab) {
-    const widget = hrTurnstileWidget(tab);
-    return Boolean(widget && widget.querySelector("iframe"));
-  }
-  function ensureHrTurnstile(tab) {
-    if (tab !== "audit" || hrAuditTurnstileRendered) return;
-    if (!window.turnstile || typeof window.turnstile.render !== "function") return;
-    const el = document.getElementById("hr-audit-turnstile");
-    if (!el || el.querySelector("iframe")) { hrAuditTurnstileRendered = true; return; }
-    try { window.turnstile.render(el, { sitekey: el.getAttribute("data-sitekey") }); hrAuditTurnstileRendered = true; } catch (e) { /* the handlers below still show the refresh message */ }
-  }
-  function setB2bTab(which) {
-    if (which !== "guardrail" && which !== "audit") return;
-    b2bTab = which;
-    document.querySelectorAll(".b2b-tab-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.b2bTab === which); });
-    const g = document.getElementById("panel-guardrail");
-    const a = document.getElementById("panel-audit");
-    if (g) g.classList.toggle("hidden", which !== "guardrail");
-    if (a) a.classList.toggle("hidden", which !== "audit");
-    if (which === "audit") ensureHrTurnstile("audit");
-  }
-  document.querySelectorAll(".b2b-tab-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () { setB2bTab(btn.dataset.b2bTab); });
-  });
-
-
   // Copy text
   function copyText(id, btn) {
     const text = document.getElementById(id).textContent;
@@ -1208,376 +1038,235 @@
     });
   }
 
-  /* ---------- B2B HR Firewall V1: guardrail, auditor, vault ----------
-     HR results save through the existing history-save path (addHistory:
-     local first, cloud for signed-in users), so the signed-in daily
-     limit counts them. Item shape: { type: 'hr-guardrail' | 'hr-audit',
-     scenario?, created_at, result }. The old consumer analyser,
-     old consumer analyser, thread engine and extension prefill are gone — see the
-     contract (API_CONTRACT.md). No new external scripts. */
-  const HR_MAX_DRAFT = 5000;
-  const HR_MAX_AUDIT_TEXT = 20000;
-  const HR_MAX_FILE_BYTES = 10 * 1024 * 1024;
-  const VAULT_MAX_DOCS = 10;
-  const VAULT_MIME_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
-  const HR_RISK_STYLES = {
-    low: { badge: "bg-emerald-100 text-emerald-800", card: "bg-emerald-50 border-emerald-200", text: "Low Risk" },
-    medium: { badge: "bg-amber-100 text-amber-800", card: "bg-amber-50 border-amber-200", text: "Medium Risk" },
-    high: { badge: "bg-red-100 text-red-800", card: "bg-red-50 border-red-200", text: "High Risk" }
-  };
-  var vaultDocs = [];
-  var selectedJurisdiction = "australia";
-  var hrAuditFile = null; /* { name, mime, dataBase64 } — audit file only, never stored */
+  /* ---------- Rizz Check ---------- */
+  const RIZZ_MAX_CHARS = 500;
+  const RIZZ_TIMEOUT_MS = 90000;
+  var RIZZ_TOKEN_WAIT_MS = 10000;
 
-  function hrApiBase() { return BYS_API_URL.replace(/\/analyze$/, ""); }
-  function hrFriendlyError(status, data) {
-    const serverMsg = data && typeof data.error === "string" && data.error ? data.error : "";
-    if (status === 401) return "Sign in to continue — your session may have expired. Sign in again below and try once more.";
-    if (status === 403) return "The human check didn't pass — please tick the verification box and try again.";
-    if (status === 409 || status === 413) return serverMsg || "That file can't be used — check the size and try again.";
-    if (status === 429) return serverMsg || limitMessageFor(isSignedIn());
-    if (status === 503) return serverMsg || "The check is unavailable right now — please try again in a moment.";
-    return serverMsg || "Something went wrong — please try again.";
-  }
-  /* Turnstile tokens are single-use: once the server has verified one,
-     Cloudflare rejects it as a duplicate. A retry that resends the same
-     token therefore comes back 403 ("human check didn't pass") even when
-     the first attempt only failed on the network. Before retrying an HR
-     call, reset the widget and wait for a fresh token, then resend with
-     that token. If no fresh token appears within HR_TOKEN_WAIT_MS, give
-     up the retry — the widget is already reset, so the next tap starts
-     fresh. */
-  async function freshHrToken(tab) {
-    if (window.turnstile) { try { window.turnstile.reset(); } catch (e) { /* keep the old token */ } }
-    const deadline = Date.now() + HR_TOKEN_WAIT_MS;
-    while (Date.now() < deadline) {
-      const token = hrTurnstileToken(tab);
-      if (token) return token;
-      await new Promise(function (r) { setTimeout(r, 250); });
+  function rizzApiBase() {
+    if (typeof BYS_API_URL === "string" && BYS_API_URL.indexOf("/analyze") !== -1) {
+      return BYS_API_URL.slice(0, BYS_API_URL.lastIndexOf("/analyze"));
     }
-    return "";
+    return "https://beforeyousay-backend.onrender.com";
   }
-  async function postHr(path, payload, tab) {
-    const opts = { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify(payload) };
-    return fetchBackendWithRetry(hrApiBase() + path, opts, function () {
-      const st = document.getElementById(path === "/hr-audit" ? "hr-audit-status" : "hr-status");
-      if (st) st.textContent = "Connection dropped — trying again…";
-    }, {
-      timeoutMs: HR_TIMEOUT_MS,
-      beforeRetry: async function () {
-        const fresh = await freshHrToken(tab);
-        if (!fresh) return false;
-        opts.body = JSON.stringify(Object.assign({}, payload, { turnstileToken: fresh }));
-        return true;
-      },
-    });
+
+  function rizzFriendlyError(error, status) {
+    if (status === 429) return "That's your free checks for today — sign in for more tomorrow, or come back tomorrow.";
+    if (status === 403) return "The human check didn't pass — please tick the verification box and try again.";
+    if (status === 400) return (error && error.error) || "That didn't look like a DM — paste your text and try again.";
+    if (status === 500) return "Something broke on our side — please try again in a moment.";
+    if (error && /timeout|timed out|network|fetch failed|failed to fetch/i.test(error.message || "")) return "Connection dropped — please check your connection and try again.";
+    return (error && error.error) || "Something went wrong — please try again.";
   }
-  function hrTurnstileToken(tab) {
-    const widget = document.getElementById(tab === "audit" ? "hr-audit-turnstile" : "hr-guardrail-turnstile");
+
+  function rizzTurnstileToken() {
+    /* Same pattern the B2B tabs used: the widget drops a hidden input
+       named cf-turnstile-response into its host div. Read it from the
+       DOM — no widget ID is captured for the auto-rendered widget, so
+       turnstile.getResponse() is not used. */
+    const widget = document.getElementById("rizz-turnstile");
     const input = widget ? widget.querySelector('[name="cf-turnstile-response"]') : null;
     return input ? input.value : "";
   }
-  function fileToBase64(file) {
-    return new Promise(function (resolve, reject) {
-      const reader = new FileReader();
-      reader.onload = function () { const s = String(reader.result || ""); resolve(s.indexOf(",") >= 0 ? s.slice(s.indexOf(",") + 1) : s); };
-      reader.onerror = function () { reject(new Error("read failed")); };
-      reader.readAsDataURL(file);
+
+  /* Turnstile tokens are single-use: a retry after a dropped connection
+     must reset the widget and wait for a FRESH token, never resend the
+     spent one (the 22 Nov 2026 phone test failed exactly that way). */
+  function freshRizzToken() {
+    /* Reset the widget (clears the spent token), then poll the DOM
+       input for a fresh one, up to RIZZ_TOKEN_WAIT_MS. Returns the
+       fresh token, or null if none appears (an interactive challenge
+       the user must tick). */
+    if (window.turnstile && typeof window.turnstile.reset === "function") {
+      try { window.turnstile.reset(); } catch (e) { /* keep the old token */ }
+    }
+    return new Promise(function (resolve) {
+      const started = Date.now();
+      function check() {
+        const token = rizzTurnstileToken();
+        if (token) { resolve(token); return; }
+        if (Date.now() - started > RIZZ_TOKEN_WAIT_MS) { resolve(null); return; }
+        setTimeout(check, 250);
+      }
+      check();
     });
   }
-  function updateHrCheckButton() {
-    const btn = document.getElementById("hr-check-btn"); const txt = document.getElementById("hr-btn-text");
-    if (!btn || !txt) return;
-    const ready = document.getElementById("hr-draft").value.trim().length > 0;
-    btn.disabled = !ready;
-    txt.textContent = ready ? "Check this draft" : "Paste a draft first";
-  }
-  function updateHrAuditButton() {
-    const btn = document.getElementById("hr-audit-btn"); const txt = document.getElementById("hr-audit-btn-text");
-    if (!btn || !txt) return;
-    const hasText = document.getElementById("hr-audit-text").value.trim().length > 0;
-    const ready = Boolean(hrAuditFile) || hasText;
-    btn.disabled = !ready;
-    txt.textContent = ready ? "Audit this document" : "Add a file or paste text first";
-  }
 
-  /* ---------- Pre-Send Manager Guardrail ---------- */
-  function displayHrGuardrail(data) {
-    const level = String((data && data.compliance_risk_level) || "Medium").toLowerCase();
-    const style = HR_RISK_STYLES[level] || HR_RISK_STYLES.medium;
-    const card = document.getElementById("hr-risk-card");
-    if (card) card.className = "p-5 rounded-2xl border " + style.card;
-    const badge = document.getElementById("hr-risk-badge");
-    if (badge) { badge.textContent = style.text; badge.className = "px-3 py-1 rounded-full text-xs font-bold " + style.badge; }
-    const conflicts = (data && Array.isArray(data.policy_and_fair_work_conflicts)) ? data.policy_and_fair_work_conflicts : [];
-    const list = document.getElementById("hr-conflicts-list");
-    if (list) {
-      list.innerHTML = conflicts.length ? conflicts.map(function (c) {
-        const sourceLabel = c.source === "company_policy" ? "Company policy" : (c.source === "fair_work_nes" ? "Fair Work — NES" : (c.source === "fair_work_act" ? "Fair Work Act" : String(c.source || "")));
-        return '<div class="p-4 bg-white rounded-xl border border-slate-200">'
-          + '<p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.clause || "") + '</p>'
-          + (sourceLabel ? '<p class="text-xs font-bold text-slate-500 uppercase tracking-wide mt-1">' + escapeHtml(sourceLabel) + '</p>' : '')
-          + '<p class="text-sm text-slate-600 leading-relaxed mt-1">' + escapeHtml(c.detail || "") + '</p></div>';
-      }).join("") : '<p class="text-sm text-slate-600">No conflicts found — nothing in this draft clashes with your vault documents or the Fair Work minimums.</p>';
-    }
-    const trap = document.getElementById("hr-trap-warning");
-    if (trap) trap.textContent = (data && data.legal_hr_trap_warning) || "No single biggest trap stood out in this draft.";
-    const rw = (data && data.rewrites) || {};
-    const firm = document.getElementById("hr-rewrite-firm"); if (firm) firm.textContent = rw.firm_formal || "—";
-    const cons = document.getElementById("hr-rewrite-constructive"); if (cons) cons.textContent = rw.constructive_neutral || "—";
-    document.getElementById("hr-guardrail-results").classList.remove("hidden");
-    document.getElementById("empty-state").classList.add("hidden");
-    document.getElementById("hr-guardrail-results").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-  document.getElementById("hr-draft").addEventListener("input", function () { updateCharCounter("hr-draft", "hr-draft-char-count"); updateHrCheckButton(); });
-  document.getElementById("hr-check-btn").addEventListener("click", async function () {
-    const draft = document.getElementById("hr-draft").value.trim().slice(0, HR_MAX_DRAFT);
-    const scenario = document.getElementById("hr-scenario").value;
-    if (!draft) return;
-    const token = hrTurnstileToken("guardrail");
-    if (!token) { showError(turnstileReady("guardrail") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", "hr-error-msg"); return; }
-    if (!canCheckToday()) { showError(limitMessageFor(isSignedIn()), "hr-error-msg"); return; }
-    const btn = document.getElementById("hr-check-btn"); const btnText = document.getElementById("hr-btn-text");
-    const spinner = document.getElementById("hr-loading-spinner"); const status = document.getElementById("hr-status");
-    btn.disabled = true; btnText.classList.add("hidden"); spinner.classList.remove("hidden"); spinner.classList.add("inline-flex");
-    document.getElementById("skeleton").classList.remove("hidden");
-    document.getElementById("hr-guardrail-results").classList.add("hidden");
-    document.getElementById("empty-state").classList.add("hidden");
-    startLoadingMessages("hr-loading-text");
-    try {
-      const response = await postHr("/hr-guardrail", { draft: draft, scenario: scenario, jurisdiction: "australia", turnstileToken: token }, "guardrail");
-      const data = await safeJson(response);
-      if (response.ok) {
-        const savedHistory = addHistory({ type: "hr-guardrail", scenario: scenario, input: draft, result: data });
-        currentHistoryId = savedHistory.id;
-        displayHrGuardrail(data);
-        requestCount++; document.getElementById("request-count").textContent = requestCount;
-        if (status) status.textContent = "";
-      } else {
-        showError(hrFriendlyError(response.status, data), "hr-error-msg");
-        document.getElementById("empty-state").classList.remove("hidden");
+  function postRizz(payload) {
+    const opts = { method: "POST", headers: Object.assign({ "Content-Type": "application/json" }, freshAuthHeaders()), body: JSON.stringify(payload) };
+    return fetchBackendWithRetry(rizzApiBase() + "/rizz", opts, function () {
+      const s = document.getElementById("rizz-status");
+      if (s) s.textContent = "Connection dropped — trying again…";
+    }, {
+      timeoutMs: RIZZ_TIMEOUT_MS,
+      beforeRetry: function () {
+        return freshRizzToken().then(function (freshToken) {
+          if (!freshToken) return false;
+          const body = { text: payload.text, turnstileToken: freshToken };
+          opts.body = JSON.stringify(body);
+          opts.headers = Object.assign({}, opts.headers, freshAuthHeaders());
+          return true;
+        });
       }
-    } catch (error) {
-      showError(error && error.name === "AbortError" ? "That check timed out — your draft is still here, please try again." : "Network error — your draft is still here, please try again.", "hr-error-msg");
-      document.getElementById("empty-state").classList.remove("hidden");
-    } finally {
-      btn.disabled = false; btnText.classList.remove("hidden"); spinner.classList.add("hidden"); spinner.classList.remove("inline-flex");
-      btnText.textContent = "Check this draft";
-      document.getElementById("skeleton").classList.add("hidden"); stopLoadingMessages();
-      updateHrCheckButton();
-      if (window.turnstile) window.turnstile.reset();
+    });
+  }
+
+  function displayRizz(data) {
+    if (!data) return;
+    const score = typeof data.score === "number" ? Math.max(0, Math.min(100, Math.round(data.score))) : 0;
+    const ring = document.getElementById("rizz-score-ring");
+    if (ring) ring.style.setProperty("--score", String(score));
+    document.getElementById("rizz-score").textContent = String(score);
+    document.getElementById("rizz-label").textContent = data.label || "";
+    document.getElementById("rizz-roast").textContent = data.roast || "";
+    document.getElementById("rizz-signal").textContent = data.signal || "";
+    const replies = Array.isArray(data.replies) ? data.replies : [];
+    const smooth = replies.find(function (r) { return r && r.style === "smooth"; });
+    const funny = replies.find(function (r) { return r && r.style === "funny"; });
+    document.getElementById("rizz-reply-smooth").textContent = (smooth && smooth.text) || (replies[0] && replies[0].text) || "";
+    document.getElementById("rizz-reply-funny").textContent = (funny && funny.text) || (replies[1] && replies[1].text) || "";
+    document.getElementById("rizz-results").classList.remove("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    document.getElementById("skeleton").classList.add("hidden");
+    document.getElementById("legacy-result").classList.add("hidden");
+    document.getElementById("rizz-results").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function rizzShareText(data) {
+    if (!data) return "";
+    const best = rizzBestReply({ type: "rizz", result: data });
+    return "My rizz score: " + data.score + "/100 — " + (data.label || "") + "\nBetter reply: " + best + "\nChecked on BeforeYouSay";
+  }
+
+  function updateRizzCheckButton() {
+    const btn = document.getElementById("rizz-check-btn");
+    const txt = document.getElementById("rizz-btn-text");
+    const spin = document.getElementById("rizz-loading-spinner");
+    if (!btn || !txt) return;
+    if (spin) spin.classList.add("hidden");
+    const len = (document.getElementById("rizz-text") || { value: "" }).value.trim().length;
+    if (btn.dataset.busy === "1") return;
+    if (len === 0) {
+      btn.disabled = true;
+      txt.textContent = "Paste a DM first";
+      return;
     }
-  });
-  document.getElementById("hr-new-check").addEventListener("click", function () {
-    document.getElementById("hr-draft").value = ""; updateCharCounter("hr-draft", "hr-draft-char-count");
-    document.getElementById("hr-guardrail-results").classList.add("hidden");
-    document.getElementById("empty-state").classList.remove("hidden");
-    updateHrCheckButton();
-    if (window.turnstile) window.turnstile.reset();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!canCheckToday()) {
+      btn.disabled = true;
+      txt.textContent = "Daily limit reached";
+      return;
+    }
+    btn.disabled = false;
+    txt.textContent = "Check my rizz";
+  }
+
+  function rizzStartLoading() {
+    const btn = document.getElementById("rizz-check-btn");
+    const txt = document.getElementById("rizz-btn-text");
+    const spin = document.getElementById("rizz-loading-spinner");
+    if (btn) { btn.dataset.busy = "1"; btn.disabled = true; }
+    if (txt) txt.classList.add("hidden");
+    if (spin) { spin.classList.remove("hidden"); spin.classList.add("inline-flex"); }
+    startLoadingMessages("rizz-loading-text");
+    const status = document.getElementById("rizz-status");
+    if (status) status.textContent = "Checking your rizz...";
+  }
+  function rizzStopLoading() {
+    const btn = document.getElementById("rizz-check-btn");
+    const txt = document.getElementById("rizz-btn-text");
+    const spin = document.getElementById("rizz-loading-spinner");
+    if (btn) btn.dataset.busy = "";
+    if (txt) txt.classList.remove("hidden");
+    if (spin) { spin.classList.add("hidden"); spin.classList.remove("inline-flex"); }
+    updateRizzCheckButton();
+  }
+
+  document.getElementById("rizz-text").addEventListener("input", function () {
+    updateCharCounter("rizz-text", "rizz-text-char-count");
+    updateRizzCheckButton();
   });
 
-  /* ---------- Contract & Policy Auditor ---------- */
-  function displayHrAudit(data) {
-    const missing = (data && Array.isArray(data.missing_mandatory_clauses)) ? data.missing_mandatory_clauses : [];
-    const ml = document.getElementById("hr-audit-missing-list");
-    if (ml) ml.innerHTML = missing.length ? missing.map(function (m) { return '<p class="text-sm text-slate-700 leading-relaxed p-3 bg-white rounded-xl border border-slate-200">' + escapeHtml(m) + '</p>'; }).join("") : '<p class="text-sm text-slate-600">No missing mandatory clauses found.</p>';
-    const contradictions = (data && Array.isArray(data.contradictions_with_existing_policy)) ? data.contradictions_with_existing_policy : [];
-    const cl = document.getElementById("hr-audit-contradictions-list");
-    if (cl) cl.innerHTML = contradictions.length ? contradictions.map(function (c) {
-      return '<div class="p-4 bg-white rounded-xl border border-slate-200"><p class="font-bold text-slate-800 text-sm">' + escapeHtml(c.clause || "") + '</p>'
-        + (c.vault_source ? '<p class="text-xs font-bold text-slate-500 uppercase tracking-wide mt-1">Vault: ' + escapeHtml(c.vault_source) + '</p>' : '')
-        + '<p class="text-sm text-slate-600 leading-relaxed mt-1">' + escapeHtml(c.detail || "") + '</p></div>';
-    }).join("") : '<p class="text-sm text-slate-600">No contradictions with your existing policy found.</p>';
-    const rewrites = (data && Array.isArray(data.suggested_clause_rewrites)) ? data.suggested_clause_rewrites : [];
-    const rl = document.getElementById("hr-audit-rewrites-list");
-    if (rl) rl.innerHTML = rewrites.length ? rewrites.map(function (r) {
-      return '<div class="p-4 bg-white rounded-xl border border-slate-200"><p class="text-sm text-slate-600 leading-relaxed"><span class="font-bold text-slate-800">Original: </span>' + escapeHtml(r.original || "") + '</p>'
-        + '<p class="text-sm text-slate-800 leading-relaxed mt-1"><span class="font-bold">Rewrite: </span>' + escapeHtml(r.rewrite || "") + '</p>'
-        + (r.reason ? '<p class="text-sm text-slate-500 leading-relaxed mt-1">' + escapeHtml(r.reason) + '</p>' : '') + '</div>';
-    }).join("") : '<p class="text-sm text-slate-600">No rewrites suggested.</p>';
-    document.getElementById("hr-audit-results").classList.remove("hidden");
+  document.getElementById("rizz-check-btn").addEventListener("click", function () {
+    const textEl = document.getElementById("rizz-text");
+    const text = (textEl.value || "").trim();
+    if (text.length === 0) { showError("Paste a DM or text to check first.", "rizz-error-msg"); return; }
+    if (text.length > RIZZ_MAX_CHARS) { showError("Keep it under " + RIZZ_MAX_CHARS + " characters — paste the message, not the whole chat.", "rizz-error-msg"); return; }
+    if (!canCheckToday()) { showError("That's your free checks for today — sign in for more tomorrow, or come back tomorrow.", "rizz-error-msg"); return; }
+    const token = rizzTurnstileToken();
+    if (!token) { showError("Please tick the human-check box first.", "rizz-error-msg"); return; }
+    const resultsEl = document.getElementById("rizz-results");
+    const skeleton = document.getElementById("skeleton");
+    const errEl = document.getElementById("rizz-error-msg");
+    if (errEl) errEl.classList.add("hidden");
+    if (resultsEl) resultsEl.classList.add("hidden");
+    if (skeleton) skeleton.classList.remove("hidden");
     document.getElementById("empty-state").classList.add("hidden");
-    document.getElementById("hr-audit-results").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-  document.getElementById("hr-audit-text").addEventListener("input", function () { updateCharCounter("hr-audit-text", "hr-audit-char-count"); updateHrAuditButton(); });
-  document.getElementById("hr-audit-file").addEventListener("change", async function (e) {
-    const file = e.target.files && e.target.files[0];
-    const nameEl = document.getElementById("hr-audit-file-name");
-    hrAuditFile = null;
-    if (!file) { if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
-    const lower = (file.name || "").toLowerCase();
-    const mime = lower.endsWith(".pdf") ? "application/pdf" : (lower.endsWith(".docx") ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "");
-    if (!mime) { showError("Please upload a PDF or DOCX file.", "hr-audit-error-msg"); e.target.value = ""; if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
-    if (file.size > HR_MAX_FILE_BYTES) { showError("That file is too large — 10MB max per document.", "hr-audit-error-msg"); e.target.value = ""; if (nameEl) nameEl.textContent = ""; updateHrAuditButton(); return; }
-    try {
-      const dataBase64 = await fileToBase64(file);
-      hrAuditFile = { name: file.name, mime: mime, dataBase64: dataBase64 };
-      if (nameEl) nameEl.textContent = "Selected: " + file.name;
-    } catch (err) { showError("That file could not be read — please try a different file.", "hr-audit-error-msg"); e.target.value = ""; }
-    updateHrAuditButton();
-  });
-  document.getElementById("hr-audit-file-clear-btn").addEventListener("click", function () {
-    hrAuditFile = null;
-    const input = document.getElementById("hr-audit-file"); if (input) input.value = "";
-    const nameEl = document.getElementById("hr-audit-file-name"); if (nameEl) nameEl.textContent = "";
-    updateHrAuditButton();
-  });
-  document.getElementById("hr-audit-btn").addEventListener("click", async function () {
-    const text = document.getElementById("hr-audit-text").value.trim().slice(0, HR_MAX_AUDIT_TEXT);
-    if (!hrAuditFile && !text) return;
-    const token = hrTurnstileToken("audit");
-    if (!token) { showError(turnstileReady("audit") ? "Please complete the verification first." : "The human check didn't load — please refresh the page and try again.", "hr-audit-error-msg"); return; }
-    if (!canCheckToday()) { showError(limitMessageFor(isSignedIn()), "hr-audit-error-msg"); return; }
-    const btn = document.getElementById("hr-audit-btn"); const btnText = document.getElementById("hr-audit-btn-text");
-    const spinner = document.getElementById("hr-audit-loading-spinner"); const status = document.getElementById("hr-audit-status");
-    btn.disabled = true; btnText.classList.add("hidden"); spinner.classList.remove("hidden"); spinner.classList.add("inline-flex");
-    document.getElementById("skeleton").classList.remove("hidden");
-    document.getElementById("hr-audit-results").classList.add("hidden");
-    document.getElementById("empty-state").classList.add("hidden");
-    startLoadingMessages("hr-audit-loading-text");
-    try {
-      const payload = hrAuditFile
-        ? { file: { file_name: hrAuditFile.name, mime: hrAuditFile.mime, data_base64: hrAuditFile.dataBase64 }, turnstileToken: token }
-        : { document_text: text, turnstileToken: token };
-      const response = await postHr("/hr-audit", payload, "audit");
-      const data = await safeJson(response);
-      if (response.ok) {
-        const input = hrAuditFile ? ("Audited file: " + hrAuditFile.name) : text;
-        const savedHistory = addHistory({ type: "hr-audit", input: input, result: data });
-        currentHistoryId = savedHistory.id;
-        displayHrAudit(data);
-        requestCount++; document.getElementById("request-count").textContent = requestCount;
-        if (status) status.textContent = "";
-      } else {
-        showError(hrFriendlyError(response.status, data), "hr-audit-error-msg");
-        document.getElementById("empty-state").classList.remove("hidden");
+    document.getElementById("legacy-result").classList.add("hidden");
+    rizzStartLoading();
+    const payload = { text: text, turnstileToken: token };
+    postRizz(payload).then(function (resp) {
+      rizzStopLoading();
+      if (!resp) { showError("Connection dropped — please check your connection and try again.", "rizz-error-msg"); return; }
+      if (!resp.ok) {
+        return resp.json().catch(function () { return {}; }).then(function (errBody) {
+          showError(rizzFriendlyError(errBody, resp.status), "rizz-error-msg");
+        });
       }
-    } catch (error) {
-      showError(error && error.name === "AbortError" ? "That audit timed out — your document is still here, please try again." : "Network error — your document is still here, please try again.", "hr-audit-error-msg");
-      document.getElementById("empty-state").classList.remove("hidden");
-    } finally {
-      btn.disabled = false; btnText.classList.remove("hidden"); spinner.classList.add("hidden"); spinner.classList.remove("inline-flex");
-      btnText.textContent = "Audit this document";
-      document.getElementById("skeleton").classList.add("hidden"); stopLoadingMessages();
-      updateHrAuditButton();
-      if (window.turnstile) window.turnstile.reset();
-    }
-  });
-  document.getElementById("hr-new-audit").addEventListener("click", function () {
-    hrAuditFile = null;
-    const input = document.getElementById("hr-audit-file"); if (input) input.value = "";
-    const nameEl = document.getElementById("hr-audit-file-name"); if (nameEl) nameEl.textContent = "";
-    document.getElementById("hr-audit-text").value = ""; updateCharCounter("hr-audit-text", "hr-audit-char-count");
-    document.getElementById("hr-audit-results").classList.add("hidden");
-    document.getElementById("empty-state").classList.remove("hidden");
-    updateHrAuditButton();
-    if (window.turnstile) window.turnstile.reset();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  /* ---------- Company Vault ---------- */
-  function vaultMimeFor(file) {
-    if (file.type && VAULT_MIME_TYPES.indexOf(file.type) !== -1) return file.type;
-    const name = (file.name || "").toLowerCase();
-    if (name.endsWith(".pdf")) return "application/pdf";
-    if (name.endsWith(".docx")) return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    if (name.endsWith(".txt")) return "text/plain";
-    return "";
-  }
-  function setVaultStatus(msg) { const el = document.getElementById("vault-status"); if (el) el.textContent = msg || ""; }
-  function renderVaultList() {
-    const docs = Array.isArray(vaultDocs) ? vaultDocs : [];
-    const count = document.getElementById("vault-count");
-    if (count) count.textContent = docs.length + " of 10 documents";
-    const empty = document.getElementById("vault-empty");
-    if (empty) empty.classList.toggle("hidden", docs.length > 0);
-    const list = document.getElementById("vault-list");
-    if (list) {
-      list.innerHTML = docs.map(function (d) {
-        const when = d.created_at ? new Date(d.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) : "";
-        const typeLabel = { handbook: "Handbook", contract: "Contract", policy: "Policy", other: "Other" }[d.doc_type] || d.doc_type || "";
-        return '<article class="p-4 bg-white rounded-2xl border border-slate-200"><div class="flex items-center justify-between gap-2"><div><p class="font-bold text-slate-800 text-sm">' + escapeHtml(d.file_name) + '</p><p class="text-xs text-slate-500">' + escapeHtml(typeLabel) + (when ? " · " + escapeHtml(when) : "") + '</p></div><button type="button" data-vault-delete="' + escapeHtml(d.id) + '" class="px-3 py-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Delete</button></div></article>';
-      }).join("");
-    }
-    const banner = document.getElementById("vault-onboarding");
-    if (banner) banner.classList.toggle("hidden", !(isSignedIn() && docs.length === 0));
-  }
-  function refreshVaultAuth() {
-    const signedIn = isSignedIn();
-    const guestMsg = document.getElementById("vault-guest-msg");
-    if (guestMsg) guestMsg.classList.toggle("hidden", signedIn);
-    ["vault-file-input", "vault-doc-type", "vault-upload-btn"].forEach(function (id) { const el = document.getElementById(id); if (el) el.disabled = !signedIn; });
-    if (signedIn) { loadVault(); } else { vaultDocs = []; renderVaultList(); }
-  }
-  async function loadVault() {
-    try {
-      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/list", { headers: await freshAuthHeaders() }, function () { setVaultStatus("Connection dropped — trying again…"); });
-      const data = await safeJson(res);
-      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); vaultDocs = []; renderVaultList(); return; }
-      vaultDocs = Array.isArray(data.documents) ? data.documents : [];
-      setVaultStatus("");
-      renderVaultList();
-    } catch (e) { setVaultStatus("Your vault couldn't load right now — please try again."); }
-  }
-  document.getElementById("vault-upload-btn").addEventListener("click", async function () {
-    if (!isSignedIn()) { setVaultStatus("Sign in to upload company documents."); return; }
-    const input = document.getElementById("vault-file-input");
-    const file = input && input.files && input.files[0];
-    if (!file) { setVaultStatus("Choose a file first — PDF, DOCX or TXT, 10MB max."); return; }
-    const mime = vaultMimeFor(file);
-    if (!mime) { setVaultStatus("Please upload a PDF, DOCX or TXT file."); return; }
-    if (file.size > HR_MAX_FILE_BYTES) { setVaultStatus("That file is too large — 10MB max per document."); return; }
-    if (vaultDocs.length >= VAULT_MAX_DOCS) { setVaultStatus("Your Company Vault is full (10 documents max)."); return; }
-    const docType = document.getElementById("vault-doc-type").value || "other";
-    const btn = document.getElementById("vault-upload-btn");
-    btn.disabled = true; setVaultStatus("Uploading…");
-    try {
-      const dataBase64 = await fileToBase64(file);
-      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/upload", { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify({ file_name: file.name, doc_type: docType, mime: mime, data_base64: dataBase64 }) }, function () { setVaultStatus("Connection dropped — trying again…"); });
-      const data = await safeJson(res);
-      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); return; }
-      input.value = "";
-      const sel = document.getElementById("vault-selected-file"); if (sel) sel.textContent = "";
-      await loadVault(); /* reload first: loadVault clears the status line on success */
-      setVaultStatus("Uploaded — " + (data.file_name || file.name) + " is now in your vault.");
-    } catch (e) { setVaultStatus("Upload couldn't finish — please check your connection and try again."); }
-    finally { btn.disabled = !isSignedIn(); }
-  });
-  document.getElementById("vault-file-input").addEventListener("change", function (e) {
-    const file = e.target.files && e.target.files[0];
-    const sel = document.getElementById("vault-selected-file");
-    if (sel) sel.textContent = file ? ("Selected: " + file.name) : "";
-  });
-  document.getElementById("vault-list").addEventListener("click", async function (e) {
-    const btn = e.target.closest("[data-vault-delete]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-vault-delete");
-    btn.disabled = true;
-    try {
-      const res = await fetchBackendWithRetry(hrApiBase() + "/vault/delete", { method: "POST", headers: await freshAuthHeaders(), body: JSON.stringify({ id: id }) }, function () { setVaultStatus("Connection dropped — trying again…"); });
-      const data = await safeJson(res);
-      if (!res.ok) { setVaultStatus(hrFriendlyError(res.status, data)); return; }
-      await loadVault();
-      setVaultStatus("Deleted.");
-    } catch (err) { setVaultStatus("Delete couldn't finish — please try again."); }
-  });
-
-  /* ---------- Jurisdiction + legacy viewer ---------- */
-  document.querySelectorAll("[data-jurisdiction]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      if (b.disabled) return;
-      selectedJurisdiction = b.getAttribute("data-jurisdiction");
-      document.querySelectorAll("[data-jurisdiction]").forEach(function (x) { x.classList.toggle("active", x === b); });
+      return resp.json().then(function (data) {
+        const saved = addHistory({ type: "rizz", input: text, result: data });
+        currentHistoryId = saved.id;
+        displayRizz(data);
+      });
+    }).catch(function (err) {
+      rizzStopLoading();
+      showError(rizzFriendlyError(err), "rizz-error-msg");
     });
   });
+
+  document.getElementById("rizz-copy-result-btn").addEventListener("click", function () {
+    const it = getCurrentHistoryItem();
+    if (!it || !it.result) {
+      const s = document.getElementById("rizz-copy-status");
+      if (s) s.textContent = "Nothing to copy yet — check a DM first.";
+      return;
+    }
+    const text = rizzShareText(it.result);
+    copyPlainText(text, function (ok) {
+      const s = document.getElementById("rizz-copy-status");
+      if (s) s.textContent = ok ? "Copied — paste it as your TikTok caption." : "Copy failed — select and copy it yourself.";
+    });
+  });
+
+  document.getElementById("rizz-new-check").addEventListener("click", function () {
+    document.getElementById("rizz-results").classList.add("hidden");
+    document.getElementById("rizz-text").value = "";
+    updateCharCounter("rizz-text", "rizz-text-char-count");
+    updateRizzCheckButton();
+    document.getElementById("rizz-text").focus();
+    document.getElementById("empty-state").classList.remove("hidden");
+  });
+
+  function copyPlainText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ }
+      document.body.removeChild(ta);
+      done(ok);
+    }
+  }
+
+  /* ---------- Legacy viewer ---------- */
   document.getElementById("legacy-result-close").addEventListener("click", function () {
     document.getElementById("legacy-result").classList.add("hidden");
     document.getElementById("empty-state").classList.remove("hidden");
   });
-  updateHrCheckButton();
-  updateHrAuditButton();
-  refreshVaultAuth();
+  updateRizzCheckButton();
 
 
   document.getElementById('empty-state').classList.remove('hidden');
