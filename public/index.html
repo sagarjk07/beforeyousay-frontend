@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>BeforeYouSay — Rizz Check: rate your DM before you send it</title>
-  <meta name="description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — smooth and funny — before you hit send.">
-  <meta name="keywords" content="rizz check, rizz score, DM checker, texting, Gen Z, roast my text, better replies">
+  <title>BeforeYouSay — Texting Coach: check any text before you send it</title>
+  <meta name="description" content="Paste a DM or a screenshot and get your score, a gentle roast, and three better replies — smooth, funny and chill — before you hit send.">
+  <meta name="keywords" content="rizz check, rizz score, DM checker, texting coach, what do i say back, first text, sorry text, left on read, screenshot check, Gen Z, roast my text, better replies">
   <link rel="canonical" href="https://beforeyousay.com/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="BeforeYouSay — Rizz Check">
-  <meta property="og:description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — before you hit send.">
+  <meta property="og:title" content="BeforeYouSay — Texting Coach">
+  <meta property="og:description" content="Paste a DM or a screenshot and get your score, a gentle roast, and three better replies — before you hit send.">
   <meta property="og:url" content="https://beforeyousay.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BeforeYouSay — Rizz Check">
-  <meta name="twitter:description" content="Paste your DM and get your rizz score, a playful roast, and two better replies — before you hit send.">
+  <meta name="twitter:title" content="BeforeYouSay — Texting Coach">
+  <meta name="twitter:description" content="Paste a DM or a screenshot and get your score, a gentle roast, and three better replies — before you hit send.">
   <meta name="twitter:image" content="https://beforeyousay.com/og-image.jpg">
 
   <!-- Favicon -->
@@ -55,6 +55,13 @@
     .rizz-muted-danger:hover { color: #fca5a5; }
     .rizz-link-hover:hover { color: #fff; }
     .copy-btn:active { transform: scale(0.95); }
+    .mode-btn { padding: 0.5rem 0.9rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff; font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .mode-btn.active { background: #d4ff3f; color: #160a2e; border-color: #d4ff3f; }
+    .tab-btn { flex: 1; padding: 0.75rem 1rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: #d4ff3f; color: #160a2e; border-color: #d4ff3f; }
+    .shot-dropzone { border: 2px dashed rgba(255,255,255,0.3); border-radius: 1rem; padding: 2rem 1rem; text-align: center; cursor: pointer; }
+    .shot-dropzone.drag { border-color: #d4ff3f; background: rgba(212,255,63,0.08); }
+    .shot-preview { max-width: 100%; max-height: 320px; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.2); }
   </style>
 </head>
 <body class="min-h-screen rizz-body text-white">
@@ -67,11 +74,12 @@
         <span class="flex items-center justify-center w-10 h-10 rounded-xl font-bold text-lg leading-none" style="background: #d4ff3f; color: #160a2e;" aria-hidden="true">B</span>
         <div>
           <h1 class="text-xl font-bold text-white">BeforeYouSay</h1>
-          <p class="text-xs font-medium hidden sm:block" style="color: #d4ff3f;">Rizz Check</p>
+          <p class="text-xs font-medium hidden sm:block" style="color: #d4ff3f;">Texting Coach</p>
         </div>
       </div>
       <div class="flex items-center space-x-4">
         <div class="text-sm" style="color: rgba(255,255,255,0.7)">
+          <span id="streak-display" class="font-bold" style="color: #d4ff3f;"></span>
           <span id="request-count" class="font-bold text-white">0</span>
           <span class="hidden sm:inline"> checks today</span>
         </div>
@@ -89,29 +97,48 @@
 
   <!-- Hero -->
   <section class="text-center space-y-4">
-    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+    <h2 id="hero-title" class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
       Check your <span class="rizz-hero-word">rizz</span> before you send it.
     </h2>
-    <p class="text-lg sm:text-xl max-w-lg mx-auto leading-relaxed" style="color: rgba(255,255,255,0.75);">
-      Paste the DM. Get your rizz score, a roast, and two better replies — in seconds.
+    <p id="hero-sub" class="text-lg sm:text-xl max-w-lg mx-auto leading-relaxed" style="color: rgba(255,255,255,0.75);">
+      Paste the DM. Get your rizz score, a roast, and three better replies — in seconds.
     </p>
+    <p id="daily-tip" class="text-sm max-w-lg mx-auto" style="color: rgba(255,255,255,0.7);"></p>
   </section>
 
   <!-- App Card -->
   <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
-    <!-- Rizz Check -->
+    <!-- Evolve 2027: two tabs — paste a text, or check a screenshot. One
+         Turnstile widget, shared by both tabs: it lives outside the
+         panels so it stays visible whichever tab is open. -->
+    <div class="flex gap-2 mb-6">
+      <button id="tab-btn-text" type="button" class="tab-btn active">Paste text</button>
+      <button id="tab-btn-shot" type="button" class="tab-btn">Screenshot</button>
+    </div>
+
+    <!-- Text check: five modes, one shared input + results layout -->
     <div id="panel-rizz">
-      <h3 class="text-lg font-bold text-white mb-1">Rizz Check</h3>
-      <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Paste the DM or text you're about to send. We score the rizz, roast it (gently), and write you two better replies.</p>
+      <div id="mode-picker" class="flex flex-wrap gap-2 mb-4">
+        <button type="button" data-mode="rizz" class="mode-btn active">Rizz Check</button>
+        <button type="button" data-mode="reply" class="mode-btn">What do I say back?</button>
+        <button type="button" data-mode="opener" class="mode-btn">First text</button>
+        <button type="button" data-mode="apology" class="mode-btn">Sorry text</button>
+        <button type="button" data-mode="dry" class="mode-btn">Left on read?</button>
+      </div>
+      <h3 id="mode-title" class="text-lg font-bold text-white mb-1">Rizz Check</h3>
+      <p id="mode-intro" class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Paste the DM or text you're about to send. We score the rizz, roast it (gently), and write you three better replies.</p>
       <div class="space-y-3 mb-6">
         <div>
-          <label for="rizz-text" class="block text-sm font-bold text-white mb-1">Your DM</label>
+          <label id="rizz-text-label" for="rizz-text" class="block text-sm font-bold text-white mb-1">Your DM</label>
           <textarea id="rizz-text" placeholder="Paste the text here… e.g. hey, what are you up to" rows="4" maxlength="500" class="w-full p-5 rounded-2xl border rizz-input focus:outline-none focus:ring-4 resize-none font-medium text-base transition-all duration-200 text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
           <div class="flex justify-end px-1"><span class="text-sm font-medium"><span id="rizz-text-char-count">0</span><span style="color: rgba(255,255,255,0.5);"> / 500</span></span></div>
         </div>
+        <div>
+          <label for="style-sample" class="block text-sm font-bold text-white mb-1">How I usually text (optional)</label>
+          <input id="style-sample" type="text" maxlength="280" placeholder="lowercase, short, lots of lol" class="w-full p-3 rounded-xl border rizz-input focus:outline-none text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
+        </div>
         <span id="rizz-error-msg" class="hidden text-sm font-medium border px-4 py-2 rounded-xl" style="color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)"></span>
-        <div id="rizz-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
         <button id="rizz-check-btn" type="button" class="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;" disabled>
           <span id="rizz-btn-text">Paste a DM first</span>
           <span id="rizz-loading-spinner" class="hidden items-center justify-center gap-2">
@@ -121,6 +148,35 @@
         </button>
         <p id="rizz-status" class="text-sm" style="color: rgba(255,255,255,0.6);" role="status"></p>
       </div>
+    </div>
+
+    <!-- Screenshot check: paste, drag-and-drop, or pick a file -->
+    <div id="panel-shot" class="hidden">
+      <h3 class="text-lg font-bold text-white mb-1">Screenshot check</h3>
+      <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Screenshot the conversation, drop it here, and we'll read the vibe and write your next reply. The screenshot is read once and never stored.</p>
+      <div class="space-y-3 mb-6">
+        <div id="shot-dropzone" class="shot-dropzone" tabindex="0" role="button" aria-label="Upload a screenshot">
+          <p class="text-white font-bold mb-1">Drop your screenshot here, paste it, or tap to pick one</p>
+          <p class="text-sm" style="color: rgba(255,255,255,0.6);">JPEG, PNG or WebP, up to 2MB</p>
+          <input id="shot-file" type="file" accept="image/jpeg,image/png,image/webp" class="hidden">
+        </div>
+        <div id="shot-preview-wrap" class="hidden">
+          <img id="shot-preview" class="shot-preview" alt="Your screenshot preview">
+          <div class="flex items-center justify-between gap-2 mt-2">
+            <p id="shot-file-info" class="text-sm" style="color: rgba(255,255,255,0.7);"></p>
+            <button id="shot-remove-btn" type="button" class="px-3 py-2.5 rounded-xl border text-xs font-bold rizz-muted-danger" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Remove</button>
+          </div>
+        </div>
+        <span id="shot-error-msg" class="hidden text-sm font-medium border px-4 py-2 rounded-xl" style="color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)"></span>
+        <button id="shot-check-btn" type="button" class="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;" disabled>
+          <span id="shot-btn-text">Add a screenshot first</span>
+        </button>
+        <p id="shot-status" class="text-sm" style="color: rgba(255,255,255,0.6);" role="status"></p>
+      </div>
+    </div>
+
+    <!-- One human-check widget, shared by both tabs -->
+    <div id="rizz-turnstile" class="cf-turnstile mb-6" data-sitekey="0x4AAAAAADM82alADrxujKpE"></div>
 
       <!-- Rizz results -->
       <div id="rizz-results" class="hidden space-y-5 fade-in">
@@ -134,12 +190,16 @@
           <p id="rizz-label" class="mt-4 inline-block px-4 py-2 rounded-full text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Smooth</p>
         </div>
         <div class="p-5 rounded-2xl border" style="background: rgba(255,46,136,0.12);border-color: rgba(255,255,255,0.1)">
-          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #ff7ab8;">The roast</p>
+          <p id="rizz-roast-heading" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #ff7ab8;">The roast</p>
           <p id="rizz-roast" class="text-white leading-relaxed"></p>
         </div>
         <div class="p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
           <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">What it actually signals</p>
           <p id="rizz-signal" class="text-white leading-relaxed"></p>
+        </div>
+        <div class="p-5 rounded-2xl border" style="background: rgba(212,255,63,0.1);border-color: rgba(255,255,255,0.1)">
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #d4ff3f;">Next time</p>
+          <p id="rizz-tip" class="text-white leading-relaxed"></p>
         </div>
         <div>
           <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Smooth reply</p>
@@ -155,13 +215,22 @@
             <button onclick="copyText('rizz-reply-funny', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Chill reply</p>
+          <div class="relative p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+            <p id="rizz-reply-chill" class="whitespace-pre-wrap leading-relaxed text-base pr-16 text-white"></p>
+            <button onclick="copyText('rizz-reply-chill', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
+          </div>
+        </div>
         <div class="flex flex-col sm:flex-row gap-3 pt-2">
           <button id="rizz-copy-result-btn" type="button" class="flex-1 font-bold py-4 px-6 rounded-2xl transition-all duration-200" style="background: #d4ff3f; color: #160a2e;">Copy result for TikTok</button>
+          <button id="rizz-save-image-btn" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Save as image</button>
           <button id="rizz-new-check" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Check another DM</button>
         </div>
         <p id="rizz-copy-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+        <p id="rizz-share-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+        <p class="text-sm text-center" style="color: rgba(255,255,255,0.6);">AI helps you find the words. You send them.</p>
       </div>
-    </div>
 
     <!-- Skeleton Loader -->
     <div id="skeleton" class="hidden space-y-5">
@@ -190,7 +259,7 @@
     <div id="empty-state" class="text-center py-16 space-y-4">
       <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl font-bold text-4xl" style="background: #d4ff3f; color: #160a2e;" aria-hidden="true">B</span>
       <h3 class="text-xl font-bold text-white">Ready to check</h3>
-      <p class="max-w-sm mx-auto" style="color: rgba(255,255,255,0.7);">Paste the DM you're about to send — we'll score it, roast it, and write you two better replies.</p>
+      <p class="max-w-sm mx-auto" style="color: rgba(255,255,255,0.7);">Paste the DM you're about to send — we'll score it, roast it, and write you three better replies.</p>
     </div>
   </section>
 
@@ -258,7 +327,7 @@
       <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">1</div>
         <h4 class="font-bold mb-1 text-white">Paste the DM</h4>
-        <p class="text-sm" style="color: rgba(255,255,255,0.7);">The text you're about to send — up to 500 characters</p>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">The text you're about to send — or a screenshot of the chat</p>
       </div>
       <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">2</div>
@@ -268,7 +337,7 @@
       <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">3</div>
         <h4 class="font-bold mb-1 text-white">Copy a better reply</h4>
-        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Two replies — one smooth, one funny — ready to send</p>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Three replies — smooth, funny and chill — ready to send</p>
       </div>
     </div>
   </section>
@@ -277,6 +346,7 @@
 
 <footer class="text-center text-sm py-10 mt-4" style="color: rgba(255,255,255,0.6);">
   <p class="mb-2">Made for fun — roasts are light-hearted, never mean. Don't send anything you'd regret.</p>
+  <p class="mb-2">AI helps you find the words. You send them.</p>
   <p class="mb-2">Questions? <a href="mailto:hello@beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors">hello@beforeyousay.com</a></p>
   <p>Made for better communication · <a href="https://beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
@@ -579,8 +649,15 @@
     }
     return null;
   }
+  /* Evolve 2027: history items carry their true mode locally only
+     (the cloud row is always tab 'rewrite', mode 'rizz' — see
+     historyItemToCloudRow). The label shown is the mode's name. */
+  const HISTORY_MODE_LABELS = { rizz: "Rizz Check", reply: "What do I say back?", opener: "First text", apology: "Sorry text", dry: "Left on read?", shot: "Screenshot check" };
   function rizzHistoryLabel(it) {
-    if (it.type === "rizz") return "Rizz Check";
+    if (it.type === "rizz") {
+      if (it.mode && HISTORY_MODE_LABELS[it.mode]) return HISTORY_MODE_LABELS[it.mode];
+      return "Rizz Check";
+    }
     return null;
   }
   function rizzBestReply(it) {
@@ -666,6 +743,19 @@
     if (!it || !it.result) return;
     currentHistoryId = id;
     if (it.type === "rizz") {
+      if (it.mode === "shot") {
+        /* A screenshot check has no text to refill — the image itself
+           is never stored — so show the saved results on the
+           screenshot tab with a plain note. */
+        switchCheckTab("shot");
+        displayRizz(it.result);
+        const s = document.getElementById("shot-status");
+        if (s) s.textContent = "Saved screenshot check — the image itself isn't stored, but here are the results.";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      setMode(it.mode && RIZZ_MODE_UI[it.mode] ? it.mode : "rizz");
+      switchCheckTab("text");
       const textEl = document.getElementById("rizz-text");
       if (textEl) { textEl.value = it.input || ""; updateCharCounter("rizz-text", "rizz-text-char-count"); updateRizzCheckButton(); }
       displayRizz(it.result);
@@ -845,7 +935,7 @@
   function deleteAccountUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/delete-account"; }
   function deleteConfirmValid(value) { return String(value || "").trim() === "DELETE"; }
   function clearAllLocalData() {
-    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
+    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, STYLE_SAMPLE_KEY, STREAK_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
   }
   async function deleteMyAccount() {
     const statusEl = document.getElementById("delete-status");
@@ -1043,6 +1133,336 @@
   const RIZZ_TIMEOUT_MS = 90000;
   var RIZZ_TOKEN_WAIT_MS = 10000;
 
+  /* ---------- Evolve 2027: five text-check modes ----------
+     Modes are UI config only: the hero, the input label and
+     placeholder, the button text and the roast heading all come
+     from RIZZ_MODE_UI. The backend mode is the same key. */
+  const RIZZ_MODE_UI = {
+    rizz: { label: "Rizz Check", hero: 'Check your <span class="rizz-hero-word">rizz</span> before you send it.', sub: "Paste the DM. Get your rizz score, a roast, and three better replies — in seconds.", title: "Rizz Check", intro: "Paste the DM or text you're about to send. We score the rizz, roast it (gently), and write you three better replies.", inputLabel: "Your DM", placeholder: "Paste the text here… e.g. hey, what are you up to", emptyBtn: "Paste a DM first", goBtn: "Check my rizz", roastHeading: "The roast" },
+    reply: { label: "What do I say back?", hero: 'What do I <span class="rizz-hero-word">say back?</span>', sub: "Paste their last message. Find out what it means — and get three replies that land.", title: "What do I say back?", intro: "Paste THEIR last message. We read what it means and write you three replies — smooth, funny, and chill.", inputLabel: "Their last message", placeholder: "Paste their message here… e.g. haha yeah I guess so", emptyBtn: "Paste their message first", goBtn: "What do I say back?", roastHeading: "What it means" },
+    opener: { label: "First text", hero: 'First text? <span class="rizz-hero-word">Make it land.</span>', sub: "Paste your draft opener. Get its strength score and three better openers.", title: "First text", intro: "Paste the opener you're about to send to someone new. We score it and write three better ones.", inputLabel: "Your draft opener", placeholder: "Paste your opener here… e.g. hey, I liked your post about…", emptyBtn: "Paste an opener first", goBtn: "Check my opener", roastHeading: "The roast" },
+    apology: { label: "Sorry text", hero: 'Say sorry. <span class="rizz-hero-word">Mean it.</span>', sub: "Paste your draft apology. Get its sincerity score and three better versions.", title: "Sorry text", intro: "Paste the apology you're about to send. We score how sincere it lands and write three better versions — genuine, short, warm.", inputLabel: "Your draft apology", placeholder: "Paste your apology here… e.g. I'm sorry about yesterday, I…", emptyBtn: "Paste an apology first", goBtn: "Check my apology", roastHeading: "Where it falls short" },
+    dry: { label: "Left on read?", hero: 'Left on read? <span class="rizz-hero-word">Rescue it.</span>', sub: "Paste the message that got left on read. Get its dryness score and three rescue replies.", title: "Left on read?", intro: "Paste your last message — the one that got left on read. We score how dry it reads and write three rescue replies.", inputLabel: "Your last message", placeholder: "Paste the message that got left on read…", emptyBtn: "Paste the message first", goBtn: "Rescue it", roastHeading: "The roast" },
+  };
+  const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry"];
+  let currentMode = "rizz";
+  function setMode(mode) {
+    if (!RIZZ_MODE_UI[mode]) mode = "rizz";
+    currentMode = mode;
+    const ui = RIZZ_MODE_UI[mode];
+    const hero = document.getElementById("hero-title");
+    if (hero) hero.innerHTML = ui.hero;
+    const sub = document.getElementById("hero-sub");
+    if (sub) sub.textContent = ui.sub;
+    const title = document.getElementById("mode-title");
+    if (title) title.textContent = ui.title;
+    const intro = document.getElementById("mode-intro");
+    if (intro) intro.textContent = ui.intro;
+    const label = document.getElementById("rizz-text-label");
+    if (label) label.textContent = ui.inputLabel;
+    const textEl = document.getElementById("rizz-text");
+    if (textEl) textEl.placeholder = ui.placeholder;
+    const heading = document.getElementById("rizz-roast-heading");
+    if (heading) heading.textContent = ui.roastHeading;
+    document.querySelectorAll("#mode-picker [data-mode]").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-mode") === mode);
+    });
+    updateRizzCheckButton();
+  }
+
+  /* ---------- Evolve 2027: "Sound like me" ----------
+     An optional style sample ("how I usually text") saved on this
+     device and sent with every check so the replies sound like the
+     user, not like a generic AI. */
+  const STYLE_SAMPLE_KEY = "beforeyousay.styleSample.v1";
+  const STYLE_SAMPLE_MAX = 280;
+  function getStyleSample() {
+    try { return (localStorage.getItem(STYLE_SAMPLE_KEY) || "").trim().slice(0, STYLE_SAMPLE_MAX); } catch (e) { return ""; }
+  }
+  function saveStyleSample(v) {
+    try { localStorage.setItem(STYLE_SAMPLE_KEY, String(v || "").slice(0, STYLE_SAMPLE_MAX)); } catch (e) { /* storage unavailable */ }
+  }
+
+  /* ---------- Evolve 2027: daily streak + daily tip ----------
+     Streak is local only: +1 per calendar day with at least one
+     completed check. computeStreak(stored, today) is pure, so the
+     day-boundary logic is testable without touching storage. */
+  const STREAK_KEY = "beforeyousay.streak.v1";
+  function loadStreak() {
+    try {
+      const s = JSON.parse(localStorage.getItem(STREAK_KEY) || "null");
+      if (s && typeof s.count === "number" && typeof s.lastDay === "string") return s;
+    } catch (e) { /* ignore */ }
+    return { count: 0, lastDay: "" };
+  }
+  function computeStreak(stored, today) {
+    const day = localDayKey(today);
+    if (!stored || !stored.lastDay) return { count: 1, lastDay: day };
+    if (stored.lastDay === day) return { count: stored.count, lastDay: day };
+    const y = new Date(today.getTime());
+    y.setDate(y.getDate() - 1);
+    if (stored.lastDay === localDayKey(y)) return { count: stored.count + 1, lastDay: day };
+    return { count: 1, lastDay: day };
+  }
+  function renderStreak() {
+    const el = document.getElementById("streak-display");
+    if (!el) return;
+    const s = loadStreak();
+    el.textContent = s.count > 0 ? s.count + "-day streak" : "";
+  }
+  function recordStreakDay() {
+    try {
+      const next = computeStreak(loadStreak(), new Date());
+      localStorage.setItem(STREAK_KEY, JSON.stringify(next));
+      renderStreak();
+      return next;
+    } catch (e) { return null; }
+  }
+  const DAILY_TIPS = [
+    "Reply to the last thing they said, not the whole conversation.",
+    "One question beats three statements — it gives them something to answer.",
+    "If you reread your text twice and still like it, send it.",
+    "Specific beats smooth: name something real about them.",
+    "Short texts get read. Long texts get left on read.",
+    "Match their energy, then add one small thing of your own.",
+    "Never send a text you would not say out loud.",
+    "A \"hey\" with a question is ten times better than a \"hey\" alone.",
+    "If the chat is dying, change the subject — do not repeat the dead thread.",
+    "Apologise once, properly, then stop. Repeating it makes it about you.",
+    "Wait for the reply before sending a second text. Double texts read as nervous.",
+    "Compliment something they chose, not something they were born with.",
+    "End with a plan, not a question mark — \"coffee Saturday?\" beats \"we should hang out sometime\".",
+    "If you are angry, write the text, wait ten minutes, then decide if you still mean it.",
+  ];
+  function dayOfYear(d) {
+    const start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  }
+  function dailyTipFor(d) {
+    const list = DAILY_TIPS;
+    const i = ((dayOfYear(d) % list.length) + list.length) % list.length;
+    return list[i];
+  }
+  function renderDailyTip() {
+    const el = document.getElementById("daily-tip");
+    if (el) el.textContent = "Tip of the day: " + dailyTipFor(new Date());
+  }
+
+  /* ---------- Evolve 2027: Paste text / Screenshot tabs ---------- */
+  let currentTab = "text";
+  function switchCheckTab(tab) {
+    currentTab = tab === "shot" ? "shot" : "text";
+    const textPanel = document.getElementById("panel-rizz");
+    const shotPanel = document.getElementById("panel-shot");
+    if (textPanel) textPanel.classList.toggle("hidden", currentTab !== "text");
+    if (shotPanel) shotPanel.classList.toggle("hidden", currentTab !== "shot");
+    const textBtn = document.getElementById("tab-btn-text");
+    const shotBtn = document.getElementById("tab-btn-shot");
+    if (textBtn) textBtn.classList.toggle("active", currentTab === "text");
+    if (shotBtn) shotBtn.classList.toggle("active", currentTab === "shot");
+    const empty = document.getElementById("empty-state");
+    if (empty) {
+      const resultsHidden = document.getElementById("rizz-results").classList.contains("hidden");
+      empty.classList.toggle("hidden", currentTab === "shot" || !resultsHidden);
+    }
+  }
+
+  /* ---------- Evolve 2027: screenshot check ----------
+     One image at a time, max 2MB. The image lives in memory only
+     (never stored, never written to history as an image — the saved
+     item keeps the results and the note "Screenshot check"). */
+  const SHOT_MAX_BYTES = 2 * 1024 * 1024;
+  const SHOT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+  let shotImageDataUrl = null;
+  let shotImageMime = "";
+  function updateShotCheckButton() {
+    const btn = document.getElementById("shot-check-btn");
+    const txt = document.getElementById("shot-btn-text");
+    if (!btn || !txt) return;
+    if (btn.dataset.busy === "1") return;
+    if (!shotImageDataUrl) {
+      btn.disabled = true;
+      txt.textContent = "Add a screenshot first";
+      return;
+    }
+    if (!canCheckToday()) {
+      btn.disabled = true;
+      txt.textContent = "Daily limit reached";
+      return;
+    }
+    btn.disabled = false;
+    txt.textContent = "Check this screenshot";
+  }
+  function setShotImage(dataUrl, mime, name) {
+    shotImageDataUrl = dataUrl;
+    shotImageMime = mime;
+    const img = document.getElementById("shot-preview");
+    if (img) img.src = dataUrl;
+    const wrap = document.getElementById("shot-preview-wrap");
+    if (wrap) wrap.classList.remove("hidden");
+    const info = document.getElementById("shot-file-info");
+    if (info) info.textContent = (name || "Screenshot") + " — ready to check";
+    const errEl = document.getElementById("shot-error-msg");
+    if (errEl) errEl.classList.add("hidden");
+    updateShotCheckButton();
+  }
+  function clearShotImage() {
+    shotImageDataUrl = null;
+    shotImageMime = "";
+    const img = document.getElementById("shot-preview");
+    if (img) img.removeAttribute("src");
+    const wrap = document.getElementById("shot-preview-wrap");
+    if (wrap) wrap.classList.add("hidden");
+    const info = document.getElementById("shot-file-info");
+    if (info) info.textContent = "";
+    const fileInput = document.getElementById("shot-file");
+    if (fileInput) fileInput.value = "";
+    updateShotCheckButton();
+  }
+  function handleShotFile(file) {
+    if (!file) return;
+    if (SHOT_MIME_TYPES.indexOf(file.type) === -1) {
+      showError("That file needs to be a JPEG, PNG or WebP screenshot.", "shot-error-msg");
+      return;
+    }
+    if (file.size > SHOT_MAX_BYTES) {
+      showError("That screenshot is too large — 2MB max. Try a smaller one.", "shot-error-msg");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function () { setShotImage(reader.result, file.type, file.name); };
+    reader.onerror = function () { showError("Couldn't read that file — please try another screenshot.", "shot-error-msg"); };
+    reader.readAsDataURL(file);
+  }
+  function postShot(payload) {
+    return freshAuthHeaders().then(function (authHeaders) {
+      const opts = { method: "POST", headers: Object.assign({ "Content-Type": "application/json" }, authHeaders), body: JSON.stringify(payload) };
+      return fetchBackendWithRetry(rizzApiBase() + "/check-shot", opts, function () {
+        const s = document.getElementById("shot-status");
+        if (s) s.textContent = "Connection dropped — trying again…";
+      }, {
+        timeoutMs: RIZZ_TIMEOUT_MS,
+        beforeRetry: function () {
+          return freshRizzToken().then(function (freshToken) {
+            if (!freshToken) return false;
+            const body = { image: payload.image, mimeType: payload.mimeType, turnstileToken: freshToken };
+            if (payload.styleSample) body.styleSample = payload.styleSample;
+            opts.body = JSON.stringify(body);
+            return freshAuthHeaders().then(function (h) { opts.headers = Object.assign({}, opts.headers, h); return true; });
+          });
+        }
+      });
+    });
+  }
+
+  /* ---------- Evolve 2027: share card — "Save as image" ----------
+     Client-side only: the score, label, roast and best reply are
+     drawn on a canvas and downloaded as a PNG. No backend call, so
+     it works even if the check happened a while ago. */
+  function wrapCardText(ctx, text, maxWidth) {
+    const words = String(text || "").split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = "";
+    words.forEach(function (w) {
+      const next = line ? line + " " + w : w;
+      if (ctx.measureText(next).width > maxWidth && line) { lines.push(line); line = w; }
+      else { line = next; }
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  function drawShareCard(data) {
+    if (!data) return null;
+    const canvas = document.createElement("canvas");
+    const W = 900;
+    const H = 1125;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#160a2e");
+    bg.addColorStop(0.5, "#1e0b3d");
+    bg.addColorStop(1, "#12081f");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#d4ff3f";
+    ctx.font = "bold 200px Inter, sans-serif";
+    ctx.fillText(String(typeof data.score === "number" ? Math.round(data.score) : 0), W / 2, 360);
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.font = "bold 40px Inter, sans-serif";
+    ctx.fillText("/ 100", W / 2, 430);
+    const label = String(data.label || "");
+    ctx.font = "bold 44px Inter, sans-serif";
+    const labelWidth = ctx.measureText(label).width + 80;
+    ctx.fillStyle = "#d4ff3f";
+    ctx.fillRect((W - labelWidth) / 2, 470, labelWidth, 84);
+    ctx.fillStyle = "#160a2e";
+    ctx.fillText(label, W / 2, 530);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "32px Inter, sans-serif";
+    const roastLines = wrapCardText(ctx, data.roast || "", W - 160);
+    roastLines.slice(0, 4).forEach(function (line, i) { ctx.fillText(line, 80, 660 + i * 46); });
+    const best = rizzBestReply({ type: "rizz", result: data });
+    ctx.fillStyle = "#d4ff3f";
+    ctx.font = "bold 30px Inter, sans-serif";
+    ctx.fillText("BETTER REPLY", 80, 900);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "32px Inter, sans-serif";
+    const replyLines = wrapCardText(ctx, best, W - 160);
+    replyLines.slice(0, 3).forEach(function (line, i) { ctx.fillText(line, 80, 950 + i * 46); });
+    ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.font = "bold 30px Inter, sans-serif";
+    ctx.fillText("beforeyousay.com", W / 2, 1075);
+    return canvas;
+  }
+  function saveShareCard() {
+    const statusEl = document.getElementById("rizz-share-status");
+    const it = getCurrentHistoryItem();
+    if (!it || !it.result) {
+      if (statusEl) statusEl.textContent = "Nothing to save yet — check a text first.";
+      return;
+    }
+    let canvas = null;
+    try { canvas = drawShareCard(it.result); } catch (e) { canvas = null; }
+    if (!canvas) {
+      if (statusEl) statusEl.textContent = "Your browser couldn't make the image — try the Copy button instead.";
+      return;
+    }
+    function download(blob) {
+      if (!blob) {
+        if (statusEl) statusEl.textContent = "Couldn't make the image — try the Copy button instead.";
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "beforeyousay-rizz.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      if (statusEl) statusEl.textContent = "Saved — share it anywhere.";
+    }
+    if (typeof canvas.toBlob === "function") {
+      try { canvas.toBlob(download, "image/png"); } catch (e) { if (statusEl) statusEl.textContent = "Couldn't make the image — try the Copy button instead."; }
+    } else if (typeof canvas.toDataURL === "function") {
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = "beforeyousay-rizz.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      if (statusEl) statusEl.textContent = "Saved — share it anywhere.";
+    } else if (statusEl) {
+      statusEl.textContent = "Your browser couldn't make the image — try the Copy button instead.";
+    }
+  }
+
+
   function rizzApiBase() {
     if (typeof BYS_API_URL === "string" && BYS_API_URL.indexOf("/analyze") !== -1) {
       return BYS_API_URL.slice(0, BYS_API_URL.lastIndexOf("/analyze"));
@@ -1051,7 +1471,7 @@
   }
 
   function rizzFriendlyError(error, status) {
-    if (status === 429) return "That's your free checks for today — sign in for more tomorrow, or come back tomorrow.";
+    if (status === 429) return (error && error.error) || "That's your free checks for today — sign in for more tomorrow, or come back tomorrow.";
     if (status === 403) return "The human check didn't pass — please tick the verification box and try again.";
     if (status === 400) return (error && error.error) || "That didn't look like a DM — paste your text and try again.";
     if (status === 500) return "Something broke on our side — please try again in a moment.";
@@ -1093,21 +1513,30 @@
   }
 
   function postRizz(payload) {
-    const opts = { method: "POST", headers: Object.assign({ "Content-Type": "application/json" }, freshAuthHeaders()), body: JSON.stringify(payload) };
-    return fetchBackendWithRetry(rizzApiBase() + "/rizz", opts, function () {
-      const s = document.getElementById("rizz-status");
-      if (s) s.textContent = "Connection dropped — trying again…";
-    }, {
-      timeoutMs: RIZZ_TIMEOUT_MS,
-      beforeRetry: function () {
-        return freshRizzToken().then(function (freshToken) {
-          if (!freshToken) return false;
-          const body = { text: payload.text, turnstileToken: freshToken };
-          opts.body = JSON.stringify(body);
-          opts.headers = Object.assign({}, opts.headers, freshAuthHeaders());
-          return true;
-        });
-      }
+    /* Pivot 3 bug, fixed here: the old code passed the async
+       freshAuthHeaders() promise straight into Object.assign, so the
+       sign-in token never actually went out and signed-in users were
+       treated as guests (5/hour instead of 10/day). The call now
+       waits for the fresh headers first. The retry rebuilds the
+       whole payload with the fresh token — mode and style sample
+       included, never dropped. */
+    return freshAuthHeaders().then(function (authHeaders) {
+      const opts = { method: "POST", headers: Object.assign({ "Content-Type": "application/json" }, authHeaders), body: JSON.stringify(payload) };
+      return fetchBackendWithRetry(rizzApiBase() + "/rizz", opts, function () {
+        const s = document.getElementById("rizz-status");
+        if (s) s.textContent = "Connection dropped — trying again…";
+      }, {
+        timeoutMs: RIZZ_TIMEOUT_MS,
+        beforeRetry: function () {
+          return freshRizzToken().then(function (freshToken) {
+            if (!freshToken) return false;
+            const body = { text: payload.text, turnstileToken: freshToken, mode: payload.mode };
+            if (payload.styleSample) body.styleSample = payload.styleSample;
+            opts.body = JSON.stringify(body);
+            return freshAuthHeaders().then(function (h) { opts.headers = Object.assign({}, opts.headers, h); return true; });
+          });
+        }
+      });
     });
   }
 
@@ -1120,11 +1549,21 @@
     document.getElementById("rizz-label").textContent = data.label || "";
     document.getElementById("rizz-roast").textContent = data.roast || "";
     document.getElementById("rizz-signal").textContent = data.signal || "";
+    const tipEl = document.getElementById("rizz-tip");
+    if (tipEl) tipEl.textContent = data.tip || "";
+    const roastHeading = document.getElementById("rizz-roast-heading");
+    if (roastHeading) {
+      roastHeading.textContent = data.mode === "shot" ? "What's happening"
+        : (data.mode === "reply" ? "What it means"
+        : ((RIZZ_MODE_UI[data.mode] || RIZZ_MODE_UI.rizz).roastHeading || "The roast"));
+    }
     const replies = Array.isArray(data.replies) ? data.replies : [];
     const smooth = replies.find(function (r) { return r && r.style === "smooth"; });
     const funny = replies.find(function (r) { return r && r.style === "funny"; });
+    const chill = replies.find(function (r) { return r && r.style === "chill"; });
     document.getElementById("rizz-reply-smooth").textContent = (smooth && smooth.text) || (replies[0] && replies[0].text) || "";
     document.getElementById("rizz-reply-funny").textContent = (funny && funny.text) || (replies[1] && replies[1].text) || "";
+    document.getElementById("rizz-reply-chill").textContent = (chill && chill.text) || (replies[2] && replies[2].text) || "";
     document.getElementById("rizz-results").classList.remove("hidden");
     document.getElementById("empty-state").classList.add("hidden");
     document.getElementById("skeleton").classList.add("hidden");
@@ -1146,9 +1585,10 @@
     if (spin) spin.classList.add("hidden");
     const len = (document.getElementById("rizz-text") || { value: "" }).value.trim().length;
     if (btn.dataset.busy === "1") return;
+    const ui = RIZZ_MODE_UI[currentMode] || RIZZ_MODE_UI.rizz;
     if (len === 0) {
       btn.disabled = true;
-      txt.textContent = "Paste a DM first";
+      txt.textContent = ui.emptyBtn;
       return;
     }
     if (!canCheckToday()) {
@@ -1157,7 +1597,7 @@
       return;
     }
     btn.disabled = false;
-    txt.textContent = "Check my rizz";
+    txt.textContent = ui.goBtn;
   }
 
   function rizzStartLoading() {
@@ -1204,6 +1644,9 @@
     document.getElementById("legacy-result").classList.add("hidden");
     rizzStartLoading();
     const payload = { text: text, turnstileToken: token };
+    payload.mode = currentMode;
+    const styleSample = getStyleSample();
+    if (styleSample) payload.styleSample = styleSample;
     postRizz(payload).then(function (resp) {
       rizzStopLoading();
       if (!resp) { showError("Connection dropped — please check your connection and try again.", "rizz-error-msg"); return; }
@@ -1213,8 +1656,9 @@
         });
       }
       return resp.json().then(function (data) {
-        const saved = addHistory({ type: "rizz", input: text, result: data });
+        const saved = addHistory({ type: "rizz", mode: currentMode, input: text, result: data });
         currentHistoryId = saved.id;
+        recordStreakDay();
         displayRizz(data);
       });
     }).catch(function (err) {
@@ -1268,6 +1712,93 @@
   });
   updateRizzCheckButton();
 
+  /* ---------- Evolve 2027 init: modes, tabs, style sample, screenshot, share card ---------- */
+  document.querySelectorAll("#mode-picker [data-mode]").forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+  });
+  document.getElementById("tab-btn-text").addEventListener("click", function () { switchCheckTab("text"); });
+  document.getElementById("tab-btn-shot").addEventListener("click", function () { switchCheckTab("shot"); });
+  const styleSampleInput = document.getElementById("style-sample");
+  if (styleSampleInput) {
+    styleSampleInput.value = getStyleSample();
+    styleSampleInput.addEventListener("input", function () { saveStyleSample(styleSampleInput.value); });
+  }
+  const shotFileInput = document.getElementById("shot-file");
+  if (shotFileInput) shotFileInput.addEventListener("change", function () { handleShotFile(shotFileInput.files && shotFileInput.files[0]); });
+  const shotDropzone = document.getElementById("shot-dropzone");
+  if (shotDropzone) {
+    shotDropzone.addEventListener("click", function (e) {
+      if (e.target === shotFileInput) return;
+      if (shotFileInput) shotFileInput.click();
+    });
+    shotDropzone.addEventListener("keydown", function (e) {
+      if ((e.key === "Enter" || e.key === " ") && shotFileInput) { e.preventDefault(); shotFileInput.click(); }
+    });
+    ["dragover", "dragenter"].forEach(function (ev) {
+      shotDropzone.addEventListener(ev, function (e) { e.preventDefault(); shotDropzone.classList.add("drag"); });
+    });
+    ["dragleave", "drop"].forEach(function (ev) {
+      shotDropzone.addEventListener(ev, function (e) { e.preventDefault(); shotDropzone.classList.remove("drag"); });
+    });
+    shotDropzone.addEventListener("drop", function (e) {
+      const files = e.dataTransfer && e.dataTransfer.files;
+      if (files && files[0]) handleShotFile(files[0]);
+    });
+  }
+  document.addEventListener("paste", function (e) {
+    if (currentTab !== "shot") return;
+    const items = e.clipboardData && e.clipboardData.files;
+    if (items && items[0]) handleShotFile(items[0]);
+  });
+  document.getElementById("shot-remove-btn").addEventListener("click", function () { clearShotImage(); });
+  document.getElementById("shot-check-btn").addEventListener("click", function () {
+    if (!shotImageDataUrl) { showError("Add a screenshot first.", "shot-error-msg"); return; }
+    if (!canCheckToday()) { showError("That's your free checks for today — sign in for more tomorrow, or come back tomorrow.", "shot-error-msg"); return; }
+    const token = rizzTurnstileToken();
+    if (!token) { showError("Please tick the human-check box first.", "shot-error-msg"); return; }
+    const resultsEl = document.getElementById("rizz-results");
+    const skeleton = document.getElementById("skeleton");
+    const errEl = document.getElementById("shot-error-msg");
+    if (errEl) errEl.classList.add("hidden");
+    if (resultsEl) resultsEl.classList.add("hidden");
+    if (skeleton) skeleton.classList.remove("hidden");
+    document.getElementById("empty-state").classList.add("hidden");
+    document.getElementById("legacy-result").classList.add("hidden");
+    const btn = document.getElementById("shot-check-btn");
+    const status = document.getElementById("shot-status");
+    if (btn) { btn.dataset.busy = "1"; btn.disabled = true; }
+    if (status) status.textContent = "Reading your screenshot...";
+    const payload = { image: shotImageDataUrl, mimeType: shotImageMime, turnstileToken: token };
+    const styleSample = getStyleSample();
+    if (styleSample) payload.styleSample = styleSample;
+    postShot(payload).then(function (resp) {
+      if (btn) btn.dataset.busy = "";
+      updateShotCheckButton();
+      if (skeleton) skeleton.classList.add("hidden");
+      if (!resp) { showError("Connection dropped — please check your connection and try again.", "shot-error-msg"); return; }
+      if (!resp.ok) {
+        return resp.json().catch(function () { return {}; }).then(function (errBody) {
+          showError(rizzFriendlyError(errBody, resp.status), "shot-error-msg");
+        });
+      }
+      return resp.json().then(function (data) {
+        const saved = addHistory({ type: "rizz", mode: "shot", input: "Screenshot check", result: data });
+        currentHistoryId = saved.id;
+        recordStreakDay();
+        displayRizz(data);
+      });
+    }).catch(function (err) {
+      if (btn) btn.dataset.busy = "";
+      updateShotCheckButton();
+      if (skeleton) skeleton.classList.add("hidden");
+      showError(rizzFriendlyError(err), "shot-error-msg");
+    });
+  });
+  document.getElementById("rizz-save-image-btn").addEventListener("click", function () { saveShareCard(); });
+  renderStreak();
+  renderDailyTip();
+  updateShotCheckButton();
+  setMode("rizz");
 
   document.getElementById('empty-state').classList.remove('hidden');
 </script>
