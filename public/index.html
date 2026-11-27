@@ -136,6 +136,16 @@
     <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">This is a read-only result — no login needed to see it.</p>
     <button id="shared-try-btn" type="button" class="px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Try it yourself</button>
   </div>
+  <div id="shared-vote" class="hidden mb-6 rounded-2xl p-5 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">The verdict: <span id="shared-verdict"></span></p>
+    <h3 class="text-lg font-bold text-white mb-3">Which would you send?</h3>
+    <div class="space-y-3">
+      <button type="button" id="shared-vote-1" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+      <button type="button" id="shared-vote-2" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+      <button type="button" id="shared-vote-3" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+    </div>
+    <p id="shared-vote-status" class="text-sm mt-3" style="color: rgba(255,255,255,0.6);" role="status"></p>
+  </div>
   <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
     <!-- Evolve 2027: two tabs — paste a text, or check a screenshot. One
@@ -219,6 +229,17 @@
     <div id="panel-shot" class="hidden">
       <h3 class="text-lg font-bold text-white mb-1">Screenshot check</h3>
       <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Screenshot the conversation, drop it here, and we'll read the vibe and write your next reply. The screenshot is read once and never stored.</p>
+      <div id="shot-mode-picker" class="flex flex-wrap gap-2 mb-4">
+        <button type="button" data-mode="rizz" class="mode-btn active">Rizz Check</button>
+        <button type="button" data-mode="reply" class="mode-btn">What do I say back?</button>
+        <button type="button" data-mode="opener" class="mode-btn">First text</button>
+        <button type="button" data-mode="apology" class="mode-btn">Sorry text</button>
+        <button type="button" data-mode="dry" class="mode-btn">Left on read?</button>
+        <button type="button" data-mode="calm" class="mode-btn">Calm it down</button>
+        <button type="button" data-mode="work" class="mode-btn">Work / Boss</button>
+        <button type="button" data-mode="boundary" class="mode-btn">Say no</button>
+        <button type="button" data-mode="deescalate" class="mode-btn">De-escalate a fight</button>
+      </div>
       <div class="space-y-3 mb-6">
         <div id="shot-dropzone" class="shot-dropzone" tabindex="0" role="button" aria-label="Upload a screenshot">
           <p class="text-white font-bold mb-1">Drop your screenshot here, paste it, or tap to pick one</p>
@@ -246,10 +267,10 @@
       <!-- Rizz results -->
       <div id="rizz-results" class="hidden space-y-5 fade-in">
         <div class="p-6 rounded-2xl border text-center" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">
-          <p id="rizz-verdict" class="verdict-badge verdict-tweak mb-4">Tweak it</p>
+          <p id="rizz-verdict" class="verdict-badge verdict-tweak mb-4">—</p>
           <div class="rizz-score-ring mx-auto rounded-full" id="rizz-score-ring" style="--score: 0; width: 9rem; height: 9rem;padding: 0.5rem">
             <div class="w-full rounded-full flex flex-col items-center justify-center" style="background: #1e0b3d;height: 100%">
-              <span id="rizz-score" class="font-bold text-white leading-none" style="font-size: 3rem;">0</span>
+              <span id="rizz-score" class="font-bold text-white leading-none" style="font-size: 2rem;">0</span>
               <span class="text-xs font-bold uppercase tracking-wider" style="color: rgba(255,255,255,0.6);">/ 100</span>
             </div>
           </div>
@@ -270,21 +291,21 @@
           <p id="rizz-tip" class="text-white leading-relaxed"></p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Smooth reply</p>
+          <p id="rizz-reply-label-1" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Smooth</p>
           <div class="relative p-5 rounded-2xl" style="background: #d4ff3f; color: #160a2e;">
             <p id="rizz-reply-smooth" class="whitespace-pre-wrap leading-relaxed text-base pr-16 font-medium"></p>
             <button onclick="copyText('rizz-reply-smooth', this)" class="copy-btn absolute top-3 right-3 text-xs font-bold px-3 py-2.5 rounded-lg" style="background: rgba(22,10,46,0.15); color: #160a2e;">Copy</button>
           </div>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Funny reply</p>
+          <p id="rizz-reply-label-2" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Funny</p>
           <div class="relative p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
             <p id="rizz-reply-funny" class="whitespace-pre-wrap leading-relaxed text-base pr-16 text-white"></p>
             <button onclick="copyText('rizz-reply-funny', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Chill reply</p>
+          <p id="rizz-reply-label-3" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">Chill</p>
           <div class="relative p-5 rounded-2xl border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
             <p id="rizz-reply-chill" class="whitespace-pre-wrap leading-relaxed text-base pr-16 text-white"></p>
             <button onclick="copyText('rizz-reply-chill', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
@@ -342,7 +363,7 @@
     <div id="empty-state" class="text-center py-16 space-y-4">
       <span class="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl font-bold text-4xl" style="background: #d4ff3f; color: #160a2e;" aria-hidden="true">B</span>
       <h3 class="text-xl font-bold text-white">Ready to check</h3>
-      <p class="max-w-sm mx-auto" style="color: rgba(255,255,255,0.7);">Paste the DM you're about to send — we'll score it, roast it, and write you three better replies.</p>
+      <p class="max-w-sm mx-auto" style="color: rgba(255,255,255,0.7);">Paste the DM you're about to send — we'll give you a verdict (send it, tweak it, wait, or don't send it) and three better replies.</p>
     </div>
   </section>
 
@@ -352,12 +373,13 @@
     <h3 class="text-lg font-bold text-white mb-1">Today's dilemma</h3>
     <p id="dilemma-number" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #d4ff3f;"></p>
     <p id="dilemma-scenario" class="text-white leading-relaxed mb-4"></p>
-    <label for="dilemma-reply" class="block text-sm font-bold text-white mb-1">Your reply</label>
-    <textarea id="dilemma-reply" rows="3" maxlength="500" placeholder="Write what you would actually send…" class="w-full p-4 rounded-2xl border rizz-input focus:outline-none resize-none text-base text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
-    <button id="dilemma-rate-btn" type="button" class="w-full mt-3 font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;">Rate my reply</button>
+    <p class="text-sm font-bold text-white mb-2">Pick the reply you would actually send:</p>
+    <div class="space-y-3">
+      <button id="dilemma-choice-1" type="button" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></button>
+      <button id="dilemma-choice-2" type="button" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></button>
+    </div>
+    <p id="dilemma-why" class="hidden text-sm mt-3 leading-relaxed font-bold" style="color: #d4ff3f;" role="status"></p>
     <p id="dilemma-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
-    <button id="dilemma-copy-btn" type="button" class="hidden w-full mt-3 py-3 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Copy my result</button>
-    <p id="dilemma-copy-status" class="text-sm mt-2 text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
   </section>
 
   <!-- Account and History -->
@@ -439,13 +461,13 @@
       </div>
       <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">2</div>
-        <h4 class="font-bold mb-1 text-white">Get your score</h4>
-        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Your rizz score, a roast, and what it actually signals</p>
+        <h4 class="font-bold mb-1 text-white">Get the verdict</h4>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Send it, tweak it, wait — or don't send it — plus what it actually signals</p>
       </div>
       <div class="rounded-2xl p-5 text-center border" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
         <div class="w-10 h-10 mx-auto mb-3 rounded-full font-bold flex items-center justify-center" style="background: #d4ff3f; color: #160a2e;">3</div>
         <h4 class="font-bold mb-1 text-white">Copy a better reply</h4>
-        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Three replies — smooth, funny and chill — ready to send</p>
+        <p class="text-sm" style="color: rgba(255,255,255,0.7);">Three replies, ready to send</p>
       </div>
     </div>
   </section>
@@ -535,11 +557,13 @@
     return { merged: merged.slice(0, HISTORY_MAX), toUpload: toUpload };
   }
   function historyItemToCloudRow(item, userId) {
-    /* Pivot 3: rizz checks sync through the same path. Their tab is
-       'rewrite' and their mode is 'rizz' — both already valid in the
-       live table checks (migration 002), so no migration is needed. */
+    /* Five-changes-v2: rizz checks sync through the same path, but
+       the cloud row now carries the item's real mode (rizz, reply,
+       work, shot, ...) instead of always writing "rizz". That needs
+       migration 003 (prepared, not run) to widen the table check —
+       until it runs, the insert fails and the item stays local-only. */
     if (item.type === "rizz") {
-      return { user_id: userId, tab: "rewrite", mode: "rizz", input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
+      return { user_id: userId, tab: "rewrite", mode: item.mode || "rizz", input: String(item.input || "").slice(0, 1000), result: item.result || {}, tone_profile: item.toneProfile || null };
     }
     /* Legacy items (old consumer checks and HR checks) are local-only
        now — never uploaded. */
@@ -825,7 +849,12 @@
         if (it.type === "rizz") text = rizzBestReply(it);
         else text = it.result.better_version || it.result.softer_version || "";
       }
-      if (text) navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000); });
+      if (text) navigator.clipboard.writeText(text).then(function () {
+        copyBtn.textContent = "✓ Copied"; setTimeout(function () { copyBtn.textContent = "Copy best"; }, 2000);
+        /* Five-changes-v2: same as copyText — the copied reply is
+           what the next check on this person remembers. */
+        if (it && it.type === "rizz") updateHistoryItem(it.id, { copiedReply: text });
+      });
       return;
     }
     if (delBtn) {
@@ -1242,6 +1271,11 @@
       const orig = btn.textContent;
       btn.textContent = '✓ Copied';
       setTimeout(() => btn.textContent = orig, 2000);
+      /* Five-changes-v2: the copied reply is what the next check on
+         this person remembers — it replaces the raw draft in the
+         "Last time" line. */
+      const it = getCurrentHistoryItem();
+      if (it) updateHistoryItem(it.id, { copiedReply: text });
     });
   }
 
@@ -1269,6 +1303,20 @@
   const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry", "calm", "work", "boundary", "deescalate"];
   /* GC-EVOLUTION: verdict labels shared by the badge, the share card and the dilemma copy. */
   const VERDICT_LABELS = { send: "Send it", tweak: "Tweak it", wait: "Wait — don't send yet", dont: "Don't send" };
+  /* Five-changes-v2: a verdict is only real if it is one of the
+     four values. Anything else is a failed check, never a
+     "Tweak it". */
+  function isValidVerdict(v) { return ["send", "tweak", "wait", "dont"].indexOf(v) !== -1; }
+  /* Five-changes-v2: the three reply boxes are labelled by mode,
+     positional — reply 1/2/3 get the mode's three labels. */
+  const REPLY_LABELS = {
+    apology: ["Genuine", "Short", "Warm"],
+    calm: ["Calm", "Short", "Warm"],
+    deescalate: ["Calm", "Short", "Warm"],
+    work: ["Clear", "Direct", "Warmer"],
+    boundary: ["Clear no", "Short no", "Warm no"],
+  };
+  function replyLabelsFor(mode) { return REPLY_LABELS[mode] || ["Smooth", "Funny", "Chill"]; }
   let currentMode = "rizz";
   function setMode(mode) {
     if (!RIZZ_MODE_UI[mode]) mode = "rizz";
@@ -1458,6 +1506,20 @@
     reader.onerror = function () { showError("Couldn't read that file — please try another screenshot.", "shot-error-msg"); };
     reader.readAsDataURL(file);
   }
+  /* Five-changes-v2: the screenshot tab has the same mode pills
+     as the text tab, and the selected pill is sent with the shot. */
+  let shotMode = "rizz";
+  function setShotMode(mode) {
+    if (!RIZZ_MODE_UI[mode]) mode = "rizz";
+    shotMode = mode;
+    document.querySelectorAll("#shot-mode-picker [data-mode]").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-mode") === mode);
+    });
+  }
+  document.querySelectorAll("#shot-mode-picker [data-mode]").forEach(function (b) {
+    b.addEventListener("click", function () { setShotMode(b.getAttribute("data-mode")); });
+  });
+
   function postShot(payload) {
     return freshAuthHeaders().then(function (authHeaders) {
       const opts = { method: "POST", headers: Object.assign({ "Content-Type": "application/json" }, authHeaders), body: JSON.stringify(payload) };
@@ -1470,6 +1532,7 @@
           return freshRizzToken().then(function (freshToken) {
             if (!freshToken) return false;
             const body = { image: payload.image, mimeType: payload.mimeType, turnstileToken: freshToken };
+            if (payload.mode) body.mode = payload.mode;
             if (payload.styleSample) body.styleSample = payload.styleSample;
             if (payload.personContext) body.personContext = payload.personContext;
             if (payload.styleExamples) body.styleExamples = payload.styleExamples;
@@ -1512,37 +1575,37 @@
     bg.addColorStop(1, "#12081f");
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
+    /* Five-changes-v2: the card leads with the verdict, then the
+       three replies, then beforeyousay.com. No roast — and the big
+       number is no longer the whole image; the score is a small
+       line under the verdict. */
     ctx.textAlign = "center";
     ctx.fillStyle = "#d4ff3f";
-    ctx.font = "bold 200px Inter, sans-serif";
-    ctx.fillText(String(typeof data.score === "number" ? Math.round(data.score) : 0), W / 2, 360);
-    ctx.fillStyle = "rgba(255,255,255,0.6)";
-    ctx.font = "bold 40px Inter, sans-serif";
-    ctx.fillText("/ 100", W / 2, 430);
-    const label = String(data.label || "");
-    ctx.font = "bold 44px Inter, sans-serif";
-    const labelWidth = ctx.measureText(label).width + 80;
-    ctx.fillStyle = "#d4ff3f";
-    ctx.fillRect((W - labelWidth) / 2, 470, labelWidth, 84);
-    ctx.fillStyle = "#160a2e";
-    ctx.fillText(label, W / 2, 530);
-    const verdictText = "Verdict: " + (VERDICT_LABELS[data.verdict] || VERDICT_LABELS.tweak);
-    ctx.fillStyle = "#d4ff3f";
+    ctx.font = "bold 84px Inter, sans-serif";
+    ctx.fillText("Verdict: " + (VERDICT_LABELS[data.verdict] || ""), W / 2, 190);
+    const scoreText = (typeof data.score === "number" ? Math.round(data.score) : 0) + "/100" + (data.label ? " · " + data.label : "");
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
     ctx.font = "bold 36px Inter, sans-serif";
-    ctx.fillText(verdictText, W / 2, 600);
+    ctx.fillText(scoreText, W / 2, 250);
+    const rLabels = replyLabelsFor(data.mode);
+    const replies = Array.isArray(data.replies) ? data.replies : [];
+    const smooth = replies.find(function (r) { return r && r.style === "smooth"; });
+    const funny = replies.find(function (r) { return r && r.style === "funny"; });
+    const chill = replies.find(function (r) { return r && r.style === "chill"; });
+    const ordered = [smooth || replies[0], funny || replies[1], chill || replies[2]];
     ctx.textAlign = "left";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "32px Inter, sans-serif";
-    const roastLines = wrapCardText(ctx, data.roast || "", W - 160);
-    roastLines.slice(0, 4).forEach(function (line, i) { ctx.fillText(line, 80, 660 + i * 46); });
-    const best = rizzBestReply({ type: "rizz", result: data });
-    ctx.fillStyle = "#d4ff3f";
-    ctx.font = "bold 30px Inter, sans-serif";
-    ctx.fillText("BETTER REPLY", 80, 900);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "32px Inter, sans-serif";
-    const replyLines = wrapCardText(ctx, best, W - 160);
-    replyLines.slice(0, 3).forEach(function (line, i) { ctx.fillText(line, 80, 950 + i * 46); });
+    let y = 360;
+    ordered.forEach(function (r, i) {
+      ctx.fillStyle = "#d4ff3f";
+      ctx.font = "bold 30px Inter, sans-serif";
+      ctx.fillText((rLabels[i] || "").toUpperCase(), 80, y);
+      y += 48;
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "32px Inter, sans-serif";
+      const lines = wrapCardText(ctx, (r && r.text) || "", W - 160);
+      lines.slice(0, 3).forEach(function (line) { ctx.fillText(line, 80, y); y += 46; });
+      y += 32;
+    });
     ctx.textAlign = "center";
     ctx.fillStyle = "rgba(255,255,255,0.6)";
     ctx.font = "bold 30px Inter, sans-serif";
@@ -1674,7 +1737,11 @@
   }
 
   function displayRizz(data) {
-    if (!data) return;
+    if (!data) return false;
+    /* Five-changes-v2: trust the verdict. A missing or invalid
+       verdict is a failed check, not a "Tweak it" — the caller
+       shows "That check failed. Try again." and adds no history. */
+    if (!isValidVerdict(data.verdict)) return false;
     const score = typeof data.score === "number" ? Math.max(0, Math.min(100, Math.round(data.score))) : 0;
     const ring = document.getElementById("rizz-score-ring");
     if (ring) ring.style.setProperty("--score", String(score));
@@ -1682,7 +1749,7 @@
     document.getElementById("rizz-label").textContent = data.label || "";
     const verdictEl = document.getElementById("rizz-verdict");
     if (verdictEl) {
-      const v = ["send", "tweak", "wait", "dont"].indexOf(data.verdict) !== -1 ? data.verdict : "tweak";
+      const v = data.verdict;
       verdictEl.textContent = VERDICT_LABELS[v];
       verdictEl.className = "verdict-badge verdict-" + v + " mb-4";
     }
@@ -1710,18 +1777,25 @@
     document.getElementById("rizz-reply-smooth").textContent = (smooth && smooth.text) || (replies[0] && replies[0].text) || "";
     document.getElementById("rizz-reply-funny").textContent = (funny && funny.text) || (replies[1] && replies[1].text) || "";
     document.getElementById("rizz-reply-chill").textContent = (chill && chill.text) || (replies[2] && replies[2].text) || "";
+    /* Five-changes-v2: the three reply-box labels follow the mode. */
+    const rLabels = replyLabelsFor(data.mode);
+    ["rizz-reply-label-1", "rizz-reply-label-2", "rizz-reply-label-3"].forEach(function (id, i) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = rLabels[i];
+    });
     renderOutcomeState();
     document.getElementById("rizz-results").classList.remove("hidden");
     document.getElementById("empty-state").classList.add("hidden");
     document.getElementById("skeleton").classList.add("hidden");
     document.getElementById("legacy-result").classList.add("hidden");
     document.getElementById("rizz-results").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    return true;
   }
 
   function rizzShareText(data) {
     if (!data) return "";
     const best = rizzBestReply({ type: "rizz", result: data });
-    return "My rizz score: " + data.score + "/100 — " + (data.label || "") + "\nBetter reply: " + best + "\nChecked on BeforeYouSay";
+    return "Verdict: " + (VERDICT_LABELS[data.verdict] || "") + "\nBetter reply: " + best + "\nChecked on BeforeYouSay";
   }
 
   function updateRizzCheckButton() {
@@ -1807,6 +1881,10 @@
         });
       }
       return resp.json().then(function (data) {
+        /* Five-changes-v2: a bad verdict is a failed check — show
+           the failure and add NO history, so it consumes no daily
+           check. */
+        if (!isValidVerdict(data.verdict)) { showError("That check failed. Try again.", "rizz-error-msg"); return; }
         const saved = addHistory({ type: "rizz", mode: currentMode, input: text, result: data, person: getSelectedPersonId() || "" });
         currentHistoryId = saved.id;
         recordStreakDay();
@@ -1893,11 +1971,30 @@
     const found = loadPeople().filter(function (p) { return p.id === id; });
     return found.length ? found[0] : null;
   }
+  function latestOutcomeHistoryItem(personId) {
+    /* Five-changes-v2: the person's latest history item that HAS
+       an outcome — the one the next check remembers. */
+    let best = null;
+    loadHistory().forEach(function (it) {
+      if (it.person !== personId || !it.outcome || !OUTCOME_LABELS[it.outcome.value]) return;
+      if (!best || (it.createdAt && (!best.createdAt || it.createdAt > best.createdAt))) best = it;
+    });
+    return best;
+  }
   function personContextFor(person) {
     if (!person) return "";
     let s = person.name || "";
     if (person.relationship) s += " (" + person.relationship + ")";
     if (person.notes) s += ": " + person.notes;
+    /* Five-changes-v2: the real context — what happened last time
+       with this person. The "what" is the reply the user copied,
+       if they copied one, else the raw draft they checked. */
+    const last = latestOutcomeHistoryItem(person.id);
+    if (last) {
+      const what = String(last.copiedReply || last.input || "").slice(0, 120);
+      const line = " Last time: " + what + ". Outcome: " + last.outcome.value + ".";
+      s = s.slice(0, Math.max(0, 500 - line.length)) + line;
+    }
     return s.slice(0, 500);
   }
   function personOutcomeStats(personId) {
@@ -2086,106 +2183,102 @@
 
   /* ---- Daily Dilemma (practice mode, one scenario per day) ---- */
   const DILEMMAS = [
-    "They texted 'we need to talk'",
-    "Your boss replied 'ok.' to your long message",
-    "You left them on read for 2 days and now they texted '??'",
-    "Your crush posted a story and you want to reply without sounding keen",
-    "A friend cancelled plans for the third time this month",
-    "Someone you like just said 'haha' to your joke",
-    "Your ex texted 'I miss you' at 1am",
-    "You matched with someone and their first message is just 'hey'",
-    "Your mum asked 'when are you coming home' and you don't know yet",
-    "A colleague took credit for your work in the group chat",
-    "They replied to your invite with 'maybe'",
-    "You sent a risky joke and now it's been 3 hours with no reply",
-    "Your friend is upset with you but won't say why",
-    "You need to tell your flatmate they left the kitchen a mess again"
+    { situation: "They texted 'we need to talk'", replies: ["okay\u2026 what did I do?", "Sure \u2014 I'm free tonight if you want to talk."], better: 1, why: "It stays calm and offers a time instead of spiralling into a guilty 'what did I do?'." },
+    { situation: "Your boss replied 'ok.' to your long message", replies: ["Sorry, did I say something wrong?", "Got it \u2014 let me know if you need anything else from me."], better: 1, why: "'Ok' usually just means 'noted', not 'I'm angry' \u2014 don't apologise for a message that was already sent." },
+    { situation: "You left them on read for 2 days and now they texted '??'", replies: ["sorry sorry sorry I was so busy!!", "Hey, sorry for the late reply \u2014 work got crazy. How are you?"], better: 1, why: "One short apology, then a question \u2014 three sorrys in a row makes it about your guilt, not them." },
+    { situation: "Your crush posted a story and you want to reply without sounding keen", replies: ["ok this is actually so good??", "that place looks unreal, where is it?"], better: 1, why: "Asking about the thing in the story is a real opener; reacting to the person is a compliment with nowhere to go." },
+    { situation: "A friend cancelled plans for the third time this month", replies: ["no worries!! we can do it another time :)", "Ah that's a shame \u2014 I was looking forward to it. Let me know when you're free next week?"], better: 1, why: "It names the disappointment honestly instead of pretending it doesn't sting, then gives them one clear next step." },
+    { situation: "Someone you like just said 'haha' to your joke", replies: ["haha yeah", "glad that landed \u2014 what are you up to this weekend?"], better: 1, why: "'Haha yeah' ends the conversation; a question gives them something to actually answer." },
+    { situation: "Your ex texted 'I miss you' at 1am", replies: ["i miss you too", "Hey \u2014 it's late, let's not do this tonight. Hope you're okay though."], better: 1, why: "A 1am reply is a feeling, not a decision \u2014 wait until morning before you reopen anything." },
+    { situation: "You matched with someone and their first message is just 'hey'", replies: ["hey", "hey! your photos from the beach caught my eye \u2014 where was that?"], better: 1, why: "A specific detail about them beats a mirror-image 'hey' every single time." },
+    { situation: "Your mum asked 'when are you coming home' and you don't know yet", replies: ["I don't know, stop asking", "Not sure yet \u2014 I'll let you know as soon as I work it out, promise."], better: 1, why: "It answers the question and gives her a promise, instead of making her feel like a nuisance for asking." },
+    { situation: "A colleague took credit for your work in the group chat", replies: ["actually that was my work lol", "Happy to walk anyone through it \u2014 I put the deck together, so ask me if you have questions."], better: 1, why: "It claims the work calmly and factually instead of starting a public fight about credit." },
+    { situation: "They replied to your invite with 'maybe'", replies: ["so is that a yes or a no?", "No stress either way \u2014 just let me know by Friday so I can book the table."], better: 1, why: "A deadline is kinder than a push \u2014 it gives them a real choice and a real time to make it." },
+    { situation: "You sent a risky joke and now it's been 3 hours with no reply", replies: ["sorry, that came out wrong \u2014 ignore that one", "haha okay that joke flopped, moving on"], better: 1, why: "A light reset beats an apology spiral \u2014 apologising for a joke makes it a bigger deal than it was." },
+    { situation: "Your friend is upset with you but won't say why", replies: ["fine, if you won't tell me then whatever", "I can tell something's off \u2014 I'm here when you want to talk about it."], better: 1, why: "It leaves the door open without forcing a confession out of them on your schedule." },
+    { situation: "You need to tell your flatmate they left the kitchen a mess again", replies: ["the kitchen is disgusting again, seriously?", "Hey, can we keep the kitchen clear tonight? I've got an early start."], better: 1, why: "One clear ask beats a complaint \u2014 it tells them what to do, not just what they did wrong." },
+    { situation: "You want to ask someone out but you're scared of a no", replies: ["so\u2026 would you maybe want to grab coffee sometime? only if you want to, no pressure at all lol", "Want to grab a coffee this weekend? There's a good place near yours."], better: 1, why: "Short, specific, and one clear ask \u2014 piling on 'no pressure' just tells them you're already expecting a no." },
+    { situation: "Your boss asked you to work the weekend and you can't", replies: ["I'm so sorry, I really wish I could but I just can't this weekend, I hope that's okay", "I can't this weekend \u2014 but I can cover Tuesday if that helps."], better: 1, why: "A short no plus an alternative beats a long apology that invites them to push back." },
+    { situation: "A friend keeps venting to you and you're drained", replies: ["yeah that sounds rough", "I hear you \u2014 I've only got about 10 minutes right now, but I'm listening."], better: 1, why: "It sets a kind limit instead of pretending you have endless energy and then resenting them for it." },
+    { situation: "Someone sent you a one-word reply: 'k'", replies: ["k", "haha fair \u2014 what are you up to later?"], better: 1, why: "Matching a one-word reply with another one-word reply kills the chat; a subject change gives it a second life." },
+    { situation: "You need to apologise to a friend you snapped at", replies: ["sorry if you felt I was rude", "I'm sorry I snapped at you \u2014 you didn't deserve that."], better: 1, why: "'Sorry if you felt' blames their feelings; a real apology owns what you did and stops there." },
+    { situation: "Your date said 'let's do this again sometime' and you want a real plan", replies: ["yeah definitely, sometime!", "I'd like that \u2014 are you free Saturday? There's a market on I think you'd like."], better: 1, why: "'Sometime' is a goodbye in disguise \u2014 a real day and a real plan is how a second date actually happens." },
+    { situation: "A group chat is arguing and you're getting dragged in", replies: ["you're both being dramatic", "I'm staying out of this one \u2014 let me know when it's sorted."], better: 1, why: "Naming both sides as dramatic just adds a third fighter; stepping out cleanly keeps you out of it." },
+    { situation: "You need to tell your partner you're not okay", replies: ["I'm fine", "I'm having a rough day \u2014 I don't need advice, just a bit of patience tonight."], better: 1, why: "Telling them what you need beats 'I'm fine', which shuts them out and makes them guess." },
+    { situation: "Someone you barely know added you and said 'hey beautiful'", replies: ["hey", "Hi \u2014 do I know you?"], better: 1, why: "It makes them earn the conversation instead of rewarding a stranger's opener with a friendly reply." },
+    { situation: "Your friend's joke hurt and you want to say so without a fight", replies: ["that joke wasn't funny", "Hey, that one actually stung a bit \u2014 can we not do that one?"], better: 1, why: "Saying how it landed on you is a fact they can't argue with; calling it unfunny just starts a debate." },
+    { situation: "You got a job interview invite and need to reply", replies: ["ok thanks", "Thank you \u2014 I'm available Thursday or Friday morning, whichever suits you."], better: 1, why: "A reply that gives them times to pick from moves things forward; 'ok thanks' makes them do all the work." },
+    { situation: "You want to check in on a friend who's gone quiet", replies: ["why are you ignoring me", "Hey, just thinking of you \u2014 no need to reply, just wanted to say hi."], better: 1, why: "'Why are you ignoring me' accuses them; a no-pressure check-in lets them answer when they're ready." },
+    { situation: "Your sibling borrowed money and hasn't paid you back", replies: ["you owe me $50 btw", "Hey, can you send the $50 back this week? I need it for a bill."], better: 1, why: "A clear ask with a reason beats a passive 'btw' that they can pretend not to see." },
+    { situation: "You matched with someone great and you don't want to mess up the first text", replies: ["hey, you're really pretty", "hey \u2014 your hiking photos are great, what's the best trail you've done?"], better: 1, why: "A compliment about a photo is a dead end; a question about something they love is a conversation." }
   ];
-  let lastDilemmaResult = null;
-  let lastDilemmaNumber = 0;
   function dilemmaFor(date) {
     const n = dayOfYear(date);
     const idx = ((n - 1) % DILEMMAS.length + DILEMMAS.length) % DILEMMAS.length;
-    return { number: n, text: DILEMMAS[idx] };
+    const d = DILEMMAS[idx];
+    /* text is kept as an alias for the situation so the old
+       call shape (dl.text) still reads today's scenario. */
+    return { number: n, text: d.situation, situation: d.situation, replies: d.replies, better: d.better, why: d.why };
   }
   function renderDilemma() {
     const dl = dilemmaFor(new Date());
-    lastDilemmaNumber = dl.number;
     const numEl = document.getElementById("dilemma-number");
     if (numEl) numEl.textContent = "Dilemma #" + dl.number;
     const scEl = document.getElementById("dilemma-scenario");
-    if (scEl) scEl.textContent = dl.text;
+    if (scEl) scEl.textContent = dl.situation;
+    const c1 = document.getElementById("dilemma-choice-1");
+    if (c1) c1.textContent = dl.replies[0];
+    const c2 = document.getElementById("dilemma-choice-2");
+    if (c2) c2.textContent = dl.replies[1];
+    const whyEl = document.getElementById("dilemma-why");
+    if (whyEl) { whyEl.textContent = ""; whyEl.classList.add("hidden"); }
+    const st = document.getElementById("dilemma-status");
+    if (st) st.textContent = "Tap the reply you would actually send.";
   }
   function wireDilemma() {
-    const btn = document.getElementById("dilemma-rate-btn");
-    if (!btn) return;
-    btn.addEventListener("click", async function () {
-      const status = document.getElementById("dilemma-status");
-      const setStatus = function (m) { if (status) status.textContent = m; };
-      const replyEl = document.getElementById("dilemma-reply");
-      const reply = (replyEl.value || "").trim();
-      if (!reply) { setStatus("Write a reply first — that's the whole point."); return; }
-      if (!canCheckToday()) { setStatus("You've hit today's free limit — come back tomorrow."); return; }
-      const token = rizzTurnstileToken();
-      if (!token) { setStatus("Please complete the human check in the tool above first."); return; }
-      const dl = dilemmaFor(new Date());
-      const payload = { text: reply, turnstileToken: token, mode: "practice", context: dl.text };
-      const styleSample = getStyleSample();
-      if (styleSample) payload.styleSample = styleSample;
-      const styleExamples = getStyleExamples();
-      if (styleExamples) payload.styleExamples = styleExamples;
-      const pc = personContextFor(getSelectedPerson());
-      if (pc) payload.personContext = pc;
-      btn.disabled = true;
-      btn.textContent = "Rating your reply…";
-      setStatus("");
-      try {
-        const resp = await postRizz(payload);
-        if (!resp) { setStatus("Connection dropped — please check your connection and try again."); return; }
-        if (!resp.ok) {
-          const errBody = await resp.json().catch(function () { return {}; });
-          setStatus(rizzFriendlyError(errBody, resp.status));
-          return;
+    /* Five-changes-v2: the dilemma is free — no backend call, no
+       history item, no counter change. Tap a reply and the why
+       appears, with the better reply highlighted. */
+    [1, 2].forEach(function (n) {
+      const btn = document.getElementById("dilemma-choice-" + n);
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        const dl = dilemmaFor(new Date());
+        const picked = n - 1;
+        const whyEl = document.getElementById("dilemma-why");
+        const prefix = picked === dl.better ? "That's the better one — " : "The better one was the other reply — ";
+        if (whyEl) {
+          whyEl.textContent = prefix + dl.why;
+          whyEl.classList.remove("hidden");
         }
-        const data = await resp.json();
-        const saved = addHistory({ type: "rizz", mode: "practice", input: reply, result: data, person: getSelectedPersonId() || "", dilemma: dl.number });
-        currentHistoryId = saved.id;
-        recordStreakDay();
-        renderStreak();
-        lastDilemmaResult = data;
-        lastDilemmaNumber = dl.number;
-        const copyBtn = document.getElementById("dilemma-copy-btn");
-        if (copyBtn) copyBtn.classList.remove("hidden");
-        displayRizz(data);
-      } catch (err) {
-        setStatus(err && err.message ? err.message : "Something went wrong. Try again.");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Rate my reply";
-      }
-    });
-    const copyBtn = document.getElementById("dilemma-copy-btn");
-    if (copyBtn) copyBtn.addEventListener("click", function () {
-      const status = document.getElementById("dilemma-copy-status");
-      if (!lastDilemmaResult) return;
-      const v = VERDICT_LABELS[lastDilemmaResult.verdict] || VERDICT_LABELS.tweak;
-      const text = "BYS Dilemma #" + lastDilemmaNumber + ": " + (lastDilemmaResult.score || 0) + "/100 — " + v;
-      copyPlainText(text, function (ok) {
-        if (status) status.textContent = ok ? "Copied." : "Copy failed — select the text manually.";
+        [1, 2].forEach(function (i) {
+          const b = document.getElementById("dilemma-choice-" + i);
+          if (!b) return;
+          const isBetter = (i - 1) === dl.better;
+          b.style.borderColor = isBetter ? "#d4ff3f" : "rgba(255,255,255,0.2)";
+          b.style.background = isBetter ? "rgba(212,255,63,0.12)" : "rgba(0,0,0,0.3)";
+        });
       });
     });
   }
 
-  /* ---- Share-result link (read-only, no database) ---- */
+  /* ---- Share-result link (read-only, no database) ----
+     Five-changes-v2: the link carries the verdict and ALL THREE
+     reply texts only — no roast, no draft, no their message. The
+     shared page asks "Which would you send?" and a tap adds the
+     pick to the link (#r=…&pick=1/2/3) so it can be sent back. */
+  let sharedLinkB64 = "";
   function encodeResultLink(data) {
-    const best = rizzBestReply({ type: "rizz", result: data });
+    const replies = Array.isArray(data.replies) ? data.replies : [];
+    const smooth = replies.find(function (r) { return r && r.style === "smooth"; });
+    const funny = replies.find(function (r) { return r && r.style === "funny"; });
+    const chill = replies.find(function (r) { return r && r.style === "chill"; });
     const payload = {
       m: data.mode || "rizz",
-      s: typeof data.score === "number" ? Math.round(data.score) : 0,
-      l: String(data.label || "").slice(0, 40),
-      v: String(data.verdict || "tweak").slice(0, 10),
-      r: String(data.roast || "").slice(0, 200),
-      b: String(best || "").slice(0, 200)
+      v: String(data.verdict || "").slice(0, 10),
+      r1: String((smooth && smooth.text) || (replies[0] && replies[0].text) || "").slice(0, 200),
+      r2: String((funny && funny.text) || (replies[1] && replies[1].text) || "").slice(0, 200),
+      r3: String((chill && chill.text) || (replies[2] && replies[2].text) || "").slice(0, 200)
     };
     const json = JSON.stringify(payload);
     const b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -2198,9 +2291,29 @@
       const b64 = m[1].replace(/-/g, "+").replace(/_/g, "/");
       const json = decodeURIComponent(escape(atob(b64)));
       const d = JSON.parse(json);
-      if (!d || typeof d.s !== "number" || d.s < 0 || d.s > 100) return null;
-      return { mode: d.m || "rizz", score: d.s, label: d.l || "", verdict: d.v || "tweak", lands: "", dontSend: "", roast: d.r || "", signal: "", tip: "", replies: [{ style: "smooth", text: d.b || "" }] };
+      if (!d || !isValidVerdict(d.v)) return null;
+      if (typeof d.r1 !== "string" || !d.r1.trim() || typeof d.r2 !== "string" || !d.r2.trim() || typeof d.r3 !== "string" || !d.r3.trim()) return null;
+      const pickMatch = (hash || "").match(/&pick=([123])/);
+      return {
+        mode: d.m || "rizz", verdict: d.v,
+        replies: [{ style: "smooth", text: d.r1 }, { style: "funny", text: d.r2 }, { style: "chill", text: d.r3 }],
+        pick: pickMatch ? Number(pickMatch[1]) : null,
+        score: null, label: "", lands: "", dontSend: "", roast: "", signal: "", tip: ""
+      };
     } catch (e) { return null; }
+  }
+  function markSharedVotePick(n, updateHash) {
+    [1, 2, 3].forEach(function (i) {
+      const btn = document.getElementById("shared-vote-" + i);
+      if (!btn) return;
+      btn.style.borderColor = i === n ? "#d4ff3f" : "rgba(255,255,255,0.2)";
+      btn.style.background = i === n ? "rgba(212,255,63,0.15)" : "rgba(0,0,0,0.25)";
+    });
+    const status = document.getElementById("shared-vote-status");
+    if (status) status.textContent = "You picked reply " + n + " — send the link back and they'll see your pick.";
+    if (updateHash && sharedLinkB64) {
+      try { location.hash = "#r=" + sharedLinkB64 + "&pick=" + n; } catch (e) { /* ignore */ }
+    }
   }
   function renderSharedResult(data) {
     const ids = ["tab-btn-text", "tab-btn-shot", "panel-rizz", "panel-shot", "rizz-turnstile", "empty-state", "dilemma-section", "account-section", "history-section"];
@@ -2209,14 +2322,33 @@
     if (sentWrap) sentWrap.classList.add("hidden");
     const actions = document.getElementById("rizz-actions");
     if (actions) actions.classList.add("hidden");
+    const resultsEl = document.getElementById("rizz-results");
+    if (resultsEl) resultsEl.classList.add("hidden");
     const banner = document.getElementById("shared-banner");
     if (banner) banner.classList.remove("hidden");
-    displayRizz(data);
+    /* The vote page: the verdict, the question, the three replies. */
+    const m = (location.hash || "").match(/#r=([A-Za-z0-9\-_]+)/);
+    sharedLinkB64 = m ? m[1] : "";
+    const vEl = document.getElementById("shared-verdict");
+    if (vEl) vEl.textContent = VERDICT_LABELS[data.verdict] || "";
+    const replies = Array.isArray(data.replies) ? data.replies : [];
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("shared-vote-" + n);
+      if (!btn) return;
+      const r = replies[n - 1];
+      btn.textContent = (r && r.text) || "";
+      btn.style.borderColor = "rgba(255,255,255,0.2)";
+      btn.style.background = "rgba(0,0,0,0.25)";
+    });
+    const status = document.getElementById("shared-vote-status");
+    if (status) status.textContent = "";
+    if (data.pick) markSharedVotePick(data.pick, false);
+    const vote = document.getElementById("shared-vote");
+    if (vote) vote.classList.remove("hidden");
   }
   function wireShareLink() {
     const btn = document.getElementById("rizz-share-link-btn");
-    if (!btn) return;
-    btn.addEventListener("click", function () {
+    if (btn) btn.addEventListener("click", function () {
       const status = document.getElementById("rizz-share-link-status");
       const it = getCurrentHistoryItem();
       if (!it || !it.result) {
@@ -2229,11 +2361,15 @@
         return;
       }
       copyPlainText(url, function (ok) {
-        if (status) status.textContent = ok ? "Link copied — anyone who opens it sees this result." : "Copy failed — select the link manually.";
+        if (status) status.textContent = ok ? "Link copied — anyone who opens it picks which reply they'd send." : "Copy failed — select the link manually.";
       });
     });
     const tryBtn = document.getElementById("shared-try-btn");
     if (tryBtn) tryBtn.addEventListener("click", function () { location.href = location.pathname + location.search; });
+    [1, 2, 3].forEach(function (n) {
+      const voteBtn = document.getElementById("shared-vote-" + n);
+      if (voteBtn) voteBtn.addEventListener("click", function () { markSharedVotePick(n, true); });
+    });
   }
   function checkSharedResult() {
     const shared = decodeResultLink(location.hash || "");
@@ -2371,7 +2507,7 @@
     const status = document.getElementById("shot-status");
     if (btn) { btn.dataset.busy = "1"; btn.disabled = true; }
     if (status) status.textContent = "Reading your screenshot...";
-    const payload = { image: shotImageDataUrl, mimeType: shotImageMime, turnstileToken: token };
+    const payload = { image: shotImageDataUrl, mimeType: shotImageMime, turnstileToken: token, mode: shotMode };
     const styleSample = getStyleSample();
     if (styleSample) payload.styleSample = styleSample;
     const styleExamples = getStyleExamples();
@@ -2389,7 +2525,11 @@
         });
       }
       return resp.json().then(function (data) {
-        const saved = addHistory({ type: "rizz", mode: "shot", input: "Screenshot check", result: data, person: getSelectedPersonId() || "" });
+        /* Five-changes-v2: a bad verdict is a failed check — show
+           the failure and add NO history, so it consumes no daily
+           check. The history item carries the mode the check used. */
+        if (!isValidVerdict(data.verdict)) { showError("That check failed. Try again.", "shot-error-msg"); return; }
+        const saved = addHistory({ type: "rizz", mode: data.mode || shotMode, input: "Screenshot check", result: data, person: getSelectedPersonId() || "" });
         currentHistoryId = saved.id;
         recordStreakDay();
         displayRizz(data);
