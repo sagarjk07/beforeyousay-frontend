@@ -176,7 +176,7 @@
       </div>
       <div id="people-panel" class="hidden mb-4 p-4 rounded-2xl border" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">
         <p class="text-sm font-bold text-white mb-1">Your people</p>
-        <p class="text-xs mb-3" style="color: rgba(255,255,255,0.6);">Saved on this device only — so checks remember who you are texting. Cloud sync for people is coming later.</p>
+        <p class="text-xs mb-3" style="color: rgba(255,255,255,0.6);">Profiles sync to your account when you're signed in. Delete everything removes them from the cloud too.</p>
         <div class="space-y-3 mb-3">
           <input id="person-name" type="text" maxlength="60" placeholder="Name — e.g. Sarah" class="w-full p-3 rounded-xl border text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
           <select id="person-relationship" class="w-full p-3 rounded-xl border text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
@@ -520,6 +520,8 @@
   const GUEST_HISTORY_KEY = "beforeyousay.history.guest.v1";
   const GUEST_PROFILE_KEY = "beforeyousay.profile.guest.v1";
   const DELETED_CLOUD_IDS_KEY = "beforeyousay.history.deletedCloudIds.v1";
+  const GUEST_PEOPLE_KEY = "beforeyousay.people.guest.v1";
+  const DELETED_PEOPLE_CLOUD_IDS_KEY = "beforeyousay.people.deletedCloudIds.v1";
   /* Pivot 3: old history items (pre-Rizz) render generically as a
      past check, with no lane or mode wording. */
   let cloudSyncInProgress = false;
@@ -626,12 +628,179 @@
       if (deletedIds.length) {
         try { await supabaseClient.from("history").delete().in("id", deletedIds).eq("user_id", userId); saveDeletedCloudIds([]); } catch (e) { /* keep tombstones; retry next sync */ }
       }
+      /* Cloud people memory: same sign-in sync for profiles. */
+      await syncPeopleFromCloud(userId);
       setSyncStatus(uploadFailed ? "Saved on this device — cloud sync will retry." : "Showing your cloud history.");
     } catch (e) {
       /* Cloud load failed: keep the local history exactly as it is. */
       setSyncStatus("Cloud history couldn't load — showing history saved on this device.");
       setHistoryLocation(false);
     } finally { cloudSyncInProgress = false; }
+  }
+  /* ---------- Cloud people memory: sync + rolling summary ----------
+     People sync mirrors the history sync exactly: local first, cloud
+     in the background, cloud wins for display, tombstones for deletes,
+     and a cloud failure never breaks the UI. Guests never touch the
+     cloud — their people stay local-only, exactly as today.
+     The cloud row id (uuid) lives on the local person as cloudId; the
+     local id ("p-...") never leaves the device, so history items keep
+     pointing at the same person. The summary is owned by the backend
+     (POST /people/summary) — the frontend never writes it, only reads
+     it back from the cloud row. */
+  function getDeletedPeopleCloudIds() { try { const a = JSON.parse(localStorage.getItem(DELETED_PEOPLE_CLOUD_IDS_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function saveDeletedPeopleCloudIds(ids) { try { localStorage.setItem(DELETED_PEOPLE_CLOUD_IDS_KEY, JSON.stringify(ids.slice(0, 100))); } catch (e) { /* storage unavailable */ } }
+  function rememberDeletedPeopleCloudId(cloudId) { if (!cloudId) return; const ids = getDeletedPeopleCloudIds(); if (ids.indexOf(cloudId) === -1) { ids.push(cloudId); saveDeletedPeopleCloudIds(ids); } }
+  function personToCloudInsertRow(person, userId) {
+    const c = person.counts || { warm: 0, cold: 0, nothing: 0, plans: 0 };
+    return {
+      user_id: userId,
+      name: String(person.name || "").slice(0, 60),
+      relationship: String(person.relationship || "other"),
+      notes: String(person.notes || "").slice(0, 500),
+      summary: String(person.summary || "").slice(0, 500),
+      outcome_warm: c.warm || 0, outcome_cold: c.cold || 0, outcome_nothing: c.nothing || 0, outcome_plans: c.plans || 0,
+      last_outcome: person.lastOutcome ? person.lastOutcome.value : null,
+      last_checked_at: person.lastOutcome && person.lastOutcome.at ? person.lastOutcome.at : null
+    };
+  }
+  function personToCloudUpdateFields(person) {
+    /* The update never carries summary — the backend owns it, and a
+       stale local copy must never clobber a newer cloud summary. */
+    const c = person.counts || { warm: 0, cold: 0, nothing: 0, plans: 0 };
+    return {
+      name: String(person.name || "").slice(0, 60),
+      relationship: String(person.relationship || "other"),
+      notes: String(person.notes || "").slice(0, 500),
+      outcome_warm: c.warm || 0, outcome_cold: c.cold || 0, outcome_nothing: c.nothing || 0, outcome_plans: c.plans || 0,
+      last_outcome: person.lastOutcome ? person.lastOutcome.value : null,
+      last_checked_at: person.lastOutcome && person.lastOutcome.at ? person.lastOutcome.at : null,
+      updated_at: new Date().toISOString()
+    };
+  }
+  function cloudRowToPerson(row, localId) {
+    return {
+      id: localId,
+      cloudId: row.id,
+      name: row.name || "",
+      relationship: row.relationship || "other",
+      notes: row.notes || "",
+      summary: typeof row.summary === "string" ? row.summary.slice(0, 500) : "",
+      counts: {
+        warm: Number(row.outcome_warm) || 0,
+        cold: Number(row.outcome_cold) || 0,
+        nothing: Number(row.outcome_nothing) || 0,
+        plans: Number(row.outcome_plans) || 0
+      },
+      lastOutcome: row.last_outcome ? { value: row.last_outcome, at: row.last_checked_at || null } : null
+    };
+  }
+  /* Pure merge: cloud rows + local people -> { merged, toUpload }.
+     Matched by cloudId; cloud wins for what is shown. A local person
+     with a cloudId whose row is gone from the cloud was deleted on
+     another device, so it drops. Local-only people upload once. No
+     DOM, no network. */
+  function mergeCloudPeople(localPeople, cloudRows) {
+    const rows = Array.isArray(cloudRows) ? cloudRows : [];
+    const byCloudId = {};
+    rows.forEach(function (r) { byCloudId[r.id] = r; });
+    const merged = [];
+    rows.forEach(function (r, i) {
+      const local = (Array.isArray(localPeople) ? localPeople : []).filter(function (p) { return p.cloudId === r.id; })[0];
+      if (local) merged.push(cloudRowToPerson(r, local.id));
+      else merged.push(cloudRowToPerson(r, "p-" + Date.now().toString(36) + "-" + i));
+    });
+    const toUpload = [];
+    (Array.isArray(localPeople) ? localPeople : []).forEach(function (p) {
+      if (p.cloudId) return; /* already in the cloud (or deleted elsewhere — dropped above) */
+      toUpload.push(p);
+    });
+    toUpload.forEach(function (p) { merged.push(p); });
+    merged.sort(function (a, b) {
+      const an = (a.name || "").toLowerCase(), bn = (b.name || "").toLowerCase();
+      return an < bn ? -1 : an > bn ? 1 : 0;
+    });
+    return { merged: merged.slice(0, 20), toUpload: toUpload };
+  }
+  async function syncPersonToCloud(personId) {
+    if (!isSignedIn() || !personId) return true;
+    const people = loadPeople();
+    const person = people.filter(function (p) { return p.id === personId; })[0];
+    if (!person) return true;
+    try {
+      if (person.cloudId) {
+        const res = await supabaseClient.from("people").update(personToCloudUpdateFields(person)).eq("id", person.cloudId).eq("user_id", supabaseSession.user.id);
+        if (res.error) throw res.error;
+      } else {
+        const res = await supabaseClient.from("people").insert(personToCloudInsertRow(person, supabaseSession.user.id)).select("id").single();
+        if (res.error) throw res.error;
+        person.cloudId = res.data.id;
+        const items = loadPeople();
+        const found = items.find(function (x) { return x.id === person.id; });
+        if (found) { found.cloudId = person.cloudId; savePeople(items); }
+      }
+      return true;
+    } catch (e) { setSyncStatus("Saved on this device — cloud sync will retry."); return false; }
+  }
+  async function syncPeopleFromCloud(userId) {
+    /* Guest backup, taken only now that the cloud list is known —
+       same rule as history: only pre-sign-in local-only people, so a
+       reload while signed in can never leak cloud people to the next
+       person on this device on sign-out. */
+    const localBefore = loadPeople();
+    const guestPeople = localBefore.filter(function (p) { return !p.cloudId; });
+    if (guestPeople.length && !localStorage.getItem(GUEST_PEOPLE_KEY)) {
+      try { localStorage.setItem(GUEST_PEOPLE_KEY, JSON.stringify(guestPeople)); } catch (e) { /* storage unavailable */ }
+    }
+    try {
+      const res = await supabaseClient.from("people").select("id,user_id,created_at,updated_at,name,relationship,notes,summary,outcome_warm,outcome_cold,outcome_nothing,outcome_plans,last_outcome,last_checked_at").eq("user_id", userId).order("updated_at", { ascending: false }).limit(20);
+      if (res.error) throw res.error;
+      const deletedIds = getDeletedPeopleCloudIds();
+      const cloudRows = (res.data || []).filter(function (r) { return deletedIds.indexOf(r.id) === -1; });
+      const merged = mergeCloudPeople(loadPeople(), cloudRows);
+      savePeople(merged.merged); renderPeople();
+      let uploadFailed = false;
+      for (const p of merged.toUpload) { if (!(await syncPersonToCloud(p.id))) uploadFailed = true; }
+      if (deletedIds.length) {
+        try { await supabaseClient.from("people").delete().in("id", deletedIds).eq("user_id", userId); saveDeletedPeopleCloudIds([]); } catch (e) { /* keep tombstones; retry next sync */ }
+      }
+      if (uploadFailed) setSyncStatus("Saved on this device — cloud sync will retry.");
+    } catch (e) {
+      /* People sync failed: the local people list stays exactly as it is. */
+      setSyncStatus("Saved on this device — cloud sync will retry.");
+    }
+  }
+  function peopleSummaryUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/people/summary"; }
+  async function refreshPersonSummary(personId, checkText, outcome, mode) {
+    /* Fire-and-forget: the summary teaches the next check, but it
+       must never block or delay the check result, and a failure is
+       silent — the summary just stays as it was. */
+    if (!personId || !isSignedIn()) return;
+    try {
+      let person = loadPeople().filter(function (p) { return p.id === personId; })[0];
+      if (!person) return;
+      if (!person.cloudId) {
+        const ok = await syncPersonToCloud(personId);
+        if (!ok) return;
+        person = loadPeople().filter(function (p) { return p.id === personId; })[0];
+        if (!person || !person.cloudId) return;
+      }
+      const text = String(checkText || "").trim();
+      if (!text) return;
+      const res = await fetch(peopleSummaryUrl(), {
+        method: "POST",
+        headers: await freshAuthHeaders(),
+        body: JSON.stringify({ personId: person.cloudId, checkText: text.slice(0, 1000), outcome: outcome || undefined, mode: mode || "rizz" })
+      });
+      if (!res.ok) return;
+      const data = await res.json().catch(function () { return null; });
+      if (!data || typeof data.summary !== "string") return;
+      const people = loadPeople();
+      const found = people.filter(function (p) { return p.id === personId; });
+      if (!found.length) return;
+      found[0].summary = data.summary.slice(0, 500);
+      savePeople(people);
+      renderPeople();
+    } catch (e) { /* silent — the summary stays as it was */ }
   }
   function restoreGuestData() {
     try {
@@ -641,8 +810,10 @@
       if (rawP) { const p = JSON.parse(rawP); saveProfile(Object.assign(defaultProfile(), p)); localStorage.removeItem(GUEST_PROFILE_KEY); }
       const rawC = localStorage.getItem(GUEST_CONTEXTS_KEY);
       if (rawC) { const items = JSON.parse(rawC); if (Array.isArray(items)) saveContexts(items); localStorage.removeItem(GUEST_CONTEXTS_KEY); }
+      const rawPe = localStorage.getItem(GUEST_PEOPLE_KEY);
+      if (rawPe) { const items = JSON.parse(rawPe); if (Array.isArray(items)) savePeople(items); localStorage.removeItem(GUEST_PEOPLE_KEY); }
     } catch (e) { /* keep whatever is on this device */ }
-    renderHistory(); setHistoryLocation(false); setSyncStatus("");
+    renderHistory(); renderPeople(); setHistoryLocation(false); setSyncStatus("");
     cloudSyncedUserId = null;
   }
 
@@ -1081,7 +1252,7 @@
   function deleteAccountUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/delete-account"; }
   function deleteConfirmValid(value) { return String(value || "").trim() === "DELETE"; }
   function clearAllLocalData() {
-    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, STYLE_SAMPLE_KEY, STREAK_KEY, PEOPLE_KEY, PEOPLE_SELECTED_KEY, STYLE_EXAMPLES_KEY, INSTALL_DISMISSED_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
+    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, STYLE_SAMPLE_KEY, STREAK_KEY, PEOPLE_KEY, PEOPLE_SELECTED_KEY, GUEST_PEOPLE_KEY, DELETED_PEOPLE_CLOUD_IDS_KEY, STYLE_EXAMPLES_KEY, INSTALL_DISMISSED_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
   }
   async function deleteMyAccount() {
     const statusEl = document.getElementById("delete-status");
@@ -1097,6 +1268,7 @@
       const results = await Promise.all([
         supabaseClient.from("history").delete().eq("user_id", userId),
         supabaseClient.from("contexts").delete().eq("user_id", userId),
+        supabaseClient.from("people").delete().eq("user_id", userId),
         supabaseClient.from("profiles").delete().eq("id", userId),
         /* Pivot 3: the delete also removes any old company-policy rows
            still in the cloud. */
@@ -1888,6 +2060,10 @@
         const saved = addHistory({ type: "rizz", mode: currentMode, input: text, result: data, person: getSelectedPersonId() || "" });
         currentHistoryId = saved.id;
         recordStreakDay();
+        /* Cloud people memory: the check teaches the summary — fire
+           and forget, never blocks the result. */
+        const _personId = getSelectedPersonId();
+        if (_personId) refreshPersonSummary(_personId, text, null, currentMode);
         displayRizz(data);
       });
     }).catch(function (err) {
@@ -1952,8 +2128,39 @@
   const PEOPLE_RELATIONSHIPS = ["Hinge match", "crush", "boss", "ex", "friend", "family", "other"];
   let editingPersonId = null;
 
+  /* Cloud people memory: a local person carries its cloud row id
+     (null until it has synced), the rolling summary (written by the
+     backend, never by the frontend), and the outcome counts + last
+     outcome, which are columns on the cloud row. Older local people
+     (from before this batch) get the defaults here and keep working. */
+  function normalisePerson(p) {
+    if (!p || typeof p !== "object") return null;
+    /* counts stays null for people saved before this batch — the
+       card derives them from history until the first outcome tap or
+       cloud merge stores real counts. */
+    const rawCounts = (p.counts && typeof p.counts === "object") ? p.counts : null;
+    return {
+      id: String(p.id || ""),
+      cloudId: typeof p.cloudId === "string" ? p.cloudId : null,
+      name: String(p.name || ""),
+      relationship: String(p.relationship || "other"),
+      notes: String(p.notes || "").slice(0, 500),
+      summary: typeof p.summary === "string" ? p.summary.slice(0, 500) : "",
+      counts: rawCounts ? {
+        warm: Number(rawCounts.warm) || 0,
+        cold: Number(rawCounts.cold) || 0,
+        nothing: Number(rawCounts.nothing) || 0,
+        plans: Number(rawCounts.plans) || 0
+      } : null,
+      lastOutcome: (p.lastOutcome && p.lastOutcome.value) ? { value: p.lastOutcome.value, at: p.lastOutcome.at || null } : null
+    };
+  }
   function loadPeople() {
-    try { const arr = JSON.parse(localStorage.getItem(PEOPLE_KEY) || "[]"); return Array.isArray(arr) ? arr : []; }
+    try {
+      const arr = JSON.parse(localStorage.getItem(PEOPLE_KEY) || "[]");
+      if (!Array.isArray(arr)) return [];
+      return arr.map(normalisePerson).filter(function (p) { return p && p.id && p.name; });
+    }
     catch (e) { return []; }
   }
   function savePeople(list) {
@@ -1986,6 +2193,9 @@
     let s = person.name || "";
     if (person.relationship) s += " (" + person.relationship + ")";
     if (person.notes) s += ": " + person.notes;
+    /* Cloud people memory: the rolling summary — what the checks so
+       far actually showed about this person. */
+    if (person.summary) s += " About them: " + person.summary;
     /* Five-changes-v2: the real context — what happened last time
        with this person. The "what" is the reply the user copied,
        if they copied one, else the raw draft they checked. */
@@ -2022,12 +2232,16 @@
         list.innerHTML = '<p class="text-sm" style="color: rgba(255,255,255,0.6);">No people yet. Add someone you text a lot — checks will remember who they are.</p>';
       } else {
         list.innerHTML = people.map(function (p) {
-          const stats = personOutcomeStats(p.id);
+          /* Cloud people memory: stored counts (from this device or
+             the cloud row) when the person has them, else derive them
+             from history exactly as before. */
+          const stats = p.counts ? { counts: p.counts, last: p.lastOutcome } : personOutcomeStats(p.id);
           const counts = "Warm " + stats.counts.warm + " · Cold " + stats.counts.cold + " · Nothing " + stats.counts.nothing + " · Plans " + stats.counts.plans;
           const last = stats.last ? "Last: " + OUTCOME_LABELS[stats.last.value] : "No outcomes yet";
           return '<div class="p-3 rounded-xl border" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">'
             + '<p class="text-sm font-bold text-white">' + escapeHtml(p.name) + ' <span style="color: rgba(255,255,255,0.6);">(' + escapeHtml(p.relationship || "other") + ')</span></p>'
             + (p.notes ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">' + escapeHtml(p.notes) + '</p>' : '')
+            + (p.summary ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">About them: ' + escapeHtml(p.summary) + '</p>' : '')
             + '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.6);">' + counts + '</p>'
             + '<p class="text-xs" style="color: rgba(255,255,255,0.6);">' + escapeHtml(last) + '</p>'
             + '<div class="flex gap-2 mt-2"><button type="button" data-person-edit="' + escapeHtml(p.id) + '" class="px-3 py-1.5 rounded-lg border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Edit</button>'
@@ -2056,6 +2270,7 @@
       const notes = (notesEl.value || "").trim().slice(0, 500);
       const rel = PEOPLE_RELATIONSHIPS.indexOf(relEl.value) !== -1 ? relEl.value : "other";
       const people = loadPeople();
+      const changedId = editingPersonId || null;
       if (editingPersonId) {
         const found = people.filter(function (p) { return p.id === editingPersonId; });
         if (found.length) { found[0].name = name; found[0].relationship = rel; found[0].notes = notes; }
@@ -2069,6 +2284,10 @@
         if (status) status.textContent = name + " added.";
       }
       savePeople(people);
+      /* Cloud people memory: the change writes through to the cloud
+         when signed in (local first, cloud in the background). */
+      if (changedId) syncPersonToCloud(changedId);
+      else { const last = people[people.length - 1]; if (last) syncPersonToCloud(last.id); }
       nameEl.value = ""; notesEl.value = ""; relEl.value = "Hinge match";
       renderPeople();
     });
@@ -2103,8 +2322,19 @@
       }
       if (delId) {
         if (!window.confirm("Delete this person? Their history stays, but the profile is gone.")) return;
+        const removed = loadPeople().filter(function (p) { return p.id === delId; })[0];
         const kept = loadPeople().filter(function (p) { return p.id !== delId; });
         savePeople(kept);
+        /* Cloud people memory: a delete on this device deletes the
+           cloud row too (tombstoned so the next sync retries it). */
+        if (removed && removed.cloudId) {
+          rememberDeletedPeopleCloudId(removed.cloudId);
+          if (isSignedIn()) {
+            supabaseClient.from("people").delete().eq("id", removed.cloudId).eq("user_id", supabaseSession.user.id).then(function (res) {
+              if (!res.error) { const ids = getDeletedPeopleCloudIds().filter(function (x) { return x !== removed.cloudId; }); saveDeletedPeopleCloudIds(ids); }
+            });
+          }
+        }
         if (getSelectedPersonId() === delId) setSelectedPersonId("");
         renderPeople();
       }
@@ -2175,8 +2405,27 @@
       if (!target) return;
       const it = getCurrentHistoryItem();
       if (!it) return;
-      updateHistoryItem(it.id, { outcome: { value: target.getAttribute("data-outcome"), at: new Date().toISOString() } });
+      const outcomeValue = target.getAttribute("data-outcome");
+      updateHistoryItem(it.id, { outcome: { value: outcomeValue, at: new Date().toISOString() } });
       renderOutcomeState();
+      /* Cloud people memory: the outcome is stored on the person's
+         profile (recomputed from history, so changing an outcome
+         later never double-counts), synced to the cloud, and teaches
+         the rolling summary — with the reply they copied if they
+         copied one, else the draft they checked. */
+      if (it.person) {
+        const people = loadPeople();
+        const found = people.filter(function (p) { return p.id === it.person; });
+        if (found.length) {
+          const stats = personOutcomeStats(it.person);
+          found[0].counts = stats.counts;
+          found[0].lastOutcome = stats.last;
+          savePeople(people);
+          syncPersonToCloud(found[0].id);
+          const checkText = it.copiedReply || it.input || "";
+          refreshPersonSummary(found[0].id, checkText, outcomeValue, it.mode || currentMode);
+        }
+      }
       renderPeople();
     });
   }
@@ -2438,13 +2687,20 @@
     });
     const yes = document.getElementById("delete-everything-yes-btn");
     if (yes) yes.addEventListener("click", function () {
-      [PEOPLE_KEY, PEOPLE_SELECTED_KEY, HISTORY_KEY, GUEST_HISTORY_KEY, STREAK_KEY, STYLE_SAMPLE_KEY, STYLE_EXAMPLES_KEY].forEach(function (k) {
+      [PEOPLE_KEY, PEOPLE_SELECTED_KEY, GUEST_PEOPLE_KEY, DELETED_PEOPLE_CLOUD_IDS_KEY, HISTORY_KEY, GUEST_HISTORY_KEY, STREAK_KEY, STYLE_SAMPLE_KEY, STYLE_EXAMPLES_KEY].forEach(function (k) {
         try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ }
       });
+      /* Cloud people memory: Delete everything removes the cloud
+         profiles too — same as the history rows. */
+      const signedIn = isSignedIn();
+      if (signedIn) {
+        const userId = supabaseSession.user.id;
+        supabaseClient.from("people").delete().eq("user_id", userId).then(function () { /* fire-and-forget */ });
+      }
       const c = document.getElementById("delete-everything-confirm");
       if (c) c.classList.add("hidden");
       const status = document.getElementById("delete-everything-status");
-      if (status) status.textContent = "Deleted from this device. Your sign-in account is unchanged.";
+      if (status) status.textContent = signedIn ? "Deleted from this device and the cloud. Your sign-in account is unchanged." : "Deleted from this device. Your sign-in account is unchanged.";
       renderPeople();
       renderHistory();
       renderStreak();
