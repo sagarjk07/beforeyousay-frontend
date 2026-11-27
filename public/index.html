@@ -62,6 +62,14 @@
     .shot-dropzone { border: 2px dashed rgba(255,255,255,0.3); border-radius: 1rem; padding: 2rem 1rem; text-align: center; cursor: pointer; }
     .shot-dropzone.drag { border-color: #d4ff3f; background: rgba(212,255,63,0.08); }
     .shot-preview { max-width: 100%; max-height: 320px; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.2); }
+    /* GC-EVOLUTION: verdict badge (one per verdict) + outcome buttons. */
+    .verdict-badge { display: inline-block; padding: 0.6rem 1.2rem; border-radius: 9999px; font-size: 1.05rem; font-weight: 800; }
+    .verdict-send { background: #d4ff3f; color: #160a2e; }
+    .verdict-tweak { background: #fbbf24; color: #160a2e; }
+    .verdict-wait { background: #fb923c; color: #160a2e; }
+    .verdict-dont { background: #ef4444; color: #ffffff; }
+    .outcome-btn { padding: 0.5rem 0.9rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .outcome-btn.active { background: #d4ff3f; color: #160a2e; border-color: #d4ff3f; }
   </style>
 </head>
 <body class="min-h-screen rizz-body text-white">
@@ -106,7 +114,28 @@
     <p id="daily-tip" class="text-sm max-w-lg mx-auto" style="color: rgba(255,255,255,0.7);"></p>
   </section>
 
+  <!-- Install: add to home screen (PWA) / iOS help. Shown by JS only. -->
+  <div id="install-banner" class="hidden rounded-2xl p-4 border max-w-3xl mx-auto mb-2" style="background: rgba(212,255,63,0.12);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">Add BeforeYouSay to your home screen</p>
+    <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">One tap to check a text — no more opening the browser and pasting.</p>
+    <div class="flex gap-2">
+      <button id="install-btn" type="button" class="px-4 py-2.5 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Add to Home Screen</button>
+      <button id="install-dismiss-btn" type="button" class="px-4 py-2.5 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Not now</button>
+    </div>
+  </div>
+  <div id="ios-install-help" class="hidden rounded-2xl p-4 border max-w-3xl mx-auto mb-2" style="background: rgba(212,255,63,0.12);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">Add BeforeYouSay to your home screen</p>
+    <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">On iPhone: tap Share at the bottom, then "Add to Home Screen". Then it opens like an app.</p>
+    <button id="ios-install-close-btn" type="button" class="px-4 py-2.5 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Got it</button>
+  </div>
+
   <!-- App Card -->
+  <!-- Shared result banner (read-only view, shown by JS when #r= is in the URL). -->
+  <div id="shared-banner" class="hidden mb-6 rounded-2xl p-5 border text-center" style="background: rgba(212,255,63,0.1);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">Someone shared this result with you</p>
+    <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">This is a read-only result — no login needed to see it.</p>
+    <button id="shared-try-btn" type="button" class="px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Try it yourself</button>
+  </div>
   <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
     <!-- Evolve 2027: two tabs — paste a text, or check a screenshot. One
@@ -125,6 +154,38 @@
         <button type="button" data-mode="opener" class="mode-btn">First text</button>
         <button type="button" data-mode="apology" class="mode-btn">Sorry text</button>
         <button type="button" data-mode="dry" class="mode-btn">Left on read?</button>
+        <button type="button" data-mode="calm" class="mode-btn">Calm it down</button>
+        <button type="button" data-mode="work" class="mode-btn">Work / Boss</button>
+        <button type="button" data-mode="boundary" class="mode-btn">Say no</button>
+        <button type="button" data-mode="deescalate" class="mode-btn">De-escalate a fight</button>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <label for="person-picker" class="text-sm font-bold text-white">Who is this for?</label>
+        <select id="person-picker" class="py-2 px-3 rounded-xl border text-sm font-bold text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></select>
+        <button id="people-manage-btn" type="button" class="px-3 py-2.5 rounded-xl border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">People</button>
+      </div>
+      <div id="people-panel" class="hidden mb-4 p-4 rounded-2xl border" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">
+        <p class="text-sm font-bold text-white mb-1">Your people</p>
+        <p class="text-xs mb-3" style="color: rgba(255,255,255,0.6);">Saved on this device only — so checks remember who you are texting. Cloud sync for people is coming later.</p>
+        <div class="space-y-3 mb-3">
+          <input id="person-name" type="text" maxlength="60" placeholder="Name — e.g. Sarah" class="w-full p-3 rounded-xl border text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
+          <select id="person-relationship" class="w-full p-3 rounded-xl border text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
+            <option value="Hinge match">Hinge match</option>
+            <option value="crush">crush</option>
+            <option value="boss">boss</option>
+            <option value="ex">ex</option>
+            <option value="friend">friend</option>
+            <option value="family">family</option>
+            <option value="other">other</option>
+          </select>
+          <textarea id="person-notes" rows="2" maxlength="500" placeholder="Notes — e.g. dry texter, hates excuses, we met on Hinge" class="w-full p-3 rounded-xl border text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <button id="person-save-btn" type="button" class="flex-1 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Add person</button>
+          <button id="person-cancel-edit-btn" type="button" class="hidden px-4 py-3 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Cancel</button>
+        </div>
+        <div id="people-list" class="space-y-3"></div>
+        <p id="person-form-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
       </div>
       <h3 id="mode-title" class="text-lg font-bold text-white mb-1">Rizz Check</h3>
       <p id="mode-intro" class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Paste the DM or text you're about to send. We score the rizz, roast it (gently), and write you three better replies.</p>
@@ -137,6 +198,10 @@
         <div>
           <label for="style-sample" class="block text-sm font-bold text-white mb-1">How I usually text (optional)</label>
           <input id="style-sample" type="text" maxlength="280" placeholder="lowercase, short, lots of lol" class="w-full p-3 rounded-xl border rizz-input focus:outline-none text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)">
+        </div>
+        <div>
+          <label for="style-examples" class="block text-sm font-bold text-white mb-1">Texts you actually sent (optional)</label>
+          <textarea id="style-examples" rows="2" maxlength="500" placeholder="Paste 2-3 texts you actually sent, one per line — this teaches your voice better than a description." class="w-full p-3 rounded-xl border rizz-input focus:outline-none text-sm text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
         </div>
         <span id="rizz-error-msg" class="hidden text-sm font-medium border px-4 py-2 rounded-xl" style="color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)"></span>
         <button id="rizz-check-btn" type="button" class="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;" disabled>
@@ -181,6 +246,7 @@
       <!-- Rizz results -->
       <div id="rizz-results" class="hidden space-y-5 fade-in">
         <div class="p-6 rounded-2xl border text-center" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">
+          <p id="rizz-verdict" class="verdict-badge verdict-tweak mb-4">Tweak it</p>
           <div class="rizz-score-ring mx-auto rounded-full" id="rizz-score-ring" style="--score: 0; width: 9rem; height: 9rem;padding: 0.5rem">
             <div class="w-full rounded-full flex flex-col items-center justify-center" style="background: #1e0b3d;height: 100%">
               <span id="rizz-score" class="font-bold text-white leading-none" style="font-size: 3rem;">0</span>
@@ -188,6 +254,8 @@
             </div>
           </div>
           <p id="rizz-label" class="mt-4 inline-block px-4 py-2 rounded-full text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Smooth</p>
+          <p id="rizz-lands" class="mt-3 text-sm leading-relaxed" style="color: rgba(255,255,255,0.8);"></p>
+          <p id="rizz-dont-send" class="hidden mt-2 text-sm font-bold leading-relaxed px-4 py-2 rounded-xl" style="color: #fecaca; background: rgba(239,68,68,0.15);"></p>
         </div>
         <div class="p-5 rounded-2xl border" style="background: rgba(255,46,136,0.12);border-color: rgba(255,255,255,0.1)">
           <p id="rizz-roast-heading" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #ff7ab8;">The roast</p>
@@ -222,11 +290,26 @@
             <button onclick="copyText('rizz-reply-chill', this)" class="copy-btn absolute top-3 right-3 rizz-ghost text-white text-xs font-bold px-3 py-2.5 rounded-lg">Copy</button>
           </div>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <div id="rizz-sent-wrap" class="pt-2">
+          <button id="rizz-sent-btn" type="button" class="w-full py-3 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">I sent it</button>
+          <div id="rizz-outcome-btns" class="hidden">
+            <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.6);">What happened?</p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" data-outcome="warm" class="outcome-btn">They replied warm</button>
+              <button type="button" data-outcome="cold" class="outcome-btn">They replied cold</button>
+              <button type="button" data-outcome="nothing" class="outcome-btn">Nothing yet</button>
+              <button type="button" data-outcome="plans" class="outcome-btn">We made plans</button>
+            </div>
+            <p id="rizz-outcome-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+          </div>
+        </div>
+        <div id="rizz-actions" class="flex flex-col sm:flex-row gap-3 pt-2">
           <button id="rizz-copy-result-btn" type="button" class="flex-1 font-bold py-4 px-6 rounded-2xl transition-all duration-200" style="background: #d4ff3f; color: #160a2e;">Copy result for TikTok</button>
           <button id="rizz-save-image-btn" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Save as image</button>
+          <button id="rizz-share-link-btn" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Share this result</button>
           <button id="rizz-new-check" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Check another DM</button>
         </div>
+        <p id="rizz-share-link-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p id="rizz-copy-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p id="rizz-share-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p class="text-sm text-center" style="color: rgba(255,255,255,0.6);">AI helps you find the words. You send them.</p>
@@ -264,6 +347,19 @@
   </section>
 
 
+  <!-- Daily Dilemma: one practice scenario a day. -->
+  <section id="dilemma-section" class="rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <h3 class="text-lg font-bold text-white mb-1">Today's dilemma</h3>
+    <p id="dilemma-number" class="text-xs font-bold uppercase tracking-wider mb-2" style="color: #d4ff3f;"></p>
+    <p id="dilemma-scenario" class="text-white leading-relaxed mb-4"></p>
+    <label for="dilemma-reply" class="block text-sm font-bold text-white mb-1">Your reply</label>
+    <textarea id="dilemma-reply" rows="3" maxlength="500" placeholder="Write what you would actually send…" class="w-full p-4 rounded-2xl border rizz-input focus:outline-none resize-none text-base text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></textarea>
+    <button id="dilemma-rate-btn" type="button" class="w-full mt-3 font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background: #d4ff3f; color: #160a2e;">Rate my reply</button>
+    <p id="dilemma-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+    <button id="dilemma-copy-btn" type="button" class="hidden w-full mt-3 py-3 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Copy my result</button>
+    <p id="dilemma-copy-status" class="text-sm mt-2 text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+  </section>
+
   <!-- Account and History -->
   <section id="account-section" class="rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
     <h3 class="text-lg font-bold text-white mb-2">Your account</h3>
@@ -290,6 +386,18 @@
       <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">Download everything BeforeYouSay has for you — your rizz check history — as one file. It is made on this device; nothing is sent anywhere.</p>
       <button id="export-data-btn" class="px-4 py-3 rounded-xl rizz-ghost border text-sm font-bold text-white" style="border-color: rgba(255,255,255,0.2)">Download my data</button>
       <p id="export-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+      <div class="mt-4">
+        <button id="delete-everything-btn" class="px-4 py-3 rounded-xl border text-sm font-bold hover:border-red-400" style="background: rgba(255,255,255,0.1); border-color: rgba(248,113,113,0.4); color: #fca5a5">Delete everything on this device</button>
+        <p class="text-xs mt-2" style="color: rgba(255,255,255,0.5);">Deletes your people profiles, history and streak from this device. Your sign-in account stays — use "Delete my account" below to remove that too.</p>
+        <div id="delete-everything-confirm" class="hidden mt-3 p-4 rounded-2xl border" style="background: rgba(239,68,68,0.1); border-color: rgba(248,113,113,0.3)">
+          <p class="text-sm font-bold mb-3" style="color: #fecaca">Delete your people, history and streak from this device?</p>
+          <div class="flex gap-2">
+            <button id="delete-everything-yes-btn" class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white text-sm font-bold shadow">Yes, delete everything</button>
+            <button id="delete-everything-no-btn" class="px-4 py-3 rounded-xl border text-sm font-bold" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8)">Keep it</button>
+          </div>
+        </div>
+        <p id="delete-everything-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+      </div>
     </div>
     <!-- Batch 1 trust+control: delete your account -->
     <div class="mt-5 pt-4 border-t" style="border-color: rgba(255,255,255,0.1)">
@@ -652,7 +760,7 @@
   /* Evolve 2027: history items carry their true mode locally only
      (the cloud row is always tab 'rewrite', mode 'rizz' — see
      historyItemToCloudRow). The label shown is the mode's name. */
-  const HISTORY_MODE_LABELS = { rizz: "Rizz Check", reply: "What do I say back?", opener: "First text", apology: "Sorry text", dry: "Left on read?", shot: "Screenshot check" };
+  const HISTORY_MODE_LABELS = { rizz: "Rizz Check", reply: "What do I say back?", opener: "First text", apology: "Sorry text", dry: "Left on read?", calm: "Calm it down", work: "Work / Boss", boundary: "Say no", deescalate: "De-escalate a fight", practice: "Daily Dilemma", shot: "Screenshot check" };
   function rizzHistoryLabel(it) {
     if (it.type === "rizz") {
       if (it.mode && HISTORY_MODE_LABELS[it.mode]) return HISTORY_MODE_LABELS[it.mode];
@@ -668,6 +776,13 @@
       return "";
     }
     return (it.result && (it.result.better_version || it.result.softer_version)) || "";
+  }
+  const OUTCOME_LABELS = { warm: "They replied warm", cold: "They replied cold", nothing: "Nothing yet", plans: "We made plans" };
+  function outcomeLine(it) {
+    if (!it || !it.outcome || !OUTCOME_LABELS[it.outcome.value]) return "";
+    let when = "";
+    try { when = it.outcome.at ? " · " + new Date(it.outcome.at).toLocaleString("en-AU", { day: "numeric", month: "short" }) : ""; } catch (e) { /* ignore */ }
+    return "Outcome: " + OUTCOME_LABELS[it.outcome.value] + when;
   }
   function renderHistory() {
     const items = loadHistory();
@@ -687,6 +802,8 @@
         + '<div class="flex items-center justify-between gap-2 mb-1"><span class="text-xs font-bold uppercase tracking-wide text-slate-600">' + label + '</span><span class="text-xs text-slate-500">' + escapeHtml(when) + '</span></div>'
         + '<p class="text-sm text-slate-700 leading-relaxed mb-2">' + escapeHtml(summary) + '</p>'
         + (it.goal ? '<p class="text-xs text-slate-500 leading-relaxed mb-2">Goal: ' + escapeHtml(it.goal) + '</p>' : '')
+        + (outcomeLine(it) ? '<p class="text-xs font-bold leading-relaxed mb-3" style="color: #15803d;">' + escapeHtml(outcomeLine(it)) + '</p>' : '')
+        + (it.sent && !it.outcome ? '<p class="text-xs leading-relaxed mb-3" style="color: #92400e;">Sent — waiting to hear what happened.</p>' : '')
         + (best ? '<p class="text-sm text-slate-500 leading-relaxed mb-3">Best: ' + escapeHtml(best.slice(0, 140)) + (best.length > 140 ? "…" : "") + '</p>' : '')
         + (ratingSummary(getRating(it.result)) ? '<p class="text-xs text-slate-500 leading-relaxed mb-3">' + escapeHtml(ratingSummary(getRating(it.result))) + '</p>' : '')
         + '<div class="flex gap-2"><button data-history-view="' + escapeHtml(it.id) + '" class="px-3 py-2.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Open</button>'
@@ -935,7 +1052,7 @@
   function deleteAccountUrl() { return BYS_API_URL.replace(/\/analyze$/, "") + "/delete-account"; }
   function deleteConfirmValid(value) { return String(value || "").trim() === "DELETE"; }
   function clearAllLocalData() {
-    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, STYLE_SAMPLE_KEY, STREAK_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
+    [PROFILE_KEY, HISTORY_KEY, CONTEXTS_KEY, GUEST_HISTORY_KEY, GUEST_PROFILE_KEY, GUEST_CONTEXTS_KEY, DELETED_CLOUD_IDS_KEY, DELETED_CONTEXT_IDS_KEY, STYLE_SAMPLE_KEY, STREAK_KEY, PEOPLE_KEY, PEOPLE_SELECTED_KEY, STYLE_EXAMPLES_KEY, INSTALL_DISMISSED_KEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } });
   }
   async function deleteMyAccount() {
     const statusEl = document.getElementById("delete-status");
@@ -1143,8 +1260,15 @@
     opener: { label: "First text", hero: 'First text? <span class="rizz-hero-word">Make it land.</span>', sub: "Paste your draft opener. Get its strength score and three better openers.", title: "First text", intro: "Paste the opener you're about to send to someone new. We score it and write three better ones.", inputLabel: "Your draft opener", placeholder: "Paste your opener here… e.g. hey, I liked your post about…", emptyBtn: "Paste an opener first", goBtn: "Check my opener", roastHeading: "The roast" },
     apology: { label: "Sorry text", hero: 'Say sorry. <span class="rizz-hero-word">Mean it.</span>', sub: "Paste your draft apology. Get its sincerity score and three better versions.", title: "Sorry text", intro: "Paste the apology you're about to send. We score how sincere it lands and write three better versions — genuine, short, warm.", inputLabel: "Your draft apology", placeholder: "Paste your apology here… e.g. I'm sorry about yesterday, I…", emptyBtn: "Paste an apology first", goBtn: "Check my apology", roastHeading: "Where it falls short" },
     dry: { label: "Left on read?", hero: 'Left on read? <span class="rizz-hero-word">Rescue it.</span>', sub: "Paste the message that got left on read. Get its dryness score and three rescue replies.", title: "Left on read?", intro: "Paste your last message — the one that got left on read. We score how dry it reads and write three rescue replies.", inputLabel: "Your last message", placeholder: "Paste the message that got left on read…", emptyBtn: "Paste the message first", goBtn: "Rescue it", roastHeading: "The roast" },
+    calm: { label: "Calm it down", hero: 'Type the <span class="rizz-hero-word">angry version.</span> Send the calm one.', sub: "Paste the rant. Get a calm, clear version you can actually send.", title: "Calm it down", intro: "Paste the angry or anxious rant you typed. We score how heated it reads and write three calm versions.", inputLabel: "Your rant", placeholder: "Paste the angry message here… e.g. I can't believe you cancelled AGAIN", emptyBtn: "Paste the rant first", goBtn: "Calm it down", roastHeading: "How heated it reads" },
+    work: { label: "Work / Boss", hero: 'Say it to your <span class="rizz-hero-word">boss</span> without regretting it.', sub: "Paste the work message. Get its professionalism score and three better versions.", title: "Work / Boss", intro: "Paste the message you're about to send at work. We score how professional it lands and write three better versions.", inputLabel: "Your work message", placeholder: "Paste your work message here…", emptyBtn: "Paste the message first", goBtn: "Check my message", roastHeading: "Where it goes wrong" },
+    boundary: { label: "Say no", hero: 'Say no <span class="rizz-hero-word">without the guilt spiral.</span>', sub: "Paste your draft no. Get its firmness score and three clearer versions.", title: "Say no", intro: "Paste the draft where you need to refuse or set a limit. We score how clear and firm it is and write three better versions.", inputLabel: "Your draft no", placeholder: "Paste your draft here… e.g. sorry, I can't cover that shift", emptyBtn: "Paste your draft first", goBtn: "Check my no", roastHeading: "Where it goes soft" },
+    deescalate: { label: "De-escalate a fight", hero: 'Cool it down <span class="rizz-hero-word">before it blows up.</span>', sub: "Paste the heated message. Get its calming score and three cooler versions.", title: "De-escalate a fight", intro: "Paste the heated message you're about to send. We score how likely it is to calm things down and write three cooler versions.", inputLabel: "Your heated message", placeholder: "Paste the message here…", emptyBtn: "Paste the message first", goBtn: "Cool it down", roastHeading: "How it would land" },
+    practice: { label: "Daily Dilemma", hero: 'Practice <span class="rizz-hero-word">makes it easier.</span>', sub: "Today's dilemma, your reply, and a score.", title: "Daily Dilemma", intro: "Write your reply to today's dilemma below. We score it and write three better ones.", inputLabel: "Your reply", placeholder: "Write what you would actually send…", emptyBtn: "Write a reply first", goBtn: "Rate my reply", roastHeading: "What it gets right" },
   };
-  const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry"];
+  const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry", "calm", "work", "boundary", "deescalate"];
+  /* GC-EVOLUTION: verdict labels shared by the badge, the share card and the dilemma copy. */
+  const VERDICT_LABELS = { send: "Send it", tweak: "Tweak it", wait: "Wait — don't send yet", dont: "Don't send" };
   let currentMode = "rizz";
   function setMode(mode) {
     if (!RIZZ_MODE_UI[mode]) mode = "rizz";
@@ -1347,6 +1471,8 @@
             if (!freshToken) return false;
             const body = { image: payload.image, mimeType: payload.mimeType, turnstileToken: freshToken };
             if (payload.styleSample) body.styleSample = payload.styleSample;
+            if (payload.personContext) body.personContext = payload.personContext;
+            if (payload.styleExamples) body.styleExamples = payload.styleExamples;
             opts.body = JSON.stringify(body);
             return freshAuthHeaders().then(function (h) { opts.headers = Object.assign({}, opts.headers, h); return true; });
           });
@@ -1400,6 +1526,10 @@
     ctx.fillRect((W - labelWidth) / 2, 470, labelWidth, 84);
     ctx.fillStyle = "#160a2e";
     ctx.fillText(label, W / 2, 530);
+    const verdictText = "Verdict: " + (VERDICT_LABELS[data.verdict] || VERDICT_LABELS.tweak);
+    ctx.fillStyle = "#d4ff3f";
+    ctx.font = "bold 36px Inter, sans-serif";
+    ctx.fillText(verdictText, W / 2, 600);
     ctx.textAlign = "left";
     ctx.fillStyle = "#ffffff";
     ctx.font = "32px Inter, sans-serif";
@@ -1532,6 +1662,9 @@
             if (!freshToken) return false;
             const body = { text: payload.text, turnstileToken: freshToken, mode: payload.mode };
             if (payload.styleSample) body.styleSample = payload.styleSample;
+            if (payload.personContext) body.personContext = payload.personContext;
+            if (payload.styleExamples) body.styleExamples = payload.styleExamples;
+            if (payload.context) body.context = payload.context;
             opts.body = JSON.stringify(body);
             return freshAuthHeaders().then(function (h) { opts.headers = Object.assign({}, opts.headers, h); return true; });
           });
@@ -1547,6 +1680,19 @@
     if (ring) ring.style.setProperty("--score", String(score));
     document.getElementById("rizz-score").textContent = String(score);
     document.getElementById("rizz-label").textContent = data.label || "";
+    const verdictEl = document.getElementById("rizz-verdict");
+    if (verdictEl) {
+      const v = ["send", "tweak", "wait", "dont"].indexOf(data.verdict) !== -1 ? data.verdict : "tweak";
+      verdictEl.textContent = VERDICT_LABELS[v];
+      verdictEl.className = "verdict-badge verdict-" + v + " mb-4";
+    }
+    const landsEl = document.getElementById("rizz-lands");
+    if (landsEl) landsEl.textContent = data.lands || "";
+    const dontEl = document.getElementById("rizz-dont-send");
+    if (dontEl) {
+      if (data.dontSend) { dontEl.textContent = data.dontSend; dontEl.classList.remove("hidden"); }
+      else { dontEl.textContent = ""; dontEl.classList.add("hidden"); }
+    }
     document.getElementById("rizz-roast").textContent = data.roast || "";
     document.getElementById("rizz-signal").textContent = data.signal || "";
     const tipEl = document.getElementById("rizz-tip");
@@ -1564,6 +1710,7 @@
     document.getElementById("rizz-reply-smooth").textContent = (smooth && smooth.text) || (replies[0] && replies[0].text) || "";
     document.getElementById("rizz-reply-funny").textContent = (funny && funny.text) || (replies[1] && replies[1].text) || "";
     document.getElementById("rizz-reply-chill").textContent = (chill && chill.text) || (replies[2] && replies[2].text) || "";
+    renderOutcomeState();
     document.getElementById("rizz-results").classList.remove("hidden");
     document.getElementById("empty-state").classList.add("hidden");
     document.getElementById("skeleton").classList.add("hidden");
@@ -1647,6 +1794,10 @@
     payload.mode = currentMode;
     const styleSample = getStyleSample();
     if (styleSample) payload.styleSample = styleSample;
+    const styleExamples = getStyleExamples();
+    if (styleExamples) payload.styleExamples = styleExamples;
+    const _pc = personContextFor(getSelectedPerson());
+    if (_pc) payload.personContext = _pc;
     postRizz(payload).then(function (resp) {
       rizzStopLoading();
       if (!resp) { showError("Connection dropped — please check your connection and try again.", "rizz-error-msg"); return; }
@@ -1656,7 +1807,7 @@
         });
       }
       return resp.json().then(function (data) {
-        const saved = addHistory({ type: "rizz", mode: currentMode, input: text, result: data });
+        const saved = addHistory({ type: "rizz", mode: currentMode, input: text, result: data, person: getSelectedPersonId() || "" });
         currentHistoryId = saved.id;
         recordStreakDay();
         displayRizz(data);
@@ -1711,6 +1862,458 @@
     document.getElementById("empty-state").classList.remove("hidden");
   });
   updateRizzCheckButton();
+
+
+  /* ---------- GC-EVOLUTION-PART2: people, style examples, outcomes, dilemma, share link, install ---------- */
+
+  /* ---- People profiles (localStorage ONLY — no cloud sync in this batch) ---- */
+  const PEOPLE_KEY = "beforeyousay.people.v1";
+  const PEOPLE_SELECTED_KEY = "beforeyousay.people.selected.v1";
+  const STYLE_EXAMPLES_KEY = "beforeyousay.style-examples.v1";
+  const INSTALL_DISMISSED_KEY = "beforeyousay.install-dismissed.v1";
+  const PEOPLE_RELATIONSHIPS = ["Hinge match", "crush", "boss", "ex", "friend", "family", "other"];
+  let editingPersonId = null;
+
+  function loadPeople() {
+    try { const arr = JSON.parse(localStorage.getItem(PEOPLE_KEY) || "[]"); return Array.isArray(arr) ? arr : []; }
+    catch (e) { return []; }
+  }
+  function savePeople(list) {
+    try { localStorage.setItem(PEOPLE_KEY, JSON.stringify(list.slice(0, 20))); } catch (e) { /* storage unavailable */ }
+  }
+  function getSelectedPersonId() {
+    try { return localStorage.getItem(PEOPLE_SELECTED_KEY) || ""; } catch (e) { return ""; }
+  }
+  function setSelectedPersonId(id) {
+    try { localStorage.setItem(PEOPLE_SELECTED_KEY, id || ""); } catch (e) { /* storage unavailable */ }
+  }
+  function getSelectedPerson() {
+    const id = getSelectedPersonId();
+    if (!id) return null;
+    const found = loadPeople().filter(function (p) { return p.id === id; });
+    return found.length ? found[0] : null;
+  }
+  function personContextFor(person) {
+    if (!person) return "";
+    let s = person.name || "";
+    if (person.relationship) s += " (" + person.relationship + ")";
+    if (person.notes) s += ": " + person.notes;
+    return s.slice(0, 500);
+  }
+  function personOutcomeStats(personId) {
+    const counts = { warm: 0, cold: 0, nothing: 0, plans: 0 };
+    let last = null;
+    loadHistory().forEach(function (it) {
+      if (it.person !== personId || !it.outcome || !OUTCOME_LABELS[it.outcome.value]) return;
+      counts[it.outcome.value] = (counts[it.outcome.value] || 0) + 1;
+      if (!last || (it.outcome.at && (!last.at || it.outcome.at > last.at))) last = it.outcome;
+    });
+    return { counts: counts, last: last };
+  }
+  function renderPeople() {
+    const people = loadPeople();
+    const picker = document.getElementById("person-picker");
+    if (picker) {
+      const sel = getSelectedPersonId();
+      picker.innerHTML = '<option value="">No one in particular</option>' + people.map(function (p) {
+        return '<option value="' + escapeHtml(p.id) + '"' + (p.id === sel ? " selected" : "") + '>' + escapeHtml(p.name) + ' (' + escapeHtml(p.relationship || "other") + ')</option>';
+      }).join("");
+    }
+    const list = document.getElementById("people-list");
+    if (list) {
+      if (!people.length) {
+        list.innerHTML = '<p class="text-sm" style="color: rgba(255,255,255,0.6);">No people yet. Add someone you text a lot — checks will remember who they are.</p>';
+      } else {
+        list.innerHTML = people.map(function (p) {
+          const stats = personOutcomeStats(p.id);
+          const counts = "Warm " + stats.counts.warm + " · Cold " + stats.counts.cold + " · Nothing " + stats.counts.nothing + " · Plans " + stats.counts.plans;
+          const last = stats.last ? "Last: " + OUTCOME_LABELS[stats.last.value] : "No outcomes yet";
+          return '<div class="p-3 rounded-xl border" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.1)">'
+            + '<p class="text-sm font-bold text-white">' + escapeHtml(p.name) + ' <span style="color: rgba(255,255,255,0.6);">(' + escapeHtml(p.relationship || "other") + ')</span></p>'
+            + (p.notes ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">' + escapeHtml(p.notes) + '</p>' : '')
+            + '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.6);">' + counts + '</p>'
+            + '<p class="text-xs" style="color: rgba(255,255,255,0.6);">' + escapeHtml(last) + '</p>'
+            + '<div class="flex gap-2 mt-2"><button type="button" data-person-edit="' + escapeHtml(p.id) + '" class="px-3 py-1.5 rounded-lg border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Edit</button>'
+            + '<button type="button" data-person-delete="' + escapeHtml(p.id) + '" class="px-3 py-1.5 rounded-lg border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Delete</button></div>'
+            + '</div>';
+        }).join("");
+      }
+    }
+  }
+  function wirePeople() {
+    const picker = document.getElementById("person-picker");
+    if (picker) picker.addEventListener("change", function () { setSelectedPersonId(picker.value); });
+    const manage = document.getElementById("people-manage-btn");
+    if (manage) manage.addEventListener("click", function () {
+      const panel = document.getElementById("people-panel");
+      if (panel) panel.classList.toggle("hidden");
+    });
+    const saveBtn = document.getElementById("person-save-btn");
+    if (saveBtn) saveBtn.addEventListener("click", function () {
+      const nameEl = document.getElementById("person-name");
+      const relEl = document.getElementById("person-relationship");
+      const notesEl = document.getElementById("person-notes");
+      const status = document.getElementById("person-form-status");
+      const name = (nameEl.value || "").trim();
+      if (!name) { if (status) status.textContent = "Add a name first."; return; }
+      const notes = (notesEl.value || "").trim().slice(0, 500);
+      const rel = PEOPLE_RELATIONSHIPS.indexOf(relEl.value) !== -1 ? relEl.value : "other";
+      const people = loadPeople();
+      if (editingPersonId) {
+        const found = people.filter(function (p) { return p.id === editingPersonId; });
+        if (found.length) { found[0].name = name; found[0].relationship = rel; found[0].notes = notes; }
+        editingPersonId = null;
+        saveBtn.textContent = "Add person";
+        const cancel = document.getElementById("person-cancel-edit-btn");
+        if (cancel) cancel.classList.add("hidden");
+        if (status) status.textContent = "Person updated.";
+      } else {
+        people.push({ id: "p-" + Date.now().toString(36), name: name, relationship: rel, notes: notes });
+        if (status) status.textContent = name + " added.";
+      }
+      savePeople(people);
+      nameEl.value = ""; notesEl.value = ""; relEl.value = "Hinge match";
+      renderPeople();
+    });
+    const cancelEdit = document.getElementById("person-cancel-edit-btn");
+    if (cancelEdit) cancelEdit.addEventListener("click", function () {
+      editingPersonId = null;
+      document.getElementById("person-name").value = "";
+      document.getElementById("person-notes").value = "";
+      document.getElementById("person-relationship").value = "Hinge match";
+      const saveBtn2 = document.getElementById("person-save-btn");
+      if (saveBtn2) saveBtn2.textContent = "Add person";
+      cancelEdit.classList.add("hidden");
+    });
+    const list = document.getElementById("people-list");
+    if (list) list.addEventListener("click", function (ev) {
+      const target = ev.target && ev.target.closest ? ev.target.closest("[data-person-edit], [data-person-delete]") : null;
+      if (!target) return;
+      const editId = target.getAttribute("data-person-edit");
+      const delId = target.getAttribute("data-person-delete");
+      if (editId) {
+        const found = loadPeople().filter(function (p) { return p.id === editId; });
+        if (!found.length) return;
+        editingPersonId = editId;
+        document.getElementById("person-name").value = found[0].name || "";
+        document.getElementById("person-relationship").value = found[0].relationship || "other";
+        document.getElementById("person-notes").value = found[0].notes || "";
+        const saveBtn2 = document.getElementById("person-save-btn");
+        if (saveBtn2) saveBtn2.textContent = "Save changes";
+        const cancel = document.getElementById("person-cancel-edit-btn");
+        if (cancel) cancel.classList.remove("hidden");
+        return;
+      }
+      if (delId) {
+        if (!window.confirm("Delete this person? Their history stays, but the profile is gone.")) return;
+        const kept = loadPeople().filter(function (p) { return p.id !== delId; });
+        savePeople(kept);
+        if (getSelectedPersonId() === delId) setSelectedPersonId("");
+        renderPeople();
+      }
+    });
+  }
+
+  /* ---- Style examples (2-3 real texts the user actually sent) ---- */
+  function getStyleExamples() {
+    try { return (localStorage.getItem(STYLE_EXAMPLES_KEY) || "").trim().slice(0, 500); } catch (e) { return ""; }
+  }
+  function wireStyleExamples() {
+    const el = document.getElementById("style-examples");
+    if (!el) return;
+    try { el.value = localStorage.getItem(STYLE_EXAMPLES_KEY) || ""; } catch (e) { /* storage unavailable */ }
+    el.addEventListener("input", function () {
+      try { localStorage.setItem(STYLE_EXAMPLES_KEY, el.value); } catch (e) { /* storage unavailable */ }
+    });
+  }
+
+  /* ---- Outcome tracking ("I sent it. What happened?") ---- */
+  function updateHistoryItem(id, patch) {
+    if (!id) return null;
+    const items = loadHistory();
+    const found = items.filter(function (x) { return x.id === id; });
+    if (!found.length) return null;
+    Object.keys(patch).forEach(function (k) { found[0][k] = patch[k]; });
+    saveHistory(items);
+    renderHistory();
+    return found[0];
+  }
+  function renderOutcomeState() {
+    const sentBtn = document.getElementById("rizz-sent-btn");
+    const btns = document.getElementById("rizz-outcome-btns");
+    const status = document.getElementById("rizz-outcome-status");
+    if (!sentBtn || !btns) return;
+    const it = getCurrentHistoryItem();
+    if (!it) {
+      sentBtn.classList.remove("hidden");
+      btns.classList.add("hidden");
+      if (status) status.textContent = "";
+      return;
+    }
+    if (it.sent) {
+      sentBtn.classList.add("hidden");
+      btns.classList.remove("hidden");
+      btns.querySelectorAll("[data-outcome]").forEach(function (b) {
+        b.classList.toggle("active", !!(it.outcome && it.outcome.value === b.getAttribute("data-outcome")));
+      });
+      if (status) status.textContent = it.outcome ? ("Saved: " + OUTCOME_LABELS[it.outcome.value]) : "What happened? Tap one — you can change it later.";
+    } else {
+      sentBtn.classList.remove("hidden");
+      btns.classList.add("hidden");
+      if (status) status.textContent = "";
+    }
+  }
+  function wireOutcome() {
+    const sentBtn = document.getElementById("rizz-sent-btn");
+    if (sentBtn) sentBtn.addEventListener("click", function () {
+      const it = getCurrentHistoryItem();
+      if (!it) return;
+      updateHistoryItem(it.id, { sent: true, sentAt: new Date().toISOString() });
+      renderOutcomeState();
+      renderPeople();
+    });
+    const btns = document.getElementById("rizz-outcome-btns");
+    if (btns) btns.addEventListener("click", function (ev) {
+      const target = ev.target && ev.target.closest ? ev.target.closest("[data-outcome]") : null;
+      if (!target) return;
+      const it = getCurrentHistoryItem();
+      if (!it) return;
+      updateHistoryItem(it.id, { outcome: { value: target.getAttribute("data-outcome"), at: new Date().toISOString() } });
+      renderOutcomeState();
+      renderPeople();
+    });
+  }
+
+  /* ---- Daily Dilemma (practice mode, one scenario per day) ---- */
+  const DILEMMAS = [
+    "They texted 'we need to talk'",
+    "Your boss replied 'ok.' to your long message",
+    "You left them on read for 2 days and now they texted '??'",
+    "Your crush posted a story and you want to reply without sounding keen",
+    "A friend cancelled plans for the third time this month",
+    "Someone you like just said 'haha' to your joke",
+    "Your ex texted 'I miss you' at 1am",
+    "You matched with someone and their first message is just 'hey'",
+    "Your mum asked 'when are you coming home' and you don't know yet",
+    "A colleague took credit for your work in the group chat",
+    "They replied to your invite with 'maybe'",
+    "You sent a risky joke and now it's been 3 hours with no reply",
+    "Your friend is upset with you but won't say why",
+    "You need to tell your flatmate they left the kitchen a mess again"
+  ];
+  let lastDilemmaResult = null;
+  let lastDilemmaNumber = 0;
+  function dilemmaFor(date) {
+    const n = dayOfYear(date);
+    const idx = ((n - 1) % DILEMMAS.length + DILEMMAS.length) % DILEMMAS.length;
+    return { number: n, text: DILEMMAS[idx] };
+  }
+  function renderDilemma() {
+    const dl = dilemmaFor(new Date());
+    lastDilemmaNumber = dl.number;
+    const numEl = document.getElementById("dilemma-number");
+    if (numEl) numEl.textContent = "Dilemma #" + dl.number;
+    const scEl = document.getElementById("dilemma-scenario");
+    if (scEl) scEl.textContent = dl.text;
+  }
+  function wireDilemma() {
+    const btn = document.getElementById("dilemma-rate-btn");
+    if (!btn) return;
+    btn.addEventListener("click", async function () {
+      const status = document.getElementById("dilemma-status");
+      const setStatus = function (m) { if (status) status.textContent = m; };
+      const replyEl = document.getElementById("dilemma-reply");
+      const reply = (replyEl.value || "").trim();
+      if (!reply) { setStatus("Write a reply first — that's the whole point."); return; }
+      if (!canCheckToday()) { setStatus("You've hit today's free limit — come back tomorrow."); return; }
+      const token = rizzTurnstileToken();
+      if (!token) { setStatus("Please complete the human check in the tool above first."); return; }
+      const dl = dilemmaFor(new Date());
+      const payload = { text: reply, turnstileToken: token, mode: "practice", context: dl.text };
+      const styleSample = getStyleSample();
+      if (styleSample) payload.styleSample = styleSample;
+      const styleExamples = getStyleExamples();
+      if (styleExamples) payload.styleExamples = styleExamples;
+      const pc = personContextFor(getSelectedPerson());
+      if (pc) payload.personContext = pc;
+      btn.disabled = true;
+      btn.textContent = "Rating your reply…";
+      setStatus("");
+      try {
+        const resp = await postRizz(payload);
+        if (!resp) { setStatus("Connection dropped — please check your connection and try again."); return; }
+        if (!resp.ok) {
+          const errBody = await resp.json().catch(function () { return {}; });
+          setStatus(rizzFriendlyError(errBody, resp.status));
+          return;
+        }
+        const data = await resp.json();
+        const saved = addHistory({ type: "rizz", mode: "practice", input: reply, result: data, person: getSelectedPersonId() || "", dilemma: dl.number });
+        currentHistoryId = saved.id;
+        recordStreakDay();
+        renderStreak();
+        lastDilemmaResult = data;
+        lastDilemmaNumber = dl.number;
+        const copyBtn = document.getElementById("dilemma-copy-btn");
+        if (copyBtn) copyBtn.classList.remove("hidden");
+        displayRizz(data);
+      } catch (err) {
+        setStatus(err && err.message ? err.message : "Something went wrong. Try again.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Rate my reply";
+      }
+    });
+    const copyBtn = document.getElementById("dilemma-copy-btn");
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      const status = document.getElementById("dilemma-copy-status");
+      if (!lastDilemmaResult) return;
+      const v = VERDICT_LABELS[lastDilemmaResult.verdict] || VERDICT_LABELS.tweak;
+      const text = "BYS Dilemma #" + lastDilemmaNumber + ": " + (lastDilemmaResult.score || 0) + "/100 — " + v;
+      copyPlainText(text, function (ok) {
+        if (status) status.textContent = ok ? "Copied." : "Copy failed — select the text manually.";
+      });
+    });
+  }
+
+  /* ---- Share-result link (read-only, no database) ---- */
+  function encodeResultLink(data) {
+    const best = rizzBestReply({ type: "rizz", result: data });
+    const payload = {
+      m: data.mode || "rizz",
+      s: typeof data.score === "number" ? Math.round(data.score) : 0,
+      l: String(data.label || "").slice(0, 40),
+      v: String(data.verdict || "tweak").slice(0, 10),
+      r: String(data.roast || "").slice(0, 200),
+      b: String(best || "").slice(0, 200)
+    };
+    const json = JSON.stringify(payload);
+    const b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return location.origin + location.pathname + "#r=" + b64;
+  }
+  function decodeResultLink(hash) {
+    try {
+      const m = (hash || "").match(/#r=([A-Za-z0-9\-_]+)/);
+      if (!m) return null;
+      const b64 = m[1].replace(/-/g, "+").replace(/_/g, "/");
+      const json = decodeURIComponent(escape(atob(b64)));
+      const d = JSON.parse(json);
+      if (!d || typeof d.s !== "number" || d.s < 0 || d.s > 100) return null;
+      return { mode: d.m || "rizz", score: d.s, label: d.l || "", verdict: d.v || "tweak", lands: "", dontSend: "", roast: d.r || "", signal: "", tip: "", replies: [{ style: "smooth", text: d.b || "" }] };
+    } catch (e) { return null; }
+  }
+  function renderSharedResult(data) {
+    const ids = ["tab-btn-text", "tab-btn-shot", "panel-rizz", "panel-shot", "rizz-turnstile", "empty-state", "dilemma-section", "account-section", "history-section"];
+    ids.forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    const sentWrap = document.getElementById("rizz-sent-wrap");
+    if (sentWrap) sentWrap.classList.add("hidden");
+    const actions = document.getElementById("rizz-actions");
+    if (actions) actions.classList.add("hidden");
+    const banner = document.getElementById("shared-banner");
+    if (banner) banner.classList.remove("hidden");
+    displayRizz(data);
+  }
+  function wireShareLink() {
+    const btn = document.getElementById("rizz-share-link-btn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      const status = document.getElementById("rizz-share-link-status");
+      const it = getCurrentHistoryItem();
+      if (!it || !it.result) {
+        if (status) status.textContent = "Nothing to share yet — check a message first.";
+        return;
+      }
+      const url = encodeResultLink(it.result);
+      if (url.length > 2000) {
+        if (status) status.textContent = "This result is too long to share as a link — use Save as image instead.";
+        return;
+      }
+      copyPlainText(url, function (ok) {
+        if (status) status.textContent = ok ? "Link copied — anyone who opens it sees this result." : "Copy failed — select the link manually.";
+      });
+    });
+    const tryBtn = document.getElementById("shared-try-btn");
+    if (tryBtn) tryBtn.addEventListener("click", function () { location.href = location.pathname + location.search; });
+  }
+  function checkSharedResult() {
+    const shared = decodeResultLink(location.hash || "");
+    if (shared) renderSharedResult(shared);
+  }
+
+  /* ---- PWA install (beforeinstallprompt + iOS help) ---- */
+  let deferredInstallPrompt = null;
+  function installDismissed() {
+    try { return localStorage.getItem(INSTALL_DISMISSED_KEY) === "1"; } catch (e) { return true; }
+  }
+  function hideInstallBanner() {
+    const b = document.getElementById("install-banner");
+    if (b) b.classList.add("hidden");
+    const h = document.getElementById("ios-install-help");
+    if (h) h.classList.add("hidden");
+  }
+  function showInstallHelpIfNeeded() {
+    if (installDismissed()) return;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.platform || "") || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ""));
+    if (isIOS) {
+      const h = document.getElementById("ios-install-help");
+      if (h) h.classList.remove("hidden");
+    }
+  }
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (!installDismissed()) {
+      const b = document.getElementById("install-banner");
+      if (b) b.classList.remove("hidden");
+    }
+  });
+  function wireInstall() {
+    const btn = document.getElementById("install-btn");
+    if (btn) btn.addEventListener("click", function () {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      if (deferredInstallPrompt.userChoice) deferredInstallPrompt.userChoice.then(function () { hideInstallBanner(); });
+      deferredInstallPrompt = null;
+    });
+    const dismiss = document.getElementById("install-dismiss-btn");
+    if (dismiss) dismiss.addEventListener("click", function () {
+      try { localStorage.setItem(INSTALL_DISMISSED_KEY, "1"); } catch (e) { /* storage unavailable */ }
+      hideInstallBanner();
+    });
+    const close = document.getElementById("ios-install-close-btn");
+    if (close) close.addEventListener("click", function () {
+      try { localStorage.setItem(INSTALL_DISMISSED_KEY, "1"); } catch (e) { /* storage unavailable */ }
+      hideInstallBanner();
+    });
+  }
+
+  /* ---- Delete everything (profiles + history + streak, this device) ---- */
+  function wireDeleteEverything() {
+    const btn = document.getElementById("delete-everything-btn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      const c = document.getElementById("delete-everything-confirm");
+      if (c) c.classList.remove("hidden");
+    });
+    const no = document.getElementById("delete-everything-no-btn");
+    if (no) no.addEventListener("click", function () {
+      const c = document.getElementById("delete-everything-confirm");
+      if (c) c.classList.add("hidden");
+    });
+    const yes = document.getElementById("delete-everything-yes-btn");
+    if (yes) yes.addEventListener("click", function () {
+      [PEOPLE_KEY, PEOPLE_SELECTED_KEY, HISTORY_KEY, GUEST_HISTORY_KEY, STREAK_KEY, STYLE_SAMPLE_KEY, STYLE_EXAMPLES_KEY].forEach(function (k) {
+        try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ }
+      });
+      const c = document.getElementById("delete-everything-confirm");
+      if (c) c.classList.add("hidden");
+      const status = document.getElementById("delete-everything-status");
+      if (status) status.textContent = "Deleted from this device. Your sign-in account is unchanged.";
+      renderPeople();
+      renderHistory();
+      renderStreak();
+    });
+  }
 
   /* ---------- Evolve 2027 init: modes, tabs, style sample, screenshot, share card ---------- */
   document.querySelectorAll("#mode-picker [data-mode]").forEach(function (b) {
@@ -1771,6 +2374,10 @@
     const payload = { image: shotImageDataUrl, mimeType: shotImageMime, turnstileToken: token };
     const styleSample = getStyleSample();
     if (styleSample) payload.styleSample = styleSample;
+    const styleExamples = getStyleExamples();
+    if (styleExamples) payload.styleExamples = styleExamples;
+    const _pc2 = personContextFor(getSelectedPerson());
+    if (_pc2) payload.personContext = _pc2;
     postShot(payload).then(function (resp) {
       if (btn) btn.dataset.busy = "";
       updateShotCheckButton();
@@ -1782,7 +2389,7 @@
         });
       }
       return resp.json().then(function (data) {
-        const saved = addHistory({ type: "rizz", mode: "shot", input: "Screenshot check", result: data });
+        const saved = addHistory({ type: "rizz", mode: "shot", input: "Screenshot check", result: data, person: getSelectedPersonId() || "" });
         currentHistoryId = saved.id;
         recordStreakDay();
         displayRizz(data);
@@ -1797,8 +2404,19 @@
   document.getElementById("rizz-save-image-btn").addEventListener("click", function () { saveShareCard(); });
   renderStreak();
   renderDailyTip();
+  renderPeople();
+  wirePeople();
+  wireStyleExamples();
+  wireOutcome();
+  wireDilemma();
+  wireShareLink();
+  wireInstall();
+  wireDeleteEverything();
+  renderDilemma();
+  showInstallHelpIfNeeded();
   updateShotCheckButton();
   setMode("rizz");
+  checkSharedResult();
 
   document.getElementById('empty-state').classList.remove('hidden');
 </script>
