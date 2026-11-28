@@ -183,6 +183,7 @@
         <button type="button" data-mode="work" class="mode-btn">Work / Boss</button>
         <button type="button" data-mode="boundary" class="mode-btn">Say no</button>
         <button type="button" data-mode="deescalate" class="mode-btn">De-escalate a fight</button>
+        <button type="button" data-mode="roast" class="mode-btn">Roast my typing</button>
       </div>
       <div class="flex flex-wrap items-center gap-2 mb-4">
         <label for="person-picker" class="text-sm font-bold text-white">Who is this for?</label>
@@ -254,6 +255,7 @@
         <button type="button" data-mode="work" class="mode-btn">Work / Boss</button>
         <button type="button" data-mode="boundary" class="mode-btn">Say no</button>
         <button type="button" data-mode="deescalate" class="mode-btn">De-escalate a fight</button>
+        <button type="button" data-mode="roast" class="mode-btn">Roast my typing</button>
       </div>
       <div class="space-y-3 mb-6">
         <div id="shot-dropzone" class="shot-dropzone" tabindex="0" role="button" aria-label="Upload a screenshot">
@@ -748,6 +750,7 @@
       relationship: row.relationship || "other",
       notes: row.notes || "",
       summary: typeof row.summary === "string" ? row.summary.slice(0, 500) : "",
+      lastReply: typeof row.last_reply === "string" ? row.last_reply.slice(0, 500) : "",
       counts: {
         warm: Number(row.outcome_warm) || 0,
         cold: Number(row.outcome_cold) || 0,
@@ -815,7 +818,7 @@
       try { localStorage.setItem(GUEST_PEOPLE_KEY, JSON.stringify(guestPeople)); } catch (e) { /* storage unavailable */ }
     }
     try {
-      const res = await supabaseClient.from("people").select("id,user_id,created_at,updated_at,name,relationship,notes,summary,outcome_warm,outcome_cold,outcome_nothing,outcome_plans,last_outcome,last_checked_at").eq("user_id", userId).order("updated_at", { ascending: false }).limit(20);
+      const res = await supabaseClient.from("people").select("id,user_id,created_at,updated_at,name,relationship,notes,summary,outcome_warm,outcome_cold,outcome_nothing,outcome_plans,last_outcome,last_checked_at,last_reply").eq("user_id", userId).order("updated_at", { ascending: false }).limit(20);
       if (res.error) throw res.error;
       const deletedIds = getDeletedPeopleCloudIds();
       const cloudRows = (res.data || []).filter(function (r) { return deletedIds.indexOf(r.id) === -1; });
@@ -864,6 +867,40 @@
       savePeople(people);
       renderPeople();
     } catch (e) { /* silent — the summary stays as it was */ }
+  }
+  function peopleLastReplyUrl(cloudId) { return BYS_API_URL.replace(/\/analyze$/, "") + "/people/" + encodeURIComponent(cloudId) + "/last-reply"; }
+  async function saveLastReply(text, personId) {
+    /* Last reply: when the user copies a reply on a check run with
+       a person selected, that reply is what the next check on this
+       person remembers. Local first (guests stay local-only), then
+       fire-and-forget to POST /people/:id/last-reply when signed
+       in — silent on failure, exactly like refreshPersonSummary. */
+    const clean = String(text || "").trim().slice(0, 500);
+    if (!clean) return;
+    const id = personId || getSelectedPersonId();
+    if (!id) return;
+    const people = loadPeople();
+    const found = people.filter(function (p) { return p.id === id; })[0];
+    if (!found) return;
+    found.lastReply = clean;
+    savePeople(people);
+    renderPeople();
+    if (!isSignedIn()) return;
+    try {
+      let person = loadPeople().filter(function (p) { return p.id === id; })[0];
+      if (!person) return;
+      if (!person.cloudId) {
+        const ok = await syncPersonToCloud(id);
+        if (!ok) return;
+        person = loadPeople().filter(function (p) { return p.id === id; })[0];
+        if (!person || !person.cloudId) return;
+      }
+      await fetch(peopleLastReplyUrl(person.cloudId), {
+        method: "POST",
+        headers: await freshAuthHeaders(),
+        body: JSON.stringify({ lastReply: clean })
+      });
+    } catch (e) { /* silent — the local copy stays */ }
   }
   function restoreGuestData() {
     try {
@@ -1018,7 +1055,7 @@
   /* Evolve 2027: history items carry their true mode locally only
      (the cloud row is always tab 'rewrite', mode 'rizz' — see
      historyItemToCloudRow). The label shown is the mode's name. */
-  const HISTORY_MODE_LABELS = { rizz: "Rizz Check", reply: "What do I say back?", opener: "First text", apology: "Sorry text", dry: "Left on read?", calm: "Calm it down", work: "Work / Boss", boundary: "Say no", deescalate: "De-escalate a fight", practice: "Daily Dilemma", shot: "Screenshot check" };
+  const HISTORY_MODE_LABELS = { rizz: "Rizz Check", reply: "What do I say back?", opener: "First text", apology: "Sorry text", dry: "Left on read?", calm: "Calm it down", work: "Work / Boss", boundary: "Say no", deescalate: "De-escalate a fight", practice: "Daily Dilemma", roast: "Roast my typing", shot: "Screenshot check" };
   function rizzHistoryLabel(it) {
     if (it.type === "rizz") {
       if (it.mode && HISTORY_MODE_LABELS[it.mode]) return HISTORY_MODE_LABELS[it.mode];
@@ -1088,6 +1125,7 @@
         /* Five-changes-v2: same as copyText — the copied reply is
            what the next check on this person remembers. */
         if (it && it.type === "rizz") updateHistoryItem(it.id, { copiedReply: text });
+        if (it && it.type === "rizz" && it.person) saveLastReply(text, it.person);
       });
       return;
     }
@@ -1511,6 +1549,7 @@
          "Last time" line. */
       const it = getCurrentHistoryItem();
       if (it) updateHistoryItem(it.id, { copiedReply: text });
+      saveLastReply(text);
     });
   }
 
@@ -1533,9 +1572,10 @@
     work: { label: "Work / Boss", hero: 'Say it to your <span class="rizz-hero-word">boss</span> without regretting it.', sub: "Paste the work message. Get its professionalism score and three better versions.", title: "Work / Boss", intro: "Paste the message you're about to send at work. We score how professional it lands and write three better versions.", inputLabel: "Your work message", placeholder: "Paste your work message here…", emptyBtn: "Paste the message first", goBtn: "Check my message", roastHeading: "Where it goes wrong" },
     boundary: { label: "Say no", hero: 'Say no <span class="rizz-hero-word">without the guilt spiral.</span>', sub: "Paste your draft no. Get its firmness score and three clearer versions.", title: "Say no", intro: "Paste the draft where you need to refuse or set a limit. We score how clear and firm it is and write three better versions.", inputLabel: "Your draft no", placeholder: "Paste your draft here… e.g. sorry, I can't cover that shift", emptyBtn: "Paste your draft first", goBtn: "Check my no", roastHeading: "Where it goes soft" },
     deescalate: { label: "De-escalate a fight", hero: 'Cool it down <span class="rizz-hero-word">before it blows up.</span>', sub: "Paste the heated message. Get its calming score and three cooler versions.", title: "De-escalate a fight", intro: "Paste the heated message you're about to send. We score how likely it is to calm things down and write three cooler versions.", inputLabel: "Your heated message", placeholder: "Paste the message here…", emptyBtn: "Paste the message first", goBtn: "Cool it down", roastHeading: "How it would land" },
+    roast: { label: "Roast my typing", hero: 'Paste texts you actually sent. <span class="rizz-hero-word">Get roasted.</span>', sub: "Paste 2–3 texts you actually sent. Get roasted — gently — and two better versions of your weakest one.", title: "Roast my typing", intro: "Paste 2–3 texts you actually sent. We roast how your typing lands and write better versions of your weakest text — plus a tip.", inputLabel: "Texts you actually sent", placeholder: "Paste 2–3 texts you actually sent, one per line… e.g. hey / haha yeah / k", emptyBtn: "Paste your texts first", goBtn: "Roast my typing", roastHeading: "The roast" },
     practice: { label: "Daily Dilemma", hero: 'Practice <span class="rizz-hero-word">makes it easier.</span>', sub: "Today's dilemma, your reply, and a score.", title: "Daily Dilemma", intro: "Write your reply to today's dilemma below. We score it and write three better ones.", inputLabel: "Your reply", placeholder: "Write what you would actually send…", emptyBtn: "Write a reply first", goBtn: "Rate my reply", roastHeading: "What it gets right" },
   };
-  const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry", "calm", "work", "boundary", "deescalate"];
+  const RIZZ_MODES = ["rizz", "reply", "opener", "apology", "dry", "calm", "work", "boundary", "deescalate", "roast"];
   /* GC-EVOLUTION: verdict labels shared by the badge, the share card and the dilemma copy. */
   const VERDICT_LABELS = { send: "Send it", tweak: "Tweak it", wait: "Wait — don't send yet", dont: "Don't send" };
   /* Five-changes-v2: a verdict is only real if it is one of the
@@ -2209,6 +2249,7 @@
       relationship: String(p.relationship || "other"),
       notes: String(p.notes || "").slice(0, 500),
       summary: typeof p.summary === "string" ? p.summary.slice(0, 500) : "",
+      lastReply: typeof p.lastReply === "string" ? p.lastReply.slice(0, 500) : "",
       counts: rawCounts ? {
         warm: Number(rawCounts.warm) || 0,
         cold: Number(rawCounts.cold) || 0,
@@ -2262,11 +2303,24 @@
     /* Five-changes-v2: the real context — what happened last time
        with this person. The "what" is the reply the user copied,
        if they copied one, else the raw draft they checked. */
-    const last = latestOutcomeHistoryItem(person.id);
-    if (last) {
-      const what = String(last.copiedReply || last.input || "").slice(0, 120);
-      const line = " Last time: " + what + ". Outcome: " + last.outcome.value + ".";
+    /* Last reply: the reply the user actually copied last time for
+       this person. The cloud last_reply arrives on the person via
+       cloud sync when signed in, else the local one — either way
+       person.lastReply is the one to use. It beats the history
+       fallback below; the fallback still runs when it is empty. */
+    const lastReply = typeof person.lastReply === "string" ? person.lastReply.trim() : "";
+    if (lastReply) {
+      const last = latestOutcomeHistoryItem(person.id);
+      const outcome = (person.lastOutcome && person.lastOutcome.value) || (last && last.outcome ? last.outcome.value : "");
+      const line = " Last time: " + lastReply.slice(0, 120) + (outcome ? ". Outcome: " + outcome + "." : ".");
       s = s.slice(0, Math.max(0, 500 - line.length)) + line;
+    } else {
+      const last = latestOutcomeHistoryItem(person.id);
+      if (last) {
+        const what = String(last.copiedReply || last.input || "").slice(0, 120);
+        const line = " Last time: " + what + ". Outcome: " + last.outcome.value + ".";
+        s = s.slice(0, Math.max(0, 500 - line.length)) + line;
+      }
     }
     return s.slice(0, 500);
   }
@@ -2305,6 +2359,7 @@
             + '<p class="text-sm font-bold text-white">' + escapeHtml(p.name) + ' <span style="color: rgba(255,255,255,0.6);">(' + escapeHtml(p.relationship || "other") + ')</span></p>'
             + (p.notes ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">' + escapeHtml(p.notes) + '</p>' : '')
             + (p.summary ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">About them: ' + escapeHtml(p.summary) + '</p>' : '')
+            + (p.lastReply ? '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.7);">Last sent: ' + escapeHtml(p.lastReply.slice(0, 80)) + (p.lastReply.length > 80 ? "…" : "") + '</p>' : '')
             + '<p class="text-xs mt-1" style="color: rgba(255,255,255,0.6);">' + counts + '</p>'
             + '<p class="text-xs" style="color: rgba(255,255,255,0.6);">' + escapeHtml(last) + '</p>'
             + '<div class="flex gap-2 mt-2"><button type="button" data-person-edit="' + escapeHtml(p.id) + '" class="px-3 py-1.5 rounded-lg border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Edit</button>'
