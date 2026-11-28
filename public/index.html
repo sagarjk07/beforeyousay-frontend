@@ -146,6 +146,21 @@
     </div>
     <p id="shared-vote-status" class="text-sm mt-3" style="color: rgba(255,255,255,0.6);" role="status"></p>
   </div>
+  <!-- Vote card page (live vote, shown by JS when #/vote/<id> is in the URL). -->
+  <div id="vote-page" class="hidden mb-6 rounded-2xl p-5 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">Someone shared a vote with you</p>
+    <p class="text-sm font-bold text-white mb-1">The verdict: <span id="vote-page-verdict"></span></p>
+    <h3 class="text-lg font-bold text-white mb-3">Which would you send?</h3>
+    <div class="space-y-3">
+      <button type="button" id="vote-page-1" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed whitespace-pre-wrap" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+      <button type="button" id="vote-page-2" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed whitespace-pre-wrap" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+      <button type="button" id="vote-page-3" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed whitespace-pre-wrap" style="background: rgba(0,0,0,0.25);border-color: rgba(255,255,255,0.2)"></button>
+    </div>
+    <p id="vote-page-picked" class="hidden text-sm font-bold text-white mt-3 mb-1">Here's what people picked</p>
+    <p id="vote-page-counts" class="text-sm mt-3" style="color: rgba(255,255,255,0.6);" role="status"></p>
+    <p id="vote-page-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+    <button id="vote-page-try-btn" type="button" class="mt-4 px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Try it yourself</button>
+  </div>
   <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
     <!-- Evolve 2027: two tabs — paste a text, or check a screenshot. One
@@ -331,6 +346,15 @@
           <button id="rizz-new-check" type="button" class="flex-1 py-4 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Check another DM</button>
         </div>
         <p id="rizz-share-link-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+        <!-- Share a vote: turn this result into a link anyone can vote on. -->
+        <div id="vote-create-block" class="pt-2 space-y-3">
+          <button id="vote-create-btn" type="button" class="w-full py-3 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Create vote link</button>
+          <p id="vote-create-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+          <div id="vote-link-wrap" class="hidden flex gap-2">
+            <p id="vote-link-text" class="flex-1 text-sm p-3 rounded-xl border text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2);word-break: break-all;"></p>
+            <button id="vote-link-copy-btn" type="button" class="px-4 py-3 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Copy</button>
+          </div>
+        </div>
         <p id="rizz-copy-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p id="rizz-share-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p class="text-sm text-center" style="color: rgba(255,255,255,0.6);">AI helps you find the words. You send them.</p>
@@ -380,6 +404,30 @@
     </div>
     <p id="dilemma-why" class="hidden text-sm mt-3 leading-relaxed font-bold" style="color: #d4ff3f;" role="status"></p>
     <p id="dilemma-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
+  </section>
+
+  <!-- Quick drill: one practice question at a time, no AI, no waiting. -->
+  <section id="drill-section" class="rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <h3 class="text-lg font-bold text-white mb-1">Quick drill</h3>
+    <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">One situation a day — pick the reply you would send. Free, instant, no AI.</p>
+    <p id="drill-situation" class="text-white leading-relaxed mb-4"></p>
+    <p class="text-sm font-bold text-white mb-2">Which reply would you send?</p>
+    <div class="space-y-3">
+      <button id="drill-opt-1" type="button" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></button>
+      <button id="drill-opt-2" type="button" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></button>
+      <button id="drill-opt-3" type="button" class="w-full text-left p-4 rounded-2xl border text-white text-sm leading-relaxed" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2)"></button>
+    </div>
+    <p id="drill-why" class="hidden text-sm mt-3 leading-relaxed font-bold" style="color: #d4ff3f;" role="status"></p>
+    <div class="mt-4">
+      <button id="drill-next-btn" type="button" class="px-6 py-3 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Another one</button>
+    </div>
+  </section>
+
+  <!-- Evergreen guide page (hash route #/<slug>, shown by JS). -->
+  <section id="guide-section" class="hidden rounded-2xl p-6 sm:p-8 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <h3 id="guide-title" class="text-lg font-bold text-white mb-3"></h3>
+    <ul id="guide-tips" class="space-y-3 mb-4 text-sm leading-relaxed" style="color: rgba(255,255,255,0.8);list-style-type: disc;padding-left: 1.25rem;"></ul>
+    <button id="guide-try-btn" type="button" class="px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Check a text like this</button>
   </section>
 
   <!-- Account and History -->
@@ -478,6 +526,21 @@
   <p class="mb-2">Made for fun — roasts are light-hearted, never mean. Don't send anything you'd regret.</p>
   <p class="mb-2">AI helps you find the words. You send them.</p>
   <p class="mb-2">Questions? <a href="mailto:hello@beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors">hello@beforeyousay.com</a></p>
+  <div class="mb-2">
+    <p class="mb-2 font-bold text-white">Guides</p>
+    <ul id="guides-index" style="display: flex;flex-direction: column;gap: 0.25rem;">
+      <li><a href="#/left-on-read" class="text-white rizz-link-hover font-medium transition-colors">Left on read</a></li>
+      <li><a href="#/how-to-apologize-by-text" class="text-white rizz-link-hover font-medium transition-colors">How to apologize by text</a></li>
+      <li><a href="#/what-to-say-when-they-say-hey" class="text-white rizz-link-hover font-medium transition-colors">What to say when they say hey</a></li>
+      <li><a href="#/how-to-ask-someone-out" class="text-white rizz-link-hover font-medium transition-colors">How to ask someone out over text</a></li>
+      <li><a href="#/saying-no-without-being-rude" class="text-white rizz-link-hover font-medium transition-colors">Saying no without being rude</a></li>
+      <li><a href="#/texting-your-ex" class="text-white rizz-link-hover font-medium transition-colors">Texting your ex</a></li>
+      <li><a href="#/replying-to-your-boss" class="text-white rizz-link-hover font-medium transition-colors">Replying to your boss</a></li>
+      <li><a href="#/left-on-delivered" class="text-white rizz-link-hover font-medium transition-colors">When they leave you on delivered</a></li>
+      <li><a href="#/how-to-end-a-conversation" class="text-white rizz-link-hover font-medium transition-colors">How to end a conversation politely</a></li>
+      <li><a href="#/double-texting" class="text-white rizz-link-hover font-medium transition-colors">Double texting — should you send it?</a></li>
+    </ul>
+  </div>
   <p>Made for better communication · <a href="https://beforeyousay.com" class="text-white rizz-link-hover font-medium transition-colors" target="_blank" rel="noopener noreferrer">beforeyousay.com</a></p>
 </footer>
 <!-- BeforeYouSay config — Supabase (Sydney project beforeyousay-au) and the
@@ -2621,9 +2684,394 @@
     });
   }
   function checkSharedResult() {
-    const shared = decodeResultLink(location.hash || "");
-    if (shared) renderSharedResult(shared);
+    /* Router precedence: #/vote/<id> first, then the #r= shared
+       result, then #/<guide-slug>, else the normal tool. */
+    const hash = location.hash || "";
+    const voteMatch = hash.match(/^#\/vote\/([A-Za-z0-9\-_]+)/);
+    if (voteMatch) { loadVotePage(voteMatch[1]); return; }
+    const shared = decodeResultLink(hash);
+    if (shared) { renderSharedResult(shared); return; }
+    const guide = guideFromHash(hash);
+    if (guide) { renderGuide(guide); return; }
+    /* Plain tool view (covers back-button navigation away from a
+       shared vote or guide page). */
+    showMainTool();
   }
+
+  /* ---- Vote card + quiz drill + evergreen guides (VQS batch) ----
+     Vote card (Sagar's spec, 28 Nov 2026): POST /vote-card creates
+     a shareable vote link for a check result (mode + verdict + 3
+     replies, no situation, no draft, no message); the #/vote/<id>
+     page lets anyone vote once (localStorage remembers the pick)
+     via POST /vote-cards/:id/vote {choice}, and the counts are
+     shown as "what people picked", never as a winner or a result.
+     Drill: client-side only, zero network calls. Guides:
+     hash-routed evergreen pages that drop you into the check tool
+     with the right mode and an example filled in. */
+
+  /* Hiding the tool for a shared page (vote / guide): the same
+     element-id list renderSharedResult hides, plus the new drill
+     and guide sections. showMainTool reverses it. */
+  const SHARED_HIDDEN_IDS = ["tab-btn-text", "tab-btn-shot", "panel-rizz", "panel-shot", "rizz-turnstile", "empty-state", "dilemma-section", "account-section", "history-section", "drill-section", "guide-section"];
+  function hideMainTool() {
+    SHARED_HIDDEN_IDS.forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    ["shared-banner", "shared-vote", "vote-page"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    const sentWrap = document.getElementById("rizz-sent-wrap");
+    if (sentWrap) sentWrap.classList.add("hidden");
+    const actions = document.getElementById("rizz-actions");
+    if (actions) actions.classList.add("hidden");
+    const resultsEl = document.getElementById("rizz-results");
+    if (resultsEl) resultsEl.classList.add("hidden");
+  }
+  function showMainTool() {
+    SHARED_HIDDEN_IDS.forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.remove("hidden"); });
+    const hasResult = !!getCurrentHistoryItem();
+    const resultsEl = document.getElementById("rizz-results");
+    if (resultsEl) resultsEl.classList.toggle("hidden", !hasResult);
+    const sentWrap = document.getElementById("rizz-sent-wrap");
+    if (sentWrap) sentWrap.classList.toggle("hidden", !hasResult);
+    const actions = document.getElementById("rizz-actions");
+    if (actions) actions.classList.toggle("hidden", !hasResult);
+    const empty = document.getElementById("empty-state");
+    if (empty) empty.classList.toggle("hidden", hasResult || currentTab !== "text");
+    ["shared-banner", "shared-vote", "vote-page", "guide-section"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    /* Drop the shared hash so a reload lands back on the tool. */
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* ignore */ }
+  }
+
+  /* ---- Vote-card creation (in the results actions area) ---- */
+  function voteRepliesOf(result) {
+    const replies = Array.isArray(result && result.replies) ? result.replies : [];
+    return [0, 1, 2].map(function (i) {
+      const r = replies[i];
+      return String((r && r.text) || "").slice(0, 200);
+    });
+  }
+  function wireVoteCreate() {
+    const btn = document.getElementById("vote-create-btn");
+    if (btn) btn.addEventListener("click", function () {
+      const status = document.getElementById("vote-create-status");
+      const it = getCurrentHistoryItem();
+      if (!it || !it.result) {
+        if (status) status.textContent = "Nothing to share yet — check a message first.";
+        return;
+      }
+      const payload = { mode: it.result.mode || currentMode, verdict: it.result.verdict, replies: voteRepliesOf(it.result) };
+      if (status) status.textContent = "Making your vote link…";
+      fetchBackendWithRetry(rizzApiBase() + "/vote-card", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (resp) {
+        return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+      }).then(function (pair) {
+        const resp = pair.resp, body = pair.body;
+        if (!resp.ok) {
+          if (status) status.textContent = (body && body.error) || "Couldn't make the vote link — try again.";
+          return;
+        }
+        const url = location.origin + location.pathname + "#/vote/" + body.id;
+        const textEl = document.getElementById("vote-link-text");
+        if (textEl) textEl.textContent = url;
+        const wrap = document.getElementById("vote-link-wrap");
+        if (wrap) wrap.classList.remove("hidden");
+        copyPlainText(url, function (ok) {
+          if (status) status.textContent = ok ? "Vote link copied — anyone who opens it can vote." : "Vote link ready — copy it below.";
+        });
+      }).catch(function () {
+        if (status) status.textContent = "Couldn't make the vote link — check your connection and try again.";
+      });
+    });
+    const copyBtn = document.getElementById("vote-link-copy-btn");
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      const textEl = document.getElementById("vote-link-text");
+      const status = document.getElementById("vote-create-status");
+      if (textEl && textEl.textContent) copyPlainText(textEl.textContent, function (ok) {
+        if (status) status.textContent = ok ? "Vote link copied — anyone who opens it can vote." : "Copy failed — select the link manually.";
+      });
+    });
+  }
+
+  /* ---- Shared vote page (#/vote/<id>) ---- */
+  const VOTE_STORAGE_PREFIX = "beforeyousay.voted.";
+  let currentVoteId = null;
+  let currentVoteCard = null;
+  let currentVotePick = null;
+  function getStoredVotePick(id) {
+    try {
+      const v = Number(localStorage.getItem(VOTE_STORAGE_PREFIX + id));
+      return (v === 1 || v === 2 || v === 3) ? v : null;
+    } catch (e) { return null; }
+  }
+  function storeVotePick(id, pick) {
+    try { localStorage.setItem(VOTE_STORAGE_PREFIX + id, String(pick)); } catch (e) { /* storage unavailable */ }
+  }
+  function renderVoteCounts(card, pick) {
+    const total = card.total || 0;
+    /* The counts are shown as "what people picked" -- a neutral
+       count display, never a winner and never a result. */
+    const picked = document.getElementById("vote-page-picked");
+    if (picked) picked.classList.remove("hidden");
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("vote-page-" + n);
+      if (!btn) return;
+      const count = (card.votes && typeof card.votes[n - 1] === "number") ? card.votes[n - 1] : 0;
+      const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+      btn.textContent = ((card.replies && card.replies[n - 1]) || "") + "\n" + count + " votes · " + pct + "%";
+      btn.disabled = true;
+      btn.style.borderColor = n === pick ? "#d4ff3f" : "rgba(255,255,255,0.2)";
+      btn.style.background = n === pick ? "rgba(212,255,63,0.15)" : "rgba(0,0,0,0.25)";
+    });
+    const counts = document.getElementById("vote-page-counts");
+    if (counts) counts.textContent = total + (total === 1 ? " vote" : " votes") + " so far";
+  }
+  function renderVotePage(card) {
+    hideMainTool();
+    currentVoteId = card.id;
+    currentVoteCard = card;
+    const vEl = document.getElementById("vote-page-verdict");
+    if (vEl) vEl.textContent = VERDICT_LABELS[card.verdict] || "";
+    const pick = getStoredVotePick(card.id);
+    currentVotePick = pick;
+    const status = document.getElementById("vote-page-status");
+    if (pick) {
+      renderVoteCounts(card, pick);
+      if (status) status.textContent = "You picked reply " + pick + " — thanks for voting.";
+    } else {
+      [1, 2, 3].forEach(function (n) {
+        const btn = document.getElementById("vote-page-" + n);
+        if (!btn) return;
+        btn.textContent = (card.replies && card.replies[n - 1]) || "";
+        btn.disabled = false;
+        btn.style.borderColor = "rgba(255,255,255,0.2)";
+        btn.style.background = "rgba(0,0,0,0.25)";
+      });
+      const counts = document.getElementById("vote-page-counts");
+      if (counts) counts.textContent = (card.total || 0) + " votes so far — tap a reply to vote.";
+      const picked = document.getElementById("vote-page-picked");
+      if (picked) picked.classList.remove("hidden");
+      if (status) status.textContent = "";
+    }
+    const page = document.getElementById("vote-page");
+    if (page) page.classList.remove("hidden");
+  }
+  function loadVotePage(id) {
+    currentVoteId = id;
+    currentVoteCard = null;
+    currentVotePick = null;
+    hideMainTool();
+    const page = document.getElementById("vote-page");
+    if (page) page.classList.remove("hidden");
+    const picked = document.getElementById("vote-page-picked");
+    if (picked) picked.classList.add("hidden");
+    const vEl = document.getElementById("vote-page-verdict");
+    if (vEl) vEl.textContent = "";
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("vote-page-" + n);
+      if (!btn) return;
+      btn.textContent = "";
+      btn.disabled = true;
+      btn.style.borderColor = "rgba(255,255,255,0.2)";
+      btn.style.background = "rgba(0,0,0,0.25)";
+    });
+    const counts = document.getElementById("vote-page-counts");
+    if (counts) counts.textContent = "";
+    const status = document.getElementById("vote-page-status");
+    if (status) status.textContent = "Loading the vote…";
+    fetchBackendWithRetry(rizzApiBase() + "/vote/" + encodeURIComponent(id), { method: "GET" })
+      .then(function (resp) {
+        return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+      }).then(function (pair) {
+        if (!pair.resp.ok) {
+          if (status) status.textContent = pair.resp.status === 404 ? "This vote link doesn't exist any more." : "Couldn't load this vote — check your connection and try again.";
+          return;
+        }
+        renderVotePage(pair.body);
+      }).catch(function () {
+        if (status) status.textContent = "Couldn't load this vote — check your connection and try again.";
+      });
+  }
+  function wireVotePage() {
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("vote-page-" + n);
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        if (!currentVoteId || currentVotePick) return;
+        const status = document.getElementById("vote-page-status");
+        fetchBackendWithRetry(rizzApiBase() + "/vote-cards/" + encodeURIComponent(currentVoteId) + "/vote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ choice: n })
+        }).then(function (resp) {
+          return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+        }).then(function (pair) {
+          if (!pair.resp.ok) {
+            if (status) status.textContent = pair.resp.status === 429 ? "Too many votes — try again in a bit." : "Couldn't save your vote — try again.";
+            return;
+          }
+          currentVotePick = n;
+          storeVotePick(currentVoteId, n);
+          const card = Object.assign({}, currentVoteCard, { votes: pair.body.votes, total: pair.body.total });
+          currentVoteCard = card;
+          renderVoteCounts(card, n);
+          if (status) status.textContent = "You picked reply " + n + " — thanks for voting.";
+        }).catch(function () {
+          if (status) status.textContent = "Couldn't save your vote — check your connection and try again.";
+        });
+      });
+    });
+    const tryBtn = document.getElementById("vote-page-try-btn");
+    if (tryBtn) tryBtn.addEventListener("click", function () { showMainTool(); });
+  }
+
+  /* ---- Quick drill (client-side only: no fetch anywhere here) ---- */
+  var DRILL_QUESTIONS = [
+    { prompt: "They replied 'haha' to your joke and nothing else.", options: ["haha yeah", "glad that landed — what are you up to this weekend?", "lol so anyway..."], answer: 1, reason: "A 'haha yeah' ends the chat; a question gives them something to answer." },
+    { prompt: "Your friend cancelled plans for the third time this month.", options: ["no worries!! another time :)", "Ah, that's a shame — I was looking forward to it. Let me know when you're free next week?", "wow ok"], answer: 1, reason: "It names the disappointment honestly instead of pretending it doesn't sting, then gives them one clear next step." },
+    { prompt: "Your boss replied 'ok.' to your long message.", options: ["Sorry, did I say something wrong?", "Got it — let me know if you need anything else from me.", "ok"], answer: 1, reason: "'Ok' usually just means 'noted', not 'I'm angry' — don't apologise for a message that was already sent." },
+    { prompt: "You snapped at a friend and want to apologise.", options: ["sorry if you felt I was rude", "I'm sorry I snapped at you — you didn't deserve that.", "sorry lol"], answer: 1, reason: "'Sorry if you felt' blames their feelings; a real apology owns what you did and stops there." },
+    { prompt: "Your boss asked you to work the weekend and you can't.", options: ["I'm so sorry, I really wish I could but I just can't this weekend, I hope that's okay", "I can't this weekend — but I can cover Tuesday if that helps.", "maybe, I'll see"], answer: 1, reason: "A short no plus an alternative beats a long apology that invites them to push back." },
+    { prompt: "You matched with someone and their first message is just 'hey'.", options: ["hey", "hey! your photos from the beach caught my eye — where was that?", "hey, you're really pretty"], answer: 1, reason: "A specific detail about them beats a mirror-image 'hey' every single time." },
+    { prompt: "Your ex texted 'I miss you' at 1am.", options: ["i miss you too", "Hey — it's late, let's not do this tonight. Hope you're okay though.", "why are you texting me"], answer: 1, reason: "A 1am reply is a feeling, not a decision — wait until morning before you reopen anything." },
+    { prompt: "Your mum asked 'when are you coming home' and you don't know yet.", options: ["I don't know, stop asking", "Not sure yet — I'll let you know as soon as I work it out, promise.", "soon"], answer: 1, reason: "It answers the question and gives her a promise, instead of making her feel like a nuisance for asking." },
+    { prompt: "They left you on read after you asked them out.", options: ["hello?? did you see my message", "Hey, no stress either way — just let me know so I'm not guessing.", "sorry for asking lol forget it"], answer: 1, reason: "One calm check-in beats a double text that apologises for asking in the first place." },
+    { prompt: "A friend keeps venting to you and you're drained.", options: ["yeah that sounds rough", "I hear you — I've only got about 10 minutes right now, but I'm listening.", "can we talk about something else"], answer: 1, reason: "It sets a kind limit instead of pretending you have endless energy and then resenting them for it." },
+    { prompt: "A colleague took credit for your work in the group chat.", options: ["actually that was my work lol", "Happy to walk anyone through it — I put the deck together, so ask me if you have questions.", "whatever, doesn't matter"], answer: 1, reason: "It claims the work calmly and factually instead of starting a public fight about credit." },
+    { prompt: "Your date said 'let's do this again sometime' and you want a real plan.", options: ["yeah definitely, sometime!", "I'd like that — are you free Saturday? There's a market on I think you'd like.", "ok let me know"], answer: 1, reason: "'Sometime' is a goodbye in disguise — a real day and a real plan is how a second date actually happens." },
+    { prompt: "You left them on read for 2 days and now they texted '??'.", options: ["sorry sorry sorry I was so busy!!", "Hey, sorry for the late reply — work got crazy. How are you?", "my phone died lol"], answer: 1, reason: "One short apology, then a question — three sorrys in a row makes it about your guilt, not them." },
+    { prompt: "A friend keeps asking to borrow money.", options: ["yeah sure, how much", "I can't lend money right now — I hope you work it out though.", "lol no"], answer: 1, reason: "A clear no with a kind word beats a yes you'll resent or a joke that dodges the question." },
+    { prompt: "Your partner texted 'we need to talk' and your stomach dropped.", options: ["okay… what did I do?", "Sure — I'm free tonight if you want to talk.", "can it wait, I'm busy"], answer: 1, reason: "It stays calm and offers a time instead of spiralling into a guilty 'what did I do?'." },
+    { prompt: "You want to ask someone out but you're scared of a no.", options: ["so… would you maybe want to grab coffee sometime? only if you want to, no pressure at all lol", "Want to grab a coffee this weekend? There's a good place near yours.", "we should hang out sometime"], answer: 1, reason: "Short, specific, and one clear ask — piling on 'no pressure' just tells them you're already expecting a no." },
+    { prompt: "Your friend's joke hurt and you want to say so without a fight.", options: ["that joke wasn't funny", "Hey, that one actually stung a bit — can we not do that one?", "haha yeah very funny"], answer: 1, reason: "Saying how it landed on you is a fact they can't argue with; calling it unfunny just starts a debate." },
+    { prompt: "You got a job interview invite and need to reply.", options: ["ok thanks", "Thank you — I'm available Thursday or Friday morning, whichever suits you.", "sounds good"], answer: 1, reason: "A reply that gives them times to pick from moves things forward; 'ok thanks' makes them do all the work." },
+    { prompt: "Your sibling borrowed $50 and hasn't paid you back.", options: ["you owe me $50 btw", "Hey, can you send the $50 back this week? I need it for a bill.", "I guess I'll never see that money again"], answer: 1, reason: "A clear ask with a reason beats a passive 'btw' that they can pretend not to see." },
+    { prompt: "You sent a risky joke and now it's been 3 hours with no reply.", options: ["sorry, that came out wrong — ignore that one", "haha okay that joke flopped, moving on", "did I say something wrong?"], answer: 1, reason: "A light reset beats an apology spiral — apologising for a joke makes it a bigger deal than it was." },
+    { prompt: "You need to check in on a friend who's gone quiet.", options: ["why are you ignoring me", "Hey, just thinking of you — no need to reply, just wanted to say hi.", "you alive?"], answer: 1, reason: "'Why are you ignoring me' accuses them; a no-pressure check-in lets them answer when they're ready." },
+    { prompt: "A group chat is arguing and you're getting dragged in.", options: ["you're both being dramatic", "I'm staying out of this one — let me know when it's sorted.", "lol this is a mess"], answer: 1, reason: "Naming both sides as dramatic just adds a third fighter; stepping out cleanly keeps you out of it." },
+    { prompt: "Your crush posted a story and you want to reply without sounding keen.", options: ["ok this is actually so good??", "that place looks unreal, where is it?", "you look amazing in this"], answer: 1, reason: "Asking about the thing in the story is a real opener; reacting to the person is a compliment with nowhere to go." },
+    { prompt: "You need to tell your flatmate they left the kitchen a mess again.", options: ["the kitchen is disgusting again, seriously?", "Hey, can we keep the kitchen clear tonight? I've got an early start.", "I'll just clean it myself"], answer: 1, reason: "One clear ask beats a complaint — it tells them what to do, not just what they did wrong." }
+  ];
+  function drillFor(date) {
+    const n = dayOfYear(date);
+    const idx = ((n - 1) % DRILL_QUESTIONS.length + DRILL_QUESTIONS.length) % DRILL_QUESTIONS.length;
+    return DRILL_QUESTIONS[idx];
+  }
+  let currentDrill = null;
+  let currentDrillAnswered = false;
+  function renderDrill(q) {
+    currentDrill = q;
+    currentDrillAnswered = false;
+    const sitEl = document.getElementById("drill-situation");
+    if (sitEl) sitEl.textContent = q.prompt;
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("drill-opt-" + n);
+      if (!btn) return;
+      btn.textContent = q.options[n - 1];
+      btn.disabled = false;
+      btn.style.borderColor = "rgba(255,255,255,0.2)";
+      btn.style.background = "rgba(0,0,0,0.3)";
+    });
+    const whyEl = document.getElementById("drill-why");
+    if (whyEl) { whyEl.textContent = ""; whyEl.classList.add("hidden"); }
+  }
+  function wireDrill() {
+    [1, 2, 3].forEach(function (n) {
+      const btn = document.getElementById("drill-opt-" + n);
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        if (!currentDrill || currentDrillAnswered) return;
+        currentDrillAnswered = true;
+        const picked = n - 1;
+        const right = picked === currentDrill.answer;
+        const whyEl = document.getElementById("drill-why");
+        if (whyEl) {
+          whyEl.textContent = (right ? "That's the one. " : "Not that one — ") + currentDrill.reason;
+          whyEl.classList.remove("hidden");
+          whyEl.style.color = right ? "#d4ff3f" : "#fca5a5";
+        }
+        [1, 2, 3].forEach(function (i) {
+          const b = document.getElementById("drill-opt-" + i);
+          if (!b) return;
+          b.disabled = true;
+          const isAnswer = (i - 1) === currentDrill.answer;
+          if (isAnswer) { b.style.borderColor = "#d4ff3f"; b.style.background = "rgba(212,255,63,0.12)"; }
+          else if ((i - 1) === picked) { b.style.borderColor = "#ef4444"; b.style.background = "rgba(239,68,68,0.12)"; }
+        });
+        /* Answering a drill counts as a day of practice. */
+        recordStreakDay();
+      });
+    });
+    const nextBtn = document.getElementById("drill-next-btn");
+    if (nextBtn) nextBtn.addEventListener("click", function () {
+      let q = currentDrill;
+      let guard = 0;
+      while (q === currentDrill && guard < 50) {
+        q = DRILL_QUESTIONS[Math.floor(Math.random() * DRILL_QUESTIONS.length)];
+        guard++;
+      }
+      renderDrill(q);
+    });
+  }
+
+  /* ---- Evergreen guides (hash routes #/<slug>) ---- */
+  var GUIDES = [
+    { slug: "left-on-read", title: "Left on read", mode: "dry", example: "hey, did you see my last message?", tips: ["Wait at least a day before following up — a second text an hour later reads as nervous.", "Don't apologise for the first message. You didn't do anything wrong by sending it.", "One light follow-up is enough. If they still don't reply, the silence is the answer.", "Change the subject instead of repeating the same question — give them something new to answer."] },
+    { slug: "how-to-apologize-by-text", title: "How to apologize by text", mode: "apology", example: "I'm sorry about yesterday — I was out of line and you didn't deserve that.", tips: ["Say what you did, not how they felt — 'I'm sorry I snapped' beats 'sorry if you were upset'.", "Keep it short. A long apology starts sounding like it's about you.", "Don't ask for forgiveness in the same message — let them decide when they're ready.", "Apologise once, properly, then stop. Repeating it makes it worse."] },
+    { slug: "what-to-say-when-they-say-hey", title: "What to say when they say hey", mode: "reply", example: "hey! your hiking photos are great — what's the best trail you've done?", tips: ["'Hey' back ends the chat. Answer with something about them.", "Pick one detail from their profile or photos and ask about it.", "A question gives them something to answer; a compliment on its own doesn't."] },
+    { slug: "how-to-ask-someone-out", title: "How to ask someone out over text", mode: "opener", example: "Want to grab a coffee this weekend? There's a good place near yours.", tips: ["One clear ask beats three hedges — 'no pressure' just tells them you're expecting a no.", "Name a real day and a real place. 'Sometime' is a goodbye in disguise.", "Keep it short. If they say yes, you can plan the details together."] },
+    { slug: "saying-no-without-being-rude", title: "Saying no without being rude", mode: "boundary", example: "I can't cover that shift this weekend — but I can swap Tuesday if that helps.", tips: ["A short no plus an alternative beats a long apology.", "You don't owe a detailed excuse. 'I can't' is a complete sentence.", "Don't say 'maybe' when you mean no — it just delays the same conversation.", "Say it early. A late no is harder on everyone than an early one."] },
+    { slug: "texting-your-ex", title: "Texting your ex", mode: "deescalate", example: "Hey — it's late, let's not do this tonight. Hope you're okay though.", tips: ["A 1am message is a feeling, not a decision. Sleep on it.", "If you do reply, keep it kind and closed — don't reopen the whole conversation at midnight.", "Ask yourself what you actually want from the reply before you send it."] },
+    { slug: "replying-to-your-boss", title: "Replying to your boss", mode: "work", example: "Got it — I'll have the update to you by Friday morning.", tips: ["Lead with the answer, then the detail. Bosses read the first line.", "Give a time when you say you'll do something — 'soon' means nothing.", "If you can't do it, say so early and offer what you can do instead."] },
+    { slug: "left-on-delivered", title: "When they leave you on delivered", mode: "dry", example: "hey, just checking you saw my last message?", tips: ["Delivered just means unread — they might be busy, not ignoring you.", "Don't send a second message to chase the first one. Wait a day.", "When you do follow up, change the subject instead of asking why they didn't reply."] },
+    { slug: "how-to-end-a-conversation", title: "How to end a conversation politely", mode: "boundary", example: "I've got to run — good chatting with you, let's catch up soon!", tips: ["Give a reason, even a small one — 'I've got to run' lands better than silence.", "End on something warm so the chat doesn't feel cut off.", "If it's a group chat, a simple 'I'm out for now' is enough — no long goodbye needed."] },
+    { slug: "double-texting", title: "Double texting — should you send it?", mode: "reply", example: "haha okay that joke flopped, moving on — what are you up to later?", tips: ["One follow-up after a day is fine. Three in a row reads as anxious.", "Add something new instead of repeating the same message.", "If they read it and didn't reply, a second text won't change their mind — give it time."] }
+  ];
+  let currentGuide = null;
+  function guideBySlug(slug) {
+    for (let i = 0; i < GUIDES.length; i++) if (GUIDES[i].slug === slug) return GUIDES[i];
+    return null;
+  }
+  function guideFromHash(hash) {
+    const m = (hash || "").match(/^#\/([a-z0-9-]+)/);
+    if (!m) return null;
+    return guideBySlug(m[1]);
+  }
+  function renderGuide(g) {
+    hideMainTool();
+    currentGuide = g;
+    const titleEl = document.getElementById("guide-title");
+    if (titleEl) titleEl.textContent = g.title;
+    const tipsEl = document.getElementById("guide-tips");
+    if (tipsEl) {
+      tipsEl.innerHTML = "";
+      g.tips.forEach(function (t) {
+        const li = document.createElement("li");
+        li.textContent = t;
+        tipsEl.appendChild(li);
+      });
+    }
+    const section = document.getElementById("guide-section");
+    if (section) section.classList.remove("hidden");
+  }
+  function wireGuide() {
+    const btn = document.getElementById("guide-try-btn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      if (!currentGuide) return;
+      showMainTool();
+      setMode(currentGuide.mode);
+      switchCheckTab("text");
+      const textEl = document.getElementById("rizz-text");
+      if (textEl) {
+        textEl.value = currentGuide.example;
+        updateCharCounter("rizz-text", "rizz-text-char-count");
+        updateRizzCheckButton();
+        textEl.focus();
+      }
+      try { window.scrollTo(0, 0); } catch (e) { /* ignore */ }
+    });
+  }
+  window.addEventListener("hashchange", function () { checkSharedResult(); });
 
   /* ---- PWA install (beforeinstallprompt + iOS help) ---- */
   let deferredInstallPrompt = null;
@@ -2809,6 +3257,11 @@
   wireInstall();
   wireDeleteEverything();
   renderDilemma();
+  renderDrill(drillFor(new Date()));
+  wireDrill();
+  wireVoteCreate();
+  wireVotePage();
+  wireGuide();
   showInstallHelpIfNeeded();
   updateShotCheckButton();
   setMode("rizz");
