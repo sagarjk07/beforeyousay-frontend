@@ -161,6 +161,15 @@
     <p id="vote-page-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
     <button id="vote-page-try-btn" type="button" class="mt-4 px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Try it yourself</button>
   </div>
+  <!-- Friend pass page (claim page, shown by JS when #/pass/<id> is in the URL). -->
+  <div id="pass-page" class="hidden mb-6 rounded-2xl p-5 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
+    <p class="text-sm font-bold text-white mb-1">A friend sent you a friend pass</p>
+    <h3 class="text-lg font-bold text-white mb-3">3 free checks for today</h3>
+    <p class="text-sm mb-4" style="color: rgba(255,255,255,0.7);">Claim them and you both get 3 more checks today.</p>
+    <button id="pass-claim-btn" type="button" class="w-full py-4 px-6 rounded-2xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Claim 3 free checks</button>
+    <p id="pass-page-status" class="text-sm mt-3" style="color: rgba(255,255,255,0.6);" role="status"></p>
+    <button id="pass-page-try-btn" type="button" class="mt-4 px-6 py-3 rounded-xl text-sm font-bold" style="background: #d4ff3f; color: #160a2e;">Try it yourself</button>
+  </div>
   <section class="rounded-2xl p-6 sm:p-10 border max-w-3xl mx-auto" style="background: rgba(255,255,255,0.06);border-color: rgba(255,255,255,0.1)">
 
     <!-- Evolve 2027: two tabs — paste a text, or check a screenshot. One
@@ -357,6 +366,15 @@
             <button id="vote-link-copy-btn" type="button" class="px-4 py-3 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Copy</button>
           </div>
         </div>
+        <!-- Send a friend pass: one pass a day, you both get 3 more checks today when they claim it. -->
+        <div id="pass-create-block" class="pt-2 space-y-3">
+          <button id="pass-create-btn" type="button" class="w-full py-3 px-6 rounded-2xl border text-white font-bold transition-all duration-200" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Send a friend pass</button>
+          <p id="pass-create-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
+          <div id="pass-link-wrap" class="hidden flex gap-2">
+            <p id="pass-link-text" class="flex-1 text-sm p-3 rounded-xl border text-white" style="background: rgba(0,0,0,0.3);border-color: rgba(255,255,255,0.2);word-break: break-all;"></p>
+            <button id="pass-link-copy-btn" type="button" class="px-4 py-3 rounded-xl border text-sm font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Copy</button>
+          </div>
+        </div>
         <p id="rizz-copy-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p id="rizz-share-status" class="text-sm text-center" style="color: rgba(255,255,255,0.6);" role="status"></p>
         <p class="text-sm text-center" style="color: rgba(255,255,255,0.6);">AI helps you find the words. You send them.</p>
@@ -451,6 +469,8 @@
         <p class="text-sm mb-3" style="color: rgba(255,255,255,0.7);">5 checks a day as a guest, 10 a day when you sign in.</p>
       </div>
       <p id="plan-line" class="text-sm mt-3" style="color: rgba(255,255,255,0.7);" role="status">Loading your checks for today…</p>
+      <button id="plan-pass-btn" type="button" class="mt-2 px-4 py-2 rounded-xl border text-xs font-bold text-white" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2)">Send a friend pass — you both get 3 more checks today</button>
+      <p id="plan-pass-status" class="text-sm mt-2" style="color: rgba(255,255,255,0.6);" role="status"></p>
     </div>
     <!-- Batch 1 trust+control: export your data -->
     <div class="mt-5 pt-4 border-t" style="border-color: rgba(255,255,255,0.1)">
@@ -1213,7 +1233,7 @@
     const today = localDayKey(now || new Date());
     return (items || []).filter(function (it) { const d = validHistoryDate(it); return d && localDayKey(d) === today; }).length;
   }
-  function dailyLimitFor(plan, signedIn) { return plan === "pro" ? Infinity : (signedIn ? FREE_SIGNED_IN_DAILY_LIMIT : FREE_GUEST_DAILY_LIMIT); }
+  function dailyLimitFor(plan, signedIn) { return plan === "pro" ? Infinity : (signedIn ? FREE_SIGNED_IN_DAILY_LIMIT : FREE_GUEST_DAILY_LIMIT) + friendPassBonusToday(); }
   function checksLeftToday(plan, signedIn, items, now) {
     const limit = dailyLimitFor(plan, signedIn);
     if (!isFinite(limit)) return Infinity;
@@ -1235,6 +1255,31 @@
     if (el) el.textContent = planLineText(userPlan, isSignedIn(), loadHistory(), new Date());
   }
   function canCheckToday() { return checksLeftToday(userPlan, isSignedIn(), loadHistory(), new Date()) > 0; }
+  /* ---------- Friend pass: +3 checks for today, both sides ----------
+     The bonus lives in localStorage keyed by UTC day (the server
+     counts by UTC day too). Claiming a pass stores the bonus the
+     server reports; the daily limit adds it on top of the base
+     5 guest / 10 signed-in. Guests get the bonus only here —
+     the server has no guest daily count. Near midnight the
+     local-day check count and the UTC-day bonus can differ by
+     one check; the backend is the enforcer for signed-in users. */
+  const PASS_BONUS_KEY = "beforeyousay.friendPassBonus";
+  function utcDayKey(d) {
+    const x = d || new Date();
+    return x.getUTCFullYear() + "-" + String(x.getUTCMonth() + 1).padStart(2, "0") + "-" + String(x.getUTCDate()).padStart(2, "0");
+  }
+  function friendPassBonusToday(now) {
+    try {
+      const raw = JSON.parse(localStorage.getItem(PASS_BONUS_KEY) || "null");
+      if (raw && raw.day === utcDayKey(now || new Date()) && typeof raw.bonus === "number" && raw.bonus > 0) return Math.floor(raw.bonus);
+    } catch (e) { /* ignore */ }
+    return 0;
+  }
+  function storeFriendPassBonus(total, now) {
+    try { localStorage.setItem(PASS_BONUS_KEY, JSON.stringify({ day: utcDayKey(now || new Date()), bonus: Math.max(0, Math.floor(total) || 0) })); } catch (e) { /* storage unavailable */ }
+    renderPlan();
+  }
+  function addFriendPassBonus(n, now) { storeFriendPassBonus(friendPassBonusToday(now) + n, now); }
   /* Counter fix (Batch 3): the prefill below sets the message box value
      before the character-counter listeners are attached, so the "input"
      event it sends has nobody listening yet and the counter stays at 0.
@@ -2744,6 +2789,8 @@
     const hash = location.hash || "";
     const voteMatch = hash.match(/^#\/vote\/([A-Za-z0-9\-_]+)/);
     if (voteMatch) { loadVotePage(voteMatch[1]); return; }
+    const passMatch = hash.match(/^#\/pass\/([A-Za-z0-9\-_]+)/);
+    if (passMatch) { loadPassPage(passMatch[1]); return; }
     const shared = decodeResultLink(hash);
     if (shared) { renderSharedResult(shared); return; }
     const guide = guideFromHash(hash);
@@ -2770,7 +2817,7 @@
   const SHARED_HIDDEN_IDS = ["tab-btn-text", "tab-btn-shot", "panel-rizz", "panel-shot", "rizz-turnstile", "empty-state", "dilemma-section", "account-section", "history-section", "drill-section", "guide-section"];
   function hideMainTool() {
     SHARED_HIDDEN_IDS.forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
-    ["shared-banner", "shared-vote", "vote-page"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    ["shared-banner", "shared-vote", "vote-page", "pass-page"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
     const sentWrap = document.getElementById("rizz-sent-wrap");
     if (sentWrap) sentWrap.classList.add("hidden");
     const actions = document.getElementById("rizz-actions");
@@ -2789,7 +2836,7 @@
     if (actions) actions.classList.toggle("hidden", !hasResult);
     const empty = document.getElementById("empty-state");
     if (empty) empty.classList.toggle("hidden", hasResult || currentTab !== "text");
-    ["shared-banner", "shared-vote", "vote-page", "guide-section"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+    ["shared-banner", "shared-vote", "vote-page", "pass-page", "guide-section"].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
     /* Drop the shared hash so a reload lands back on the tool. */
     try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* ignore */ }
   }
@@ -2977,6 +3024,145 @@
     });
     const tryBtn = document.getElementById("vote-page-try-btn");
     if (tryBtn) tryBtn.addEventListener("click", function () { showMainTool(); });
+  }
+
+  /* ---- Friend pass (send + claim) ----
+     Send: POST /friend-pass makes a one-day link #/pass/<id> (one
+     per giver per day, server-side). Claim: the #/pass/<id> page
+     POSTs /pass/:id/claim and both sides get +3 checks for today.
+     The claim works even when the friend already used their
+     checks — claiming grants checks, it never spends one. */
+  let currentPassId = null;
+  function passUrlFor(id) { return location.origin + location.pathname + "#/pass/" + id; }
+  function createFriendPass(statusEl, linkEls) {
+    if (statusEl) statusEl.textContent = "Making your friend pass…";
+    freshAuthHeaders().then(function (headers) {
+      return fetchBackendWithRetry(rizzApiBase() + "/friend-pass", {
+        method: "POST",
+        headers: Object.assign({ "Content-Type": "application/json" }, headers || {}),
+        body: "{}"
+      });
+    }).then(function (resp) {
+      return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+    }).then(function (pair) {
+      const resp = pair.resp, body = pair.body;
+      if (!resp.ok) {
+        if (statusEl) statusEl.textContent = (body && body.error) || "Couldn't make the friend pass — try again.";
+        return;
+      }
+      const url = passUrlFor(body.id);
+      if (linkEls && linkEls.wrap) linkEls.wrap.classList.remove("hidden");
+      if (linkEls && linkEls.text) linkEls.text.textContent = url;
+      copyPlainText(url, function (ok) {
+        if (statusEl) statusEl.textContent = ok ? "Friend pass link copied — you both get 3 more checks today when they claim it." : "Friend pass ready — copy the link below.";
+      });
+    }).catch(function () {
+      if (statusEl) statusEl.textContent = "Couldn't make the friend pass — check your connection and try again.";
+    });
+  }
+  function wirePassCreate() {
+    const btn = document.getElementById("pass-create-btn");
+    if (btn) btn.addEventListener("click", function () {
+      createFriendPass(document.getElementById("pass-create-status"), { wrap: document.getElementById("pass-link-wrap"), text: document.getElementById("pass-link-text") });
+    });
+    const copyBtn = document.getElementById("pass-link-copy-btn");
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      const textEl = document.getElementById("pass-link-text");
+      const status = document.getElementById("pass-create-status");
+      if (textEl && textEl.textContent) copyPlainText(textEl.textContent, function (ok) {
+        if (status) status.textContent = ok ? "Friend pass link copied — you both get 3 more checks today when they claim it." : "Copy failed — select the link manually.";
+      });
+    });
+    const planBtn = document.getElementById("plan-pass-btn");
+    if (planBtn) planBtn.addEventListener("click", function () {
+      createFriendPass(document.getElementById("plan-pass-status"), null);
+    });
+  }
+  function renderPassPage(state) {
+    hideMainTool();
+    currentPassId = state.id;
+    const page = document.getElementById("pass-page");
+    const status = document.getElementById("pass-page-status");
+    const claimBtn = document.getElementById("pass-claim-btn");
+    if (claimBtn) claimBtn.classList.toggle("hidden", state.state !== "valid");
+    if (status) {
+      if (state.state === "valid") status.textContent = "";
+      else if (state.state === "claimed") status.textContent = "This friend pass was already claimed.";
+      else if (state.state === "expired") status.textContent = "This friend pass expired — passes only last for the day they're sent.";
+    }
+    if (page) page.classList.remove("hidden");
+  }
+  function loadPassPage(id) {
+    currentPassId = id;
+    hideMainTool();
+    const page = document.getElementById("pass-page");
+    if (page) page.classList.remove("hidden");
+    const claimBtn = document.getElementById("pass-claim-btn");
+    if (claimBtn) claimBtn.classList.add("hidden");
+    const status = document.getElementById("pass-page-status");
+    if (status) status.textContent = "Loading the friend pass…";
+    fetchBackendWithRetry(rizzApiBase() + "/pass/" + encodeURIComponent(id), { method: "GET" })
+      .then(function (resp) {
+        return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+      }).then(function (pair) {
+        if (!pair.resp.ok) {
+          if (status) status.textContent = pair.resp.status === 404 ? "This friend pass doesn't exist any more." : "Couldn't load this friend pass — check your connection and try again.";
+          return;
+        }
+        renderPassPage(pair.body);
+      }).catch(function () {
+        if (status) status.textContent = "Couldn't load this friend pass — check your connection and try again.";
+      });
+  }
+  function wirePassPage() {
+    const claimBtn = document.getElementById("pass-claim-btn");
+    if (claimBtn) claimBtn.addEventListener("click", function () {
+      if (!currentPassId) return;
+      const status = document.getElementById("pass-page-status");
+      if (status) status.textContent = "Claiming your checks…";
+      claimBtn.disabled = true;
+      freshAuthHeaders().then(function (headers) {
+        return fetchBackendWithRetry(rizzApiBase() + "/pass/" + encodeURIComponent(currentPassId) + "/claim", {
+          method: "POST",
+          headers: Object.assign({ "Content-Type": "application/json" }, headers || {}),
+          body: "{}"
+        });
+      }).then(function (resp) {
+        return resp.json().catch(function () { return {}; }).then(function (body) { return { resp: resp, body: body }; });
+      }).then(function (pair) {
+        claimBtn.disabled = false;
+        if (!pair.resp.ok) {
+          if (status) status.textContent = (pair.body && pair.body.error) || "Couldn't claim the pass — try again.";
+          return;
+        }
+        const body = pair.body || {};
+        if (typeof body.yourBonusToday === "number") storeFriendPassBonus(body.yourBonusToday);
+        else addFriendPassBonus(3);
+        claimBtn.classList.add("hidden");
+        if (status) status.textContent = "You both got 3 more checks today — enjoy.";
+      }).catch(function () {
+        claimBtn.disabled = false;
+        if (status) status.textContent = "Couldn't claim the pass — check your connection and try again.";
+      });
+    });
+    const tryBtn = document.getElementById("pass-page-try-btn");
+    if (tryBtn) tryBtn.addEventListener("click", function () { showMainTool(); });
+  }
+  function refreshFriendPassBonus() {
+    /* Signed-in users: the server owns the bonus, so refresh the
+       local copy on load (a pass claimed on another device still
+       shows up here). Guests: the server keys the bonus by IP, so
+       the same call works for them. Silent on failure — the bonus
+       is a nice-to-have, never a blocker. */
+    freshAuthHeaders().then(function (headers) {
+      return fetchBackendWithRetry(rizzApiBase() + "/friend-pass/bonus", { method: "GET", headers: headers || {} }, null, { timeoutMs: 8000 });
+    }).then(function (resp) {
+      return resp.json().catch(function () { return {}; });
+    }).then(function (body) {
+      if (body && typeof body.bonus === "number" && typeof body.day === "string" && body.day === utcDayKey(new Date())) {
+        storeFriendPassBonus(body.bonus);
+      }
+    }).catch(function () { /* ignore */ });
   }
 
   /* ---- Quick drill (client-side only: no fetch anywhere here) ---- */
@@ -3316,6 +3502,9 @@
   wireDrill();
   wireVoteCreate();
   wireVotePage();
+  wirePassCreate();
+  wirePassPage();
+  refreshFriendPassBonus();
   wireGuide();
   showInstallHelpIfNeeded();
   updateShotCheckButton();
